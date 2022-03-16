@@ -32,7 +32,7 @@ We use predefined threshold value of IOU to decide if the predicted bounding box
 \subsection{Precision and recall}
 \subsubsection{Precision}
 \label{subsec:precision}
-When speaking about object detection, we say that a prediction is true positive (TP) if the IOU value is greater than the predefined threshold $\tau$. If otherwise, the prediction is treated as false positive (FP). Let's assume there are N predictions of our model, from which S are correct. Precision is defined as
+When speaking about object detection, we say that a prediction is a true positive (TP) if the IOU value is greater than the predefined threshold $\tau$. If otherwise, the prediction is treated as false positive (FP). Let's assume there are N predictions of our model, from which S are correct. Precision is defined as
 \begin{align}
     Precision(\tau, \gamma) = \frac{\sum_{n=1}^S TP_n(\tau, \gamma)}{\sum_{n=1}^S TP_n(\tau, \gamma) + \sum_{n=1}^{N-S} FP_n(\tau, \gamma)}
 \end{align}
@@ -75,6 +75,8 @@ In practice, there are two different ways to approach the Reimann integral. They
 Since the AP is calculated per class, the mean average precision is defined as the average over all categories.
 
 In the subsections, \ref{subsec:precision} and \ref{subsec:recall}, we said that both precision and recall depend on predefined IOU threshold $\tau$ to consider prediction as true positive. This makes the value of MAP vary over different thresholds $\tau$. The threshold value used for computation of the mAP is usually denoted in the metrics name, such as $AP@.5$ in the case of MS COCO. \footnote{Note that even though they compute mean average precision, they use the $AP$ shortcut.} The standalone $AP$ without any numerical values attached to it usually refers to the official COCO metrics. The COCO metric is in its explicit form written as $AP@[.5:0.05:0.95]$ and is computed as the average of MAP values for ten different $\tau$ values, ranging from 0.5 to 0.95.
+
+The letters S,M,L in the subscript, such as $AP_S$ denoted, that the metrics is calculated for subset of ground truth predictions only. Taking into the consideration bounding boxes with area $\leq 32^2$ pixels, $32^2 \le $ area $ \leq 96^2$ pixels and area $> 96^2$ pixels
 
 \begin{figure}
     \includegraphics[width = \linewidth]{images/PR-curve.png}
