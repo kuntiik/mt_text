@@ -1,0 +1,18 @@
+\chapter{Discusion and further suggestions}
+\section{Discusion}
+% From the results in the chapter \ref{chapter:results}, we can see that the model is able to localize large portion of dental caries in the image, yet there are is a room for an improvement.
+
+% \begin{itemize}
+%     \item In the figure \ref{fig:yolov5_map_iou_thresholds} we can se sharp drop in the MAP values, when we choose IOU threshold greater than 0.4. The drop is in both training and validation MAP. This seems to be related to the data, rather than to the model. This matche
+%     \item The best performing YOLOv5 backbone was not the biggest one. Even thought, the difference was negliable, it is still unexpected. The 5x6 backbone achieved by 10\% better results than 5m6 when banchmarked on the MS COCO dataset \cite{glenn_jocher_2020_4154370}. The uability to utilize the bigger the network can be caused by wrogly setup pipeline or the low amount of data, when smaller network is not able to over-fit to the training dataset.
+%     \item There was a drop of model performance when selecting the image size of 1024 over 896. Even thought the differnce is subtle, I would expect the an improvement, rather than drop drop of performance.
+%     \item Even thought in the MS COCO benchmark EfficientDet-D4 is better performing model than YOLOv5-5l6, it has shown to be worse performing on our dataset. This could be caused by extremly low batch-size.
+% \end{itemize}
+% \section{Suggestions for further work}
+% Right now, there seems to be no clear way how to improve the performance significantly. We could try to do the hyper-parameter search, but personally I would resort to this option latter.
+
+% We could try different architectures, since the best performing YOLOv5 is not state of the art \cite{paperwithcode}. YOLOR and newest versions of YOLOv4 are outperforming YOLOv5 by 12\% and 10\% respectively.
+
+% We could try to do image preprocessing or try automatic augmentation search as proposed by Cubut et al. \cite{Cubuk2018}.
+
+Methods, that almost always improves the performance are model ensembling and test-time augmentations.

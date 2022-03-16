@@ -1,7 +1,41 @@
 \chapter{Results}
+\label{chapter:results}
 
-\section{Different backbones}
-We changed the batch-size to 2 (to be able to fit 5x6 backbone into the GPU memory) and trained the model with different bacbones for 50 epochs each. Results for all runs are in the table \ref{tab:yolov5_backbones}.
+\section{Basic setup}
+In the section we trained the model with the parameters described in the chapter \ref{chapter:methods}.
+\subsection{YOLOv5}
+The results of the YOLOv5 model for training and test dataset are available in the table \ref{tab:yolov5_basic}. To get further inside into the model, precision-recall curves for different intersection over union thresholds are ploted in the figure \ref{fig:yolov5_pr_curves}.
+\begin{table}
+    \begin{tabular}{c|c|c|c|c|c|c|c}
+        stage & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        train & 0.463 & 0.869   & 0.841   & 0.442    & 0.697     & 0.887     & 0.974     \\ \hline
+        test  & 0.249 & 0.734   & 0.631   & 0.132    & 0.598     & 0.671     & 0.607     \\
+    \end{tabular}
+    \caption{Mean average precision of the YOLOv5 model}
+    \label{tab:yolov5_basic}
+\end{table}
+
+\begin{paracol}{2}
+    \begin{figure}
+        \includegraphics[width=\linewidth]{images/iou_val_multiple.pdf}
+        \caption{Precision-recall curve of the YOLOv5 model}
+        \label{fig:yolov5_pr_curves}
+    \end{figure}
+    \switchcolumn
+    \begin{figure}
+        \includegraphics[width=\linewidth]{images/iou_threshold.pdf}
+        \caption{The value of MAP based on the IOU threshold $\gamma$}
+        \label{fig:yolov5_map_iou_thresholds}
+    \end{figure}
+\end{paracol}
+
+\subsection{EfficientDet}
+
+
+\section{Experiments}
+The YOLOv5 model was selected, since it was the better perfoming one. Unless state otherwise, we kept the parameters as described in \ref{chapter:methods}. By a series of experiments, we tried to get insight into the importance of model parameters.
+\subsection{Different backbones}
+We changed the batch size to 2 (to be able to fit 5x6 backbone into the GPU memory) and trained the model with different backbones for 50 epochs each. Results for all runs are in the table \ref{tab:yolov5_backbones}.
 
 \begin{table}
     \begin{tabular}{c|c|c|c|c|c}
@@ -15,10 +49,26 @@ We changed the batch-size to 2 (to be able to fit 5x6 backbone into the GPU memo
     \label{tab:yolov5_backbones}
 \end{table}
 
-\section{Different image size}
-Once again we kept the same setting and this time changed only the size to which images are resized. The relation between input image size and $AP@.5$ can be observed in the figure
+\subsection{Different image size}
+Once again, we kept the same setting and this time changed only the size to which images are resized. The relation between input image size and $AP@.5$ can be observed in the figure \ref{fig:img_sizes}.
 
-\begin{figure}
-    \includegraphics[width=\linewidth]{images/img_size_dependency.pdf}
-    \caption{Dependency of $AP@.5$ on the input image size}
-\end{figure}
+\begin{paracol}{2}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.99\linewidth]{images/img_size_dependency.pdf}
+        \caption{The relation between image size and $AP@.5$}
+        \label{fig:img_sizes}
+    \end{figure}
+    \switchcolumn
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.99\linewidth]{images/training_set_dependency.pdf}
+        \caption{Mean average precision based on the size of training set}
+        \label{fig:training_set_sizes}
+    \end{figure}
+\end{paracol}
+
+
+\subsection{Reduced training dataset}
+We fixed the validation and test dataset and changed the amount of samples in the training dataset.
+
