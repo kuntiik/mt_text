@@ -9,4 +9,5 @@
 *.gz
 *.blg
 *.out
-*.pdf
+# *.pdf
+main.pdf
