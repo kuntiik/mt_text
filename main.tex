@@ -1,18 +1,21 @@
 \documentclass[twoside]{ctuthesis}
 
-\usepackage{pgf}
+\usepackage{caption}
+\usepackage{paracol}
+\usepackage{subcaption}
 \input{ctu_setup.tex}
 \usepackage{layouts}
+\globalcounter{figures}
 
 \begin{document}
 
 \input{introduction.tex}
+\input{related_work.tex}
 \input{theoretical_background.tex}
 \input{methods.tex}
+\input{results.tex}
+\input{discusion.tex}
 
-\bibliographystyle{IEEEtran}
-\bibliography{svp}
+\input{appendix.tex}
 
-
-\the\font
 \end{document}
