@@ -4,7 +4,7 @@
 \section{Basic setup}
 In this section we trained the model with the parameters described in chapter \ref{chapter:methods}.
 \subsection{YOLOv5}
-The results of the YOLOv5 model for training and test dataset are available in table \ref{tab:yolov5_basic}. To get further inside into the model behaviour, precision-recall curves for different intersection over union thresholds are plotted in figure \ref{fig:yolov5_pr_curves}. Samples from the test part of the dataset with overlayed predictions and ground truth boxes are in the appendix \ref{appendix:model_predictions}.
+The results of the YOLOv5 model for training and test dataset are available in table \ref{tab:yolov5_basic}, and more in-depth information about the $AP$ can be seen from precision-recall curves for which are plotted in figure \ref{fig:yolov5_pr_curves}. Furthermore, samples from the test part of the dataset with overlayed predictions and ground truth boxes are in the appendix \ref{appendix:model_predictions}.
 \begin{table}
     \begin{tabular}{c|c|c|c|c|c|c|c}
         stage & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
@@ -30,7 +30,7 @@ The results of the YOLOv5 model for training and test dataset are available in t
 \end{paracol}
 
 \subsection{EfficientDet}
-
+We evaluated the EfficientDet model in the same fashion as YOLOv5 and resulting metrics are strored into the table \ref{tab:effdet_basic}.
 \begin{table}
     \begin{tabular}{c|c|c|c|c|c|c|c}
         stage      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
@@ -43,9 +43,9 @@ The results of the YOLOv5 model for training and test dataset are available in t
 
 
 \section{Experiments}
-The YOLOv5 model was selected, since it was better performing than EfficientDet. Unless stated otherwise, we kept the same parameters as described in chapter\ref{chapter:methods}. By a series of experiments, we tried to get an insight into the importance of model parameters.
+The YOLOv5 model was selected since it was better performing than EfficientDet. Unless stated otherwise, we kept the same parameters as described in chapter\ref{chapter:methods}. Through a series of experiments, we tried to get an insight into the importance of model parameters.
 \subsection{Different backbones}
-We changed the batch size to 2 (to be able to fit 5x6 backbone into the GPU memory) and trained the model with different backbones for 50 epochs each. Results for all runs are in table \ref{tab:yolov5_backbones}.
+We changed the batch size to 2 (to fit 5x6 backbone into the GPU memory) and trained the model with different backbones for 50 epochs each. Results of all runs are in table \ref{tab:yolov5_backbones}.
 
 \begin{table}
     \begin{tabular}{c|c|c|c|c|c}
@@ -60,7 +60,7 @@ We changed the batch size to 2 (to be able to fit 5x6 backbone into the GPU memo
 \end{table}
 
 \subsection{Different image size}
-Once again, we kept the same setting and this time changed only the size to which images are resized. The relation between input image size and $AP@.5$ can be observed in figure \ref{fig:img_sizes}.
+Once again, we kept the same setting and changed only the size to which images are resized. The relation between input image size and $AP@.5$ can be observed in figure \ref{fig:img_sizes}.
 
 \begin{paracol}{2}
     \begin{figure}
@@ -79,5 +79,5 @@ Once again, we kept the same setting and this time changed only the size to whic
 \end{paracol}
 
 \subsection{Reduced training dataset}
-We fixed the validation and test dataset and changed the amount of samples in the training dataset.
+We fixed the validation and test dataset and changed the number of samples in the training dataset. The dependency of $AP$ on the number of training samples is depicted in figure \ref{fig:training_set_sizes}.
 
