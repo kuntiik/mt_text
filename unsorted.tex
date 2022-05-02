@@ -1,0 +1,93 @@
+\section{Architecture comparison}
+In the following experiment, we benchmarked multiple different architectures on our dataset. The training pipeline in this experiment consisted of the following:
+\begin{itemize}
+    \item  Adam optimizer with learning rate $1e^{-4}$ and weight decay $1e^{-6}$.
+    \item Reduce-lr on plateau learning rate scheduler, which decreased the learning rate by a factor of 5 when AP@.5 metrics on the validation dataset did not increase for ten epochs.
+    \item The training was terminated when the AP@.5 metrics stalled for 15 epochs.
+    \item Image augmentation pipeline described in TODO fill. 
+    \item We used the same dataset consisting of 3489 images and 6089 annotated dental caries.
+    \item We used the biggest batch-size that was able to fit into the Nvidia GTX1080-ti graphics card's memory.
+    \item We always accumulated gradient from 4 batches before performing the backward step.
+\end{itemize}
+The whole pipeline remained fixed throughout all experiments, and we only switched out the model. From the results in, \ref{tab:model_comparison} we see, that those models were on par with each other. EfficinetDet architecture was the only model which lagged in performance behind others. This was probably caused by the model's size in a GPU memory, which did not allow us to use a bigger batch size than 1. Even though there were only small discrepancies between model performances when we consider the dataset as a whole, we can see that results differ by a significant margin, when we consider only part of the dataset, consisting of annotations with a given size. This phenomenon is very significant if we compare RetinaNet architecture with swin transformer backbone and YOLOv5 with a largeP6 backbone. We could leverage this behavior by Ensembling multiple models and assigning prior weights to model-based object sizes.
+\subsection{Precision-recall}
+In the next step, we inspected the precision and recall of each model. Those values are based on the confidence level we choose. Our approach for estimating the optimal confidence threshold was as follows. For recall, we have chosen 100 equally distributed values in the range from 0 to 1. For those values, we computed precision and corresponding F-score. After that, we selected the confidence threshold to match precision and recall for the highest value of the F-score. Results for all models are in the table\ref{tab:model_pr}.
+
+\begin{table}
+    \begin{tabular}{c||c|c|c|c|c|c|c}
+        model - backbone & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline \hline
+        faster r-cnn - resnet101 & 0.285& 0.763 & 0.675 & 0.198 & 0.568 & 0.717 & 0.772 \\ \hline 
+        faster r-cnn - resnet50 & 0.284& 0.76 & 0.658 & 0.204 & 0.557 & 0.695 & 0.77 \\ \hline
+        yolov5 - mediump6 & 0.288& 0.748 & 0.644 & 0.209 & 0.593 & 0.667 & 0.766 \\ \hline
+        yolov5 - largep6 & 0.284& 0.74 & 0.644 & 0.203 & 0.551 & 0.701 & 0.612 \\ \hline
+        efficientdet - d4 & 0.251& 0.716 & 0.605 & 0.15 & 0.49 & 0.677 & 0.545 \\ \hline
+        retinanet - swint & 0.266& 0.766 & 0.66 & 0.175 & 0.497 & 0.721 & 0.786 \\ \hline
+        retinanet - resnet50 & 0.263& 0.734 & 0.643 & 0.174 & 0.547 & 0.696 & 0.663 \\ 
+    \end{tabular}
+    \caption{performance comparison of multiple models based on mean average precision metrics}
+    \label{tab:model_comparison}
+\end{table}
+
+\begin{table}
+    \begin{tabular}{c||c|c|c|c}
+        Model - backbone & Precision & Recall & F-score & Confidence threshold \\ \hline \hline
+        Faster R-CNN - ResNet101 & 0.69 & 0.64 & 0.664 & 0.662 \\ \hline
+        Faster R-CNN - ResNet50 & 0.623 & 0.68 & 0.65 & 0.489 \\ \hline
+        YOLOv5 mediumP6 & 0.671 & 0.6 & 0.634 & 0.273 \\ \hline
+        YOLOv5 largeP6 & 0.621 & 0.64 & 0.63 & 0.219 \\ \hline
+        EfficientDet - d4 &0.621 & 0.59 & 0.605 & 0.216 \\ \hline
+        RetinaNet - swint & 0.661 & 0.63 & 0.645 & 0.24 \\ \hline
+        RetinaNet - ResNet50 & 0.674 & 0.6 & 0.635 & 0.41 \\ 
+    \end{tabular}
+    \caption{Precision, recall, and F-score based on the confidence threshold}
+    \label{tab:model_prf}
+\end{table}
+
+\subsection{Model ensembling}
+For each image, we accumulated prediction boxes and scores from multiple models and merged those into one image based on the selected method from those described in section TODO. Since all methods have multiple hyper-parameters, such as minimal IOU overlap or weights for different models, we picked those parameters based on the model performance on the validation dataset and then evaluated the metrics on the test set. Because we had 6 models to choose from, the random search approach became quickly infeasible, thus we hand-picked the best performing and most diverse models. After doing a search for the best performing hyper-parameters on the validation dataset we got test results, that can be seen in the table\ref{tab:model_ensembling}.
+\begin{table}
+    \begin{tabular}{c||c|c|c|c|c|c|c}
+        Ensembled models & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline \hline
+        RN-sw, YOLO-m, RN-res & 0.303& 0.776 & 0.694 & 0.216 & 0.605 & 0.729 & 0.803 \\ \hline
+        F-RCNN-res101, YOLO-m, RN-sw & 0.305 & 0.783 & 0.695 & 0.218 & 0.598 & 0.733 & 0.807 \\
+
+
+    \end{tabular}
+    \caption{Ensemble of multiple models}
+    \label{tab:model_ensembling}
+\end{table}
+
+\subsection{Segmentation of dental restorations}
+From the dataset, it seemed, that there is a higher probability of observing dental caries in the proximity of dental restorations. To get verify this foreboding we decided to segment out dental restorations in the bitewing x-ray images. We had 400 images with 380 polygon-shaped annotations at our disposal. We tried two different approaches to segmentation. 
+
+\subsubsection{Data-driven approach}
+We approached this problem in a similar manner as caries detection and trained deep-learning model U-Net \TODO results.
+
+
+\begin{table}
+    \begin{tabular}{c||c|c|c|c|c|c|c}
+        model - backbone & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline \hline
+        faster r-cnn - resnet101 & 0.328& 0.8 & 0.71 & 0.263 & 0.613 & 0.742 & 0.816 \\ \hline 
+        faster r-cnn - resnet50 & 0.334& 0.81 & 0.715 & 0.273 & 0.595 & 0.757 & 0.809 \\ \hline
+        yolov5 - mediump6 & 0.346& 0.787 & 0.708 & 0.284 & 0.622 & 0.744 & 0.754 \\ \hline
+        yolov5 - largep6 & 0.295& 0.706 & 0.625 & 0.232 & 0.533 & 0.691 & 0.489 \\ \hline
+        efficientdet - d4 & 0.288& 0.745 & 0.648 & 0.219 & 0.548 & 0.699 & 0.655 \\ \hline
+        retinanet - swint & 0.328& 0.805 & 0.72 & 0.241 & 0.565 & 0.776 & 0.775 \\ 
+    \end{tabular}
+    \caption{performance comparison of multiple models based on mean average precision metrics}
+    \label{tab:model_comparison4k}
+\end{table}
+
+\begin{table}
+    \begin{tabular}{c||c|c|c|c}
+        Model - backbone & Precision & Recall & F-score & Confidence threshold \\ \hline \hline
+        Faster R-CNN - ResNet101 & 0.701 & 0.67 & 0.685 & 0.664 \\ \hline
+        Faster R-CNN - ResNet50 & 0.679 & 0.7 & 0.689 & 0.663 \\ \hline
+        YOLOv5 mediumP6 & 0.672 & 0.69 & 0.681 & 0.238 \\ \hline
+        YOLOv5 largeP6 & 0.609 & 0.62 & 0.615 & 0.114 \\ \hline
+        EfficientDet - d4 & 0.648 & 0.62 & 0.634 & 0.183 \\ \hline
+        RetinaNet - swint & 0.714 & 0.67 & 0.691 & 0.401 \\ \hline
+    \end{tabular}
+    \caption{Precision, recall, and F-score based on the confidence threshold}
+    \label{tab:model_prf4k}
+\end{table}
