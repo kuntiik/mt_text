@@ -78,6 +78,32 @@ Once again, we kept the same setting and changed only the size to which images a
     \end{figure}
 \end{paracol}
 
+% \begin{figure}
+%     \begin{minipage}{0.49\textwidth}
+%         \centering
+%         \includegraphics[width=0.99\linewidth]{images/img_size_dependency.pdf}
+%         \caption{The relation between image size and $AP@.5$}
+%         \label{fig:img_sizes}
+%     \end{minipage}
+%     \begin{minipage}{0.5\textwidth}
+%         \centering
+%         \includegraphics[width=0.99\linewidth]{images/training_set_dependency.pdf}
+%         % \caption{Mean average precision based on the size of training set}
+%         \caption{Mean average precision based on the size of training set}
+%         \label{fig:training_set_sizes}
+%     \end{minipage}
+% \end{figure}
+\begin{figure}
+    \begin{floatrow}[2]
+        % \ffigbox[\FBwidth]{\caption{Marie \v{C}erminova, known as Toyen: \emph{She sleeps} (1937)}}%
+        % {\includegraphics{images/img_size_dependency.pdf}}\qquad
+        \includegraphics[width=0.5\linewidth]{images/img_size_dependency.pdf}\qquad
+        % \ffigbox[\FBwidth]{\caption{Piero di Cosimo: \emph{Portrait of Simonetta Vespucci} (ca 1480)}}%
+        % {\includegraphics{images/training_set_dependency.pdf}}
+        \includegraphics[width=0.5\linewidth]{images/img_size_dependency.pdf}\qquad
+    \end{floatrow}
+\end{figure}
+
 \subsection{Reduced training dataset}
 We fixed the validation and test dataset and changed the number of samples in the training dataset. The dependency of $AP$ on the number of training samples is depicted in figure \ref{fig:training_set_sizes}.
 
