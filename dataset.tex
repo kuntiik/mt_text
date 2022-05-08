@@ -1,0 +1,26 @@
+\chapter{Dataset}
+The dataset was created by MDDr. Tichy and his team. The work on the dataset began together with work on this thesis and we were able to discuss the format of the data. We decided to annotate every dental caries lession by minimal bounding box. Annotation process was conducted in Computer Vision Annotation Tool (CVAT), which was running on the server of Faculty of biomedical informatics, the web adress is gdiag.fbmi.cvut.cz.
+
+In the first stage MDDr. Tichy instructed a group of students of general dentistry, how to approach the annotation to get as homogenous dataset as possible. The main goals were as follow:
+\begin{itemize}
+    \item Draw rectangular-shaped box around carious lession. The whole lession lies inside the box and the box is as tight as possible around the lession.
+    \item When the lession is in proximal surface and booth teeth are infected, draw a separate box for each of them.
+    \item When a tooth a major part of tooth is missing due to advanced decay of the teeth, do not try to estimate the height of the missing teeth, but draw a box
+\end{itemize}
+Dental X-ray images were uploaded into CVAT and seprated into multiple projects, where each project contained between 400-800 images. This was done due to technical limitation regarding exporting and uploading of X-ray images from a dental database. Each project was further split into jobs, each of them consisting of 100 images and assigned to a particular student. When the first stage was done we had 1695 X-ray images at our disposal with 2416 dental caries annotated. CVAT does not allow to export and merge multiple tasks, so that each task was exported separately in COCO format. All tasks were uploaded to CMP server and merged together. We checkcked the task for duplicit images and removed them, furthermore we removed any images, that were no yet review. This resulted in 1626 images with 2399 decay annotations, from those only 946 images contained at least one cavity.
+
+
+Second stage
+After inspection of the dataset created in the first stage we observed in-homogenity across annotations. Some of the guidilines were violated, especially annotation of caries in proximal surfaces was error-prone. In addition, multiple overlooked lession were observed. This led us to reconsideration of out approach to labeling and MDDr Tichy himself did all the annotation work from this moment forther on. After the second stage, the dataset was extended to 2599 non-duplicit images contatining 4328 annotation of tooth decay. In this stage no corrections of previous errors were done.
+
+\subsubsection{Third stage}
+All images annotated in the first stage were reviewed by MDDr. Tichy. Unspecified amount of annotations was removed as well as added. In the end the dataset consited of 2599 images with 4575 annotations of dental caries.
+
+\subsubsection{Fourth stage}
+Another 1400 images were uploaded onto CVAT server. After training the model on the dataset created in stage three, the model achieved performance of $AP@.5=0.61$. We downloaded all newly uploaded images and used the model to make predictions for those images. Confidence threshold achieving best results on the validation dataset was used to filter out low-confidence predictions. We used Voxel Fiftyone tool to upload all 1400 images and their respective predictions to CVAT, where those images were splitted into two seprate tasks.
+MDDr Tichy review all predictions. Adjustments of bounding boxes as well as their removal and addition of were conducted. According to personal statistics of MDDr. Tichy, there were roughly 200 predictions per 100 images. Around 20 annotation had to be added and removed in order to get the same quality annotations as in stage three. Upside of this approach was speed, when annotation could be done in approximately half the time required to do the annotation without model predictions.
+
+\subsection{Fifth stage}
+In this stage annotation of all 1400 uploaded images was finished, resulting in
+
+\section{Restorations}
