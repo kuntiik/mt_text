@@ -1,4 +1,128 @@
-\chapter{BG}
+\chapter{Theoretical background}
+\section{Computer vision tasks}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/computer_vision_tasks.png}
+    \caption{From the left: semantic segmentation, object localization, object detection, instance segmentation}
+    \label{fig:computer_vision_tasks}
+\end{figure}
+\subsection{Classification}
+Let say we have an image $\mathbf{x}$, in classification task, our goal is to assign one of $n$ possible classes to the image:
+\begin{align}
+    \hat{y} = f_\theta\left(\mathbf{x} \right),
+\end{align}
+where $f$ is a mapping, sometimes called as a model and $\theta$ are parameters of the model. If it holds, that $\hat{y}=y$, where $y$ is true class of the image $\mathbf{x}$, the classification is considered to be correct.
+It is possible to output $\mathbf{p} \in \mathbb{R}^n$ instead of $\hat{y}$, where $p_i \in \mathbf{p}$ is probability of $i = y$, modeled by $f_\theta$.
+
+\subsection{Semanic segmentation}
+For an input image $x \in \mathbb{R}^{n \times m}$ the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $y{_i,j}$ is predicted class of pixel $i,j$ in the image $\mathbf{x}$. A sample of semantic segmentation output can be seen in figure \ref{fig:computer_vision_tasks}.
+
+\subsection{Object detection}
+\label{subsec:object_detection}
+In object detection, the ogal is to locate and recognize objects of interests in the image $\mathbf{x}$. The ground truth objects, are represented by a rectangle and a category. Model returns $\mathbf{Y} \in \mathbb{R}^{n \times 6}$ as predictions for the model. Each row of $\mathbf{Y}$ consists of four numbers, which describe a rectangle, category of the object inside the rectnagle and a number in range from 0 to 1 called the confidence. In literature, we can see term score instead of confidence, but the meaning remains the same: Certaninty of the network regarding the particular prediction described by the bounding box and category. Please note, that that confidence of predictions does not sum to one, in otherwords we are not talking about probabilities, since multiple detections per image can correspond to a ground truth.
+
+\subsection{Instance segmentation}
+Instance segmentation is similar task to semantic segmantation with the difference, that two objects of the same category would have different ground truth values. If we have $\mathcal{O}_1, \mathcal{O}_2$, where $\mathcal{O}_i \subset \mathbf{x}$ are pixels of object $i$ in image $\mathbf{x}$. Then
+\begin{align}
+    o_{1_i} \neq o_{2_i} \quad \text{for} \quad o_{1_i} \in \mathcal{O}_1, o_{2_i} \in \mathcal{O}_2;\forall i
+\end{align}
+
+\section{Data format in object detection}
+As described in section \ref{subsec:object_detection}, the position of an object is denoted by a bounding box.  The four parameters used to describe a bounding box can be selected in multiple ways. This ambiguity led to disjoint notation. The most widespread are as follows.
+\subsection{PASCAL VOC}
+The format was introduced together with the PASCAL VOC dataset, which was the most popular dataset for object detection algorithm benchmarking in 2010. The bounding box is described by points $p_1(x,y),p_2(x,y)$ located in the top-left and bottom right corner. The coordinates range from 0 to image width/height in pixels. All the annotations are stored into single XML file \cite{Everingham2009,Padilla2021}.
+\subsection{COCO}
+COCO data format is represented by a single JSON file containing all bounding boxes of the dataset. The boxes are described by top-left corner point $p(x,y)$ and the width and height of the box. Coordinated and box dimensions are again in the range 0 to image dimensions. In MS COCO, the annotation can be accompanied by additional information to solve the task as an instance segmentation problem.
+\subsection{YOLO}
+This format was introduced together with the first YOLO architecture \cite{Redmon2015}, and this annotation style is still persistent whenever working with the YOLO-family neural networks.
+The annotations are divided into multiple TXT files in this format. Each of them contains annotations for a single image.
+The bounding box is described similarly to the COCO dataset, but the coordinates are normalized to be in the 0 to 1 range. The advantage of this approach is that when image dimensions are scaled, the annotations do not have to be modified \cite{Redmon2015,Padilla2021}.
+
+
+\section{Metrics}
+\subsection{Intersection over union (IOU) }
+Intersection over union, also known as Jaccard index, is defined as follows: Let $B_{gt}$ and $B_p$ be a ground truth and predicted bounding box, the Jaccard index $J$ is calculated as
+\begin{align}
+    IOU = J(B_p, B_{gt}) = \frac{area(B_p \bigcap B_{gt})}{area(B_p \bigcup B_{gt})}.
+    \label{eq:iou}
+\end{align}
+From the equation \ref{eq:iou} we can see that the the lowest value of IOU is 0. That means there is no overlap at all and the maximal value is 1, hence meaning a perfect match.
+We use predefined threshold value of IOU to decide if the predicted bounding box matches the ground truth. Usually we choose this threshold to be 0.5 or above.
+
+\begin{figure}
+    \includegraphics[width = \linewidth]{images/IOU.jpg}
+    \caption{Examples of IOUs for different overlaps between GT and predicted box, source \cite{Cowton2019}}
+    \label{fig:iou}
+\end{figure}
+
+\subsection{Precision and recall}
+\subsubsection{Precision}
+\label{subsec:precision}
+When speaking about object detection, we say that a prediction is a true positive (TP) if the IOU value is greater than the predefined threshold $\tau$. If otherwise, the prediction is treated as a false positive (FP). Let's assume there are N predictions of our model, from which S are correct. Precision is defined as
+\begin{align}
+    Precision(\tau, \gamma) = \frac{\sum_{n=1}^S TP_n(\tau, \gamma)}{\sum_{n=1}^S TP_n(\tau, \gamma) + \sum_{n=1}^{N-S} FP_n(\tau, \gamma)}
+\end{align}
+where $\gamma$ is confidence threshold. That means we discard all predictions with confidence smaller than $\gamma$. Note that for fixed value of $\tau$ are $FP(\gamma)$ and $TP(\gamma)$ decreasing functions of $\gamma$ \cite{Padilla2021}.
+
+\subsubsection{Recall}
+\label{subsec:recall}
+If there is a ground truth bounding box for which there are no given detection values of $\gamma$ and $\tau$, we say it is a false negative (FN). If we consider a dataset with G ground-truths and N predictions of which S is correct, where $(S \leq G)$, the recall is expressed as:
+\begin{align}
+    Recall(\tau, \gamma) = \frac{\sum_{n=1}^S TP_n(\tau, \gamma)}{\sum_{n=1}^S TP_n(\tau, \gamma) + \sum_{n=1}^{G-S} FN_n(\tau, \gamma)}.
+\end{align}
+Since the value of $FN(\gamma)$ increases with the growing value of $\gamma$, we see that recall is the decreasing function of $\gamma$.
+\subsubsection{F1 score}
+The value of the F1 score is computed as the harmonic mean of precision and recall.
+\begin{align}
+    F1(\tau, \gamma) = \frac{2 \cdot Recall(\tau,\gamma) \cdot Precision(\tau, \gamma)}{Recall(\tau,\gamma) + Precision(\tau, \gamma)}
+\end{align}
+
+\subsubsection{Precision-recall curve}
+From subsection \ref{subsec:precision} and \ref{subsec:recall} we were able to see that precision mostly increases as we increase the confidence threshold $\gamma$, while recall decreases. The relation between precision and recall is captured by precision-recall curve. An example of precision-recall curve can be seen as the blue line in the figure \ref{fig:pr_curve}. In other words, we can say that the precision-recall curve is a mapping
+\begin{align}
+    \gamma \rightarrow Precision(\gamma) \times  Recall(\gamma),
+    \label{eq:pr_curve}
+\end{align}
+where $\gamma$ ranges from 1 to 0.
+
+\subsubsection{Mean average precision (mAP)}
+To calculate MAP we first need to get the PR-curve and then interpolate the precision values. Suppose, that we have $K$ different confidence values $\gamma$ among model predictions, which are ordered as
+\begin{align}
+    \gamma(k),\: k = 1,2,...,K,  \; \text{such that } \gamma(i) > \gamma(j) \: for \: i > j.
+\end{align}
+The interpolated precision values are:
+\begin{align}
+    Precision_{interp}(R) = \max_{k|Recall(\gamma(k)) \geq R} \{  Precision(\gamma(k)) \}
+\end{align}
+The interpolated precision-recall is pictured in the figure \ref{fig:pr_curve} in red color. Now, we can compute the average precision (AP) as the area under the interpolated PR curve.
+In practice, there are two different ways to approach the Reimann integral. They differ in the number of samples used to compute the integral and are called N-point and all-point interpolation. The N-point, specifically 101 point interpolation, is used in the MS COCO competition. On the other hand, the all-point interpolation is nowadays used in PASCAL VOC challenges.
+
+Since the AP is calculated per class, the mean average precision is defined as the average over all categories.
+
+In the subsections, \ref{subsec:precision} and \ref{subsec:recall}, we said that both precision and recall depending on predefined IOU threshold $\tau$ to consider prediction as true positive. This dependency makes the value of MAP vary over different values of $\tau$. The threshold value used for computation of the mAP is usually denoted in the metrics name, such as $AP@.5$ in the case of MS COCO. \footnote{Note that even though the mean average precision is computed, use the $AP$ shortcut, which stands for average precision is used.} The standalone $AP$ without any numerical values attached to it usually refers to the official COCO metric. The official COCO metric is in its explicit form written as $AP@[.5:0.05:0.95]$ and is computed as the average of MAP values for ten different $\tau$ values, ranging from 0.5 to 0.95.
+
+The letters S, M,  and L in the subscript, such as $AP_S$ denoted that the metrics is calculated for a subset of ground truth predictions only. Taking into the consideration only bounding boxes with area $\leq 32^2$ pixels, $32^2 \le $ area $ \leq 96^2$ pixels and area $> 96^2$ pixels
+
+\begin{figure}
+    \includegraphics[width = \linewidth]{images/PR-curve.png}
+    \caption{Normal and interpolated precision-recall curve, source \cite{Padilla2020}}
+    \label{fig:pr_curve}
+\end{figure}
+
+
+
+\section{Optimization}
+THIS SECTION IS UNFINISHED
+\subsection{Learning rate schedulers}
+Learning rate is considered to be one of the most, if not the most important parameter, in deep learning. It is usually beneficial to change the learning rate during the course of training. This can be done either manually or can be automated by an algorithm that increases or decreases the learning rate based on the set of predefined rules. This algorithm is called learning rate scheduler.
+
+\subsubsection{Reduce learning-rate on plateau}
+We couple the scheduler with a model metric and when the improvement of the metric stalls for a predefined period of time, the learning rate is decreased.
+The scheduler is not heavily reliant on the setting of it's hyper-parameters, making it for most of the developers a go-to choice to start from.
+
+\subsection{Image augmentations}
+
+
 \section{Arificial neural network (ANN)}
 Arificial neural networks are inspired by the mechanisms of human brain. Human neuron cells are in ANN replaced replaced by artificial neurons, which are difined as:
 \begin{align}
@@ -61,7 +185,7 @@ Even thought, there is broad variety of architectures for object detection, the 
 The first trasnformer based model was Vision Transformer (ViT). It was capable of image classification only and it is composed of multiple encoder blocks stacked on top of each other. Those blocks are same as those used NLP task. On top encoder blocks is attached multi-layer perceptron (MLP) head, which outputs values for each class. Those can be converted into corresponding probabilities by softmax-layer. Input into ViT are $16 \times 16$ image patches lineary projected into vectors, the whole architecture is shown in figure
 \begin{figure}
     \centering
-    \includegraphics{images/vision_transformer.png}
+    \includegraphics[width=\linewidth]{images/vision_transformer.png}
     \caption{Architecture of ViT, source \cite{Dosovitskiy2020}}
     \label{fig:vision_transformer}
 \end{figure}
@@ -79,6 +203,12 @@ The purpose of bacbkones is transformation of input image into feature maps. For
 
 \subsubsection{Neck}
 Neck is responsible for merging of features from the backbone. This is not straight-forward task, since we usually use features from different layers of the backbone. This allows us to get semanticaly strong features from deeper layers as well as more detailed information from earlier ones. Common neck architectures are feature pyramid network or PANet.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/necks_architecture.png}
+    \caption{Architecture of different necks for feature fussion, source \cite{Tan2019}}
+    \label{fig:necks}
+\end{figure}
 
 \subsubsection{Head}
 
@@ -127,3 +257,16 @@ Swin transformer architecture overcomes limitations of ViT, which is working wit
 \subsection{YOLO family}
 
 \subsection{EfficientDet}
+EfficientDet tries to achieve the same goal as EfficientNet: Propose as computationally effiective architecure for object detection, that would be scalable. Since efficient backbone architecture was alrady proposed \cite{Tan2019a}, they focus mainly on featue fussion from multiple layers. Based on the study of FPN, PANet and NAS-FPN Bidirectional feature pyramid network (BiFPN) was proposed as the most computationally effective neck architecture \cite{Tan2019}, it consists of multiple BiFPN blocks stacked on top of each other. The count of those blocks is dependent on the size of used backbone.
+
+\subsection{Models for image segmentation}
+\subsubsection{U-Net}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/U-Net.png}
+    \caption{Architecture of U-Net model, source \cite{Ronneberger2015}}
+    \label{fig:unet_architecture}
+\end{figure}
+U-Net is an architecture for semantic segmentation. It has an encoder-decoder structure as can be seen in figure \ref{fig:unet_architecture}. The decoder extracts feature maps from the input image with increasing semnatical stregth throught the layers. In the middle of the network is so called bottle-neck layer with the strongest semnatical information about the image, but lacking information about high-resolution details of the input image. Hence when the information from bottle neck is decoded by the decoder, it is combined with information from shallower layer, which contains information about image details, required to obtain precise dense prediction.
+\newline
+The decoder proposed by Rennenberger et al. \cite{Ronneberger2015} can be replaced by general-purpose backbone, as demonstrated by Baheti et al. \cite{Baheti2020}, who used EfficientNet as the backbone.
