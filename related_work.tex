@@ -21,9 +21,18 @@ In this section we would briefly introduce publications, that approached caries 
 
 \subsection{Dental caries segmentation}
 There are publications, where the authors approached the task of caries localization as semantic segmentation. Advantage of this approach is pixel precision of the lesion detection. On the other hand creation of similar dataset is very time-consuming. Example of dataset annotated in pixel-wise manner can be seen in figure \ref{fig:segmentation_lit} as well as predictions of a model proposed by Cantu \cite{Cantu2020}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/segmentation_bitewing_rich.png}
+    \caption{Annotated bitewing radigraph and the same image post-processed, source \cite{Lee2021}}
+    \label{fig:bitewing_dense}
+\end{figure}
+
 \begin{itemize}
     \item{Cantu et al. \cite{Cantu2020}} created dataset of 3686 bitewing images. In each image, polygonal-shaped box was drawn over caries independently by three dentists. In the case of unanimous decision, the annotation was kept in the datset, otherwise fourth dentist reviewed the annotation and decided if it should be kept or deleted. Cantu et al. used U-net model with EfficientNet B5 as a backbone. The model was evaluated by per pixel and its performance was compared against 7 dentists, outperforming their mean performance in every metric.
     \item{Lian et al. \cite{Lian2021}} had the same apprach as Cantu, but on panoramatic images. In comparison with Cantu, following the segmentation, they cropped region of interest around the segmented lesion and classified the caries into one of four categroies as described in section . They achieved IOU score of 0.785 on the segmentation task. In comparison, the best performing dentist achived IOU of 0.717. In the classification task, the model outperformed the mean dentists performance.
+    \item {Lee at al. \cite{Lee2021}} approached the problem in an unique way. In the daset, consisting of 304 bitewing radiographs, they densely annotatated each image by rectagles, not only denoting the position of dental carries, but enamel, denting, pulp, restorations and gutta percha as well. Result of this annotation can be seen in image \ref{fig:bitewing_dense}. They used two independent U-net models to predict position of dental caries and remaining structures in the image. Output of both models was post-processed and merged together. Even though, the model achieved F1-score of 0.641, which is low compoared to other publications. Predictions of the model helped dentists to improve their sensitivity ratio by 7 - 10\%.
 \end{itemize}
 
 \begin{figure}
