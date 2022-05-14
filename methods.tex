@@ -46,3 +46,29 @@ The initial value of the learning rate was set to $1e^{-5}$ and reduced on plate
 The training was halted when the validation error did not decrease over the course of 10 epochs, but not earlier than after 50 epochs from the beginning of the training.
 
 
+
+
+\section{Model ensembling}
+
+For every model in the table TODO we loaded weights used to obtain the results in the table and generated predictions on train, test and validation part of the dataset. When predicting, each image was rescaled to size required by corresponding model and normalized. This lead to predictions beeing in the space of the transformed image. Therefore we used inverse transformation to the rescaling, to obtain coordinates in the original image. This allows us to combine predictions regardless the model architecture.
+Predictions were saved into file named predictions\_\{model architecture\}\_\{model backbone\}.json.
+
+foo
+
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}[language=json, numbers=none]
+   {"filename" : {
+       "bboxes" : [[x1, y1, x2, y2],...],
+       "labels": [l1, l2,...],
+       "scores": [s1, s2,...],
+       "stage" : "test" / "val" / "train"
+       },
+    "filename2" : {...},
+    ...
+   }
+\end{lstlisting}
+    \caption{Structure of the data in .json file used to store model predictions}
+    \label{fig:predictions_json}
+\end{figure}

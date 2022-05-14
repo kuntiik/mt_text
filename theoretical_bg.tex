@@ -270,3 +270,50 @@ EfficientDet tries to achieve the same goal as EfficientNet: Propose as computat
 U-Net is an architecture for semantic segmentation. It has an encoder-decoder structure as can be seen in figure \ref{fig:unet_architecture}. The decoder extracts feature maps from the input image with increasing semnatical stregth throught the layers. In the middle of the network is so called bottle-neck layer with the strongest semnatical information about the image, but lacking information about high-resolution details of the input image. Hence when the information from bottle neck is decoded by the decoder, it is combined with information from shallower layer, which contains information about image details, required to obtain precise dense prediction.
 \newline
 The decoder proposed by Rennenberger et al. \cite{Ronneberger2015} can be replaced by general-purpose backbone, as demonstrated by Baheti et al. \cite{Baheti2020}, who used EfficientNet as the backbone.
+
+\section{Model ensembling in object detection}
+
+Let say we have $M$ different models, each of them prediction $\mathcal{B}_i = \left\{b_1,...,b_N \right\} $ bounding boxes and $\mathcal{S}_i = \left\{ s_1,...,s_N \right\} $ confidence values for a given image corresponding to a single class. We merge predictions of all models together, it is possible to use weights $\mathit{W} = \{w_1,...,w_M \}$ to express our prior belief in given model. Set of all boxes $\mathcal{B}$ and confidence scores $\mathcal{S}$ is thus obtained by:
+\begin{align}
+    \mathcal{B} = \bigcup_{i=1}^{M} B_i \quad, \mathcal{S} = \bigcup_{i=1}^{M} S_i * w_i / F,
+\end{align}
+where F is optional normalization constant. It's only purpose is to ensure, that confidence score will be less than 1 after the ensembling. Commonly used value for F is $\sum_{i=1}^M w_i$. After obtaining sets $\mathcal{B}$ and $\mathcal{S}$ we post-process them by one of the following algorithms: Non-maximal supression, soft non-maximal supression, non-maximum weighted supression or weighted boxes fusion.
+
+\subsubsection{Non-maximal supression (NMS)}
+In non-maximal supression we first sort all boxes $\mathcal{B}$ by their confidence $\mathcal{S}$ in descending order. We go thru the sorted set $\mathcal{B}$ and check if any other box b in $\mathcal{B}$ has overlap greater than predefined threshold $N_t$, in that case remove box $b$ from $\mathcal{B}$. More details regrading NMS algorithm are in the pseudocode, which is in figure \ref{alg:nms}.
+\begin{figure}
+    \centering
+    \includegraphics{images/nms_algo.png}
+    \caption{Pseudo code of NMS and soft-NMS, source \cite{Bodla2017}}
+    \label{alg:nms}
+\end{figure}
+
+\subsubsection{Soft non-maximal supression {Soft-NMS}}
+Soft non-maximal supression extends the NMS algorithm by possibility to keep overlaping predictions if their confidences are high. Insted of removing boxes with overlap, we decrease their confidence value by the follwing Gaussian penalty function:
+\begin{align}
+    s_i = s_i e^{-\frac{\text{iou}\left( \mathcal{M}, b_i \right)^2}{\sigma}}, \forall b_i \notin \mathcal{D}
+\end{align}
+where $\mathcal{M}$ is currently processed bounding box and $\mathcal{D}$ is set of already processed boxes. After processing all boxes, those with $s_i < T$ are removed, where $T$ is confidence cut-off threshold \cite{Bodla2017}.
+
+\subsubsection{Non-maximum weighted superssion (NMW)}
+Non-maximum weighted supression does not remove boxes in the case of overlap, but merges them togehter by following formula:
+\begin{align}
+    \mathcal{M} & = \frac{\sum_{i=1}^n \omega_i \times b_i}{\sum_{i=1}^n \omega_i} \\
+    \omega_i    & = s_i \times \text{iou} \left( b_i, b_{ argmax_i s_i} \right)
+\end{align}
+where $\mathcal{M}$ is the merged bounding box, for which no confidence value is computed \cite{Zhou2017,Solovyev2019}.
+
+\subsubsection{Weighted boxes fusion (WBF)}
+Weighted boxes fusion is combining boxes similarly as NMW. The main difference are: Iterative approach to the fusion, outputing confidence for the merged box and awarnes of number of models, which contributed to the prediction.
+The steps of WBF are as follows:
+\begin{enumerate}
+    \item Sort $\mathcal{B}$ by $\mathcal{S}$ as in NMS.
+    \item Declare empty lists \boldmath{L} and \boldmath{F}, they would be used to store boxes clusters and merged box respectively
+    \item Iterate thru $\mathcal{B}$ and if there is a box in \boldmath{F} for which $IOU > \mathbf{Threshold}$ add the box from $\mathcal{B}$ to list \boldmath{L} on position corresponding to position of the matched box in \boldmath{F}. If not match is found add it to the end of \boldmath{L}.
+    \item Recalculate box coordinates $\mathcal{M}$ and confidence $c$ in the list \boldmath{F} on the position where box was added to \boldmath{L} by formulas \ref{eq:wbf1}.
+    \item After processing all boxes from $\mathcal{B}$ adjust confidence scores by formula \ref{eq:wbf2}, where $T$ is number of contributing boxes and $M$ is number of models used for ensembling.
+\end{enumerate}
+\begin{align}
+    \mathcal{M} & = \frac{\sum_{i=1}^n c_i \times b_i}{\sum_{i=1}^n c_i} ,\quad c=\frac{\sum_{i=1}^{T}c_i}{T} \label{eq:wbf1} \\
+    c           & = c * \frac{T}{M} \label{eq:wbf2}
+\end{align}
