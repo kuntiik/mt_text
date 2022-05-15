@@ -46,6 +46,33 @@ The initial value of the learning rate was set to $1e^{-5}$ and reduced on plate
 The training was halted when the validation error did not decrease over the course of 10 epochs, but not earlier than after 50 epochs from the beginning of the training.
 
 
+\section{Dental-restorations segmentation segmentation}
+\subsection{Non-deeplearning approach}
+We decided to test the approach, that was proposed by Abdalla-Aslan and Yeshua \cite{AbdallaAslan2020,Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means, that we defined a pipeline of image processing operations, where we:
+\begin{itemize}
+    \item Threshold the image: We tried Otsu's thresholding method, Gaussian and mean adaptive thresholding methods where we tested different kernel sizes $K_t$ and threshold values $T$.
+    \item Removed predicted pixels at the border of X-ray image: Bitewing X-ray images usually do net have a ractangular shape as can be seen in \ref{fig:bitewing_sample}. This is a cause for hight contrast at the border of radigraph, which gets detected by adaptive thresholding methods. We therefore detect the image pading and morphologically dilate it by square kernel of size $K_b \times K_b$. Border pixels obtained by dilation are remoed from the thresholded image.
+    \item Morphological openning: To filter out falsely detected regions we apply morphological openning, for this purpose we use square-shaped kernel with size $K_o$.
+\end{itemize}
+
+The pipeline deffined above has four hyper-parameters to be tuned. We therefore define a grid-shaped search space as can be seen in table \ref{tab:hyper_param_segmentation}. The dataset was split into two equaly-sized parts, called tune and test. For each set of hyer-parameters we evalueted the IOU metric on each image of the tune part of the dataset. We selected best hyper-parametrs based on the average IOU value and used those to evaluate on the test-part of the dataset.
+
+as can be seen in table \ref{tab:hyper_param_segmentation}
+\begin{table}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Hyper-parameter & minimal value & maximal value & step \\ \hline
+        $K_t$           & 3             & 153           & 10   \\ \hline
+        $T$             & 1             & 11            & 2    \\ \hline
+        $K_b$           & 41            & 101           & 20   \\ \hline
+        $K_o$           & 1             & 51            & 5    \\ \hline
+    \end{tabular}
+    \caption{Hyper-parameter search space for restorations segmentation pipeline}
+    \label{tab:hyper_param_segmentation}
+\end{table}
+
+\subsection{Deep-learning approach}
+
 
 
 \section{Model ensembling}
@@ -54,7 +81,12 @@ For every model in the table TODO we loaded weights used to obtain the results i
 Predictions were saved into file named predictions\_\{model architecture\}\_\{model backbone\}.json.
 
 foo
-
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/ensemble_search_diag.drawio.pdf}
+    \caption{Schematics of the search of hyper-parametrs and weights for ensembling}
+    \label{fig:diag:ense_search}
+\end{figure}
 
 \begin{figure}
     \centering
