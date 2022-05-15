@@ -72,6 +72,10 @@ as can be seen in table \ref{tab:hyper_param_segmentation}
 \end{table}
 
 \subsection{Deep-learning approach}
+The dataset was splited in training, validation and test part with 70:15:15 ratio. For the training part of the dataset we used image augmentations described in TODO. For the validation and test part of the dataset we only normalized the image by TODO. 
+We used default U-Net architecture model with depth 5. As a loss function we used binary cross-entropy. Learning rate with value of 1e-2 was used and reduce on plateu scheduler was used. The model was trained for 50 epochs and at the end we selected the best model according to IOU on the validation dataset.
+
+We used post-processing methods on the best-performing model. 
 
 
 
@@ -80,7 +84,34 @@ as can be seen in table \ref{tab:hyper_param_segmentation}
 For every model in the table TODO we loaded weights used to obtain the results in the table and generated predictions on train, test and validation part of the dataset. When predicting, each image was rescaled to size required by corresponding model and normalized. This lead to predictions beeing in the space of the transformed image. Therefore we used inverse transformation to the rescaling, to obtain coordinates in the original image. This allows us to combine predictions regardless the model architecture.
 Predictions were saved into file named predictions\_\{model architecture\}\_\{model backbone\}.json.
 
-foo
+Confidence values maximizing F1 score differ across models $m$, we therefore normalize them by the following formula:
+\begin{align}
+    s_{j,i} = \frac{s_{j,i} \max_l S_l}{  S_j}, \quad j \in \{ 1,...,m\}, i \in {1,...,n_j}
+\end{align}
+
+We perform ensembling by the approach described in section TODO. We firstly tryed to estimate weights for ensembling from resutls of individual models and as threshold value $T$ and $sigma$ selected values proposed by authors of the ensembling method.
+
+We performed grid search over hyper-paramers in to following manner: Defined parameter search space, which can be seen in talbe \ref{tab:ensembling_search_space}. We evaluated $AP@.5$ on every image of the validation datasaet and averaged those values. The best hyper-parameters were selected and we used them for evaluation on test dataset. The whole worflow is shown in figure \ref{fig:diag:ense_search}.
+
+\begin{table}
+   \centering
+   \begin{tabular}{c|c}
+        Parameter & minimal value & maximal value & step \\ \hline
+        Model weight &  x & x & x \\ \hline
+        IOU $T$ & x & x & x \\ \hline
+        Sigma\footnote{Soft non-maximal superssion only } & x & x & x \\ \hline
+   \end{tabular}
+   \caption{Hyper parameter search-space for model ensembling}
+   \label{tab:ensembling_search_space}
+\end{table}
+
+We changed the equation TODO to:
+\begin{align}
+    a = foo
+\end{align}
+We tried perform the grid-search agin, but the number of parameters grew significantly, so that grid-search became commputationaly untractable. We therefore used optuna optimization library to perform this task
+
+We used results from table TODO and normalized all confidence values o
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/ensemble_search_diag.drawio.pdf}
