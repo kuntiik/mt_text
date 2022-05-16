@@ -72,7 +72,7 @@ The project is divided into two folders: configurations and source (src). The fo
 Models are implementations of one of the architectures described in the section TODO. They can be either fully implemented by ourselves or we can rely on open-source libraries. In that case, we need to implement a function that transforms the data into the format required by the third-party model.
 
 \subsection{Modules}
-Modules is a wrapper around the model based on Pytroch-Lightning modules. In modules, we take care of the following:
+Modules is a wrapper around the model based on Pytroch-Lightning modules \cite{falcon2019pytorch}. In modules, we take care of the following:
 \begin{itemize}
     \item Training and validation loop
     \item Initialization of optimizer
@@ -100,15 +100,15 @@ Trainer defines properties of the training such as the number of GPUS used for t
 Callbacks add capabilities to the training pipeline without changing any code. Typical ones that we used were: Definition of stopping criteria, adjusting policy for saving weights of the model, or saving images with their predictions during the training.
 
 \subsection{Logging}
-A logger is software capable of storing and visualizing logged values. In the beginning, we used Tensorboard TODO, but soon we switched to Weights and Biase TODO and used them throughout the rest of the thesis.
+A logger is software capable of storing and visualizing logged values. In the beginning, we used Tensorboard TODO, but soon we switched to Weights and Biases \cite{wandb} and used them throughout the rest of the thesis.
 
 \section{Aditional open-source software used}
 Throughout the project, we used the libraries mentioned above as well as the following:
 \begin{itemize}
-    \item OpenCV TODO  computer vision library during the segmentation of dental restorations for operations such as: Adaptive thresholding, morphological operations, etc.
-    \item Computer vision library Kornia TODO was used to quickly perform morphological operations on PyTorch tensors.
-    \item MMDetection  provides an implementation of multiple object detection models. We used their implementation of swin transformers, RetinaNet and Faster-RCNN
-    \item During the computation of metrics, we used pycocotools-official implementation of MS COCO metrics, which had to be significantly modified to provide us capabilities we required.
-    \item For the purpose of visualizing predictions we used Voxel Fiftyone \cite{moore2020fiftyone}. The program can be run on a self-hosted server. We used this to share predictions of the model with MDDr. Tichý, who was thus able to asses those and decide if the dataset conations any errorneus annotations
-    \item For model ensembling we used the methods implented by author of Weighted boxes fussion. We further enhanced capabilities of their methods.
+    \item OpenCV \cite{opencv_library}  computer vision library during the segmentation of dental restorations for operations such as: Adaptive thresholding, morphological operations, etc.
+    \item Computer vision library Kornia \cite{eriba2019kornia} was used to quickly perform morphological operations on PyTorch tensors.
+    \item MMDetection \cite{mmdetection} provides an implementation of multiple object detection models. We used their implementation of swin transformers, RetinaNet and Faster-RCNN
+    \item During the computation of metrics, we used pycocotools-official \cite{pycocotools} implementation of MS COCO metrics, which had to be significantly modified to provide us capabilities we required.
+    \item For the purpose of visualizing predictions we used Voxel Fiftyone \cite{moorefiftyone}. The program can be run on a self-hosted server. We used this to share predictions of the model with MDDr. Tichý, who was thus able to asses those and decide if the dataset conations any errorneus annotations
+    \item For model ensembling we used the methods implented by author of Weighted boxes fussion \cite{Solovyev2019}. We further enhanced capabilities of their methods.
 \end{itemize}
