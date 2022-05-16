@@ -1,5 +1,5 @@
 \chapter{Methods}
-\label{chapter:methods}
+\%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22%26lt%3Bfont%20color%3D%26quot%3B%23ffffff%26quot%3B%26gt%3B%26lt%3Bb%26gt%3Btrain%26lt%3Bbr%26gt%3B%26lt%3B%2Fb%26gt%3B%26lt%3B%2Ffont%26gt%3B%22%20style%3D%22shape%3Dnote%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3BbackgroundOutline%3D1%3BdarkOpacity%3D0.05%3BfillColor%3D%234D4D4D%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%22340%22%20y%3D%22315%22%20width%3D%2280%22%20height%3D%22100%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3Elabel{chapter:methods}
 \section{Dataset}
 The dataset was created by Dr. Tichy and his team using the Computer Vision Annotation Tool (CVAT). It has been extended and improved multiple times over the course of this work, and there is still ongoing work. At the time of writing this report, it consisted of 2599 bitewing X-ray images with 4575 annotations of tooth decay. Out of those, there are 890 images without any decay. The distribution of dental caries per image is depicted in the figure \ref{fig:hist_caries_per_img}. For clarity reasons, we omitted six images that contained more than ten caries. From the histogram on the figure \ref{fig:hist_caries_dim}, we observe that most caries have dimensions between 10 and 75 pixels. However, there are outliers as big as 380 pixels per dimension. This diversity is increasing the difficulty of the task.
 
@@ -72,10 +72,10 @@ as can be seen in table \ref{tab:hyper_param_segmentation}
 \end{table}
 
 \subsection{Deep-learning approach}
-The dataset was splited in training, validation and test part with 70:15:15 ratio. For the training part of the dataset we used image augmentations described in TODO. For the validation and test part of the dataset we only normalized the image by TODO. 
+The dataset was splited in training, validation and test part with 70:15:15 ratio. For the training part of the dataset we used image augmentations described in TODO. For the validation and test part of the dataset we only normalized the image by TODO.
 We used default U-Net architecture model with depth 5. As a loss function we used binary cross-entropy. Learning rate with value of 1e-2 was used and reduce on plateu scheduler was used. The model was trained for 50 epochs and at the end we selected the best model according to IOU on the validation dataset.
 
-We used post-processing methods on the best-performing model. 
+We used post-processing methods on the best-performing model.
 
 
 
@@ -94,22 +94,34 @@ We perform ensembling by the approach described in section TODO. We firstly trye
 We performed grid search over hyper-paramers in to following manner: Defined parameter search space, which can be seen in talbe \ref{tab:ensembling_search_space}. We evaluated $AP@.5$ on every image of the validation datasaet and averaged those values. The best hyper-parameters were selected and we used them for evaluation on test dataset. The whole worflow is shown in figure \ref{fig:diag:ense_search}.
 
 \begin{table}
-   \centering
-   \begin{tabular}{c|c}
-        Parameter & minimal value & maximal value & step \\ \hline
-        Model weight &  x & x & x \\ \hline
-        IOU $T$ & x & x & x \\ \hline
-        Sigma\footnote{Soft non-maximal superssion only } & x & x & x \\ \hline
-   \end{tabular}
-   \caption{Hyper parameter search-space for model ensembling}
-   \label{tab:ensembling_search_space}
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        Parameter                                         & minimal value & maximal value & step \\ \hline
+        Model weight                                      & x             & x             & x    \\ \hline
+        IOU $T$                                           & x             & x             & x    \\ \hline
+        Sigma\footnote{Soft non-maximal superssion only } & x             & x             & x    \\ \hline
+    \end{tabular}
+    \caption{Hyper parameter search-space for model ensembling}
+    \label{tab:ensembling_search_space}
 \end{table}
 
 We changed the equation TODO to:
 \begin{align}
     a = foo
 \end{align}
-We tried perform the grid-search agin, but the number of parameters grew significantly, so that grid-search became commputationaly untractable. We therefore used optuna optimization library to perform this task
+We performed the grid-search again, but the number of parameters grew significantly, so that grid-search became commputationaly untractable. We therefore used optuna optimization library to perform this task. The search space is in table \ref{tab:ensembling_search_space_area}, please note, that the search space became continuous in contrast to the previous.
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|}
+        Parameter                                         & minimal value & maximal value \\ \hline
+        Model weight (small, medium, large)               & 0.01          & 1             \\ \hline
+        IOU $T$                                           & 0.05          & 1             \\ \hline
+        Sigma\footnote{Soft non-maximal superssion only } & x             & x             \\ \hline
+    \end{tabular}
+    \caption{Hyper parameter search-space for model ensembling}
+    \label{tab:ensembling_search_space_area}
+\end{table}
 
 We used results from table TODO and normalized all confidence values o
 \begin{figure}

@@ -95,15 +95,66 @@ Once again, we kept the same setting and changed only the size to which images a
 % \end{figure}
 \begin{figure}
     \begin{floatrow}[2]
-        % \ffigbox[\FBwidth]{\caption{Marie \v{C}erminova, known as Toyen: \emph{She sleeps} (1937)}}%
-        % {\includegraphics{images/img_size_dependency.pdf}}\qquad
         \includegraphics[width=0.5\linewidth]{images/img_size_dependency.pdf}\qquad
-        % \ffigbox[\FBwidth]{\caption{Piero di Cosimo: \emph{Portrait of Simonetta Vespucci} (ca 1480)}}%
-        % {\includegraphics{images/training_set_dependency.pdf}}
         \includegraphics[width=0.5\linewidth]{images/img_size_dependency.pdf}\qquad
     \end{floatrow}
 \end{figure}
 
-\subsection{Reduced training dataset}
-We fixed the validation and test dataset and changed the number of samples in the training dataset. The dependency of $AP$ on the number of training samples is depicted in figure \ref{fig:training_set_sizes}.
+\section{Ensembling}
+\subsection{Grid search results}
 
+% \subsection{Reduced training dataset}
+% We fixed the validation and test dataset and changed the number of samples in the training dataset. The dependency of $AP$ on the number of training samples is depicted in figure \ref{fig:training_set_sizes}.
+
+
+\begin{table}
+    \begin{tabular}{c||c|c|c|c|c|c}
+        Method & FRCNN-R50      & YOLOV5-M       & RET-SWINT      & FRCNN-R101     & $T$  & $\sigma$ \\ \hline
+        nms    & 1              & 0.4            & 0.4            & 0.85           & 0.6  &          \\ \hline
+        snms   & 1              & 0.12           & 0.12           & 0.12           & 0.7  & 0.8      \\ \hline
+        nwm    & 0.85           & 0.25           & 0.70           & 0.85           & 0.45 &          \\ \hline
+        wbf    & 1              & 0.4            & 0.85           & 0.85           & 0.65 &          \\ \hline
+        wbf-A  & 0.94/0.77/0.84 & 0.31/0.47/0.31 & 0.98/0.85/0.88 & 0.72/0.69/0.91 & 0.64 &          \\ \hline
+    \end{tabular}
+    \caption{}
+\end{table}
+
+
+\begin{table}
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c|c}
+
+        method & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline \hline
+        nms    & 0.346 & 0.818   & 0.735   & 0.28     & 0.618     & 0.775     & 0.829     \\ \hline
+        snms   & 0.348 & 0.807   & 0.722   & 0.295    & 0.609     & 0.758     & 0.819     \\ \hline
+        nwm    & 0.364 & 0.829   & 0.759   & 0.302    & 0.641     & 0.802     & 0.854     \\ \hline
+        wbf    & 0.378 & 0.832   & 0.77    & 0.323    & 0.663     & 0.807     & 0.875     \\ \hline
+        wbf-A  & 0.376 & 0.832   & 0.768   & 0.318    & 0.651     & 0.806     & 0.875     \\ \hline
+    \end{tabular}
+\end{table}
+
+
+\begin{table}
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c|c}
+        enms  & 0.546 & 0.91  & 0.971 & 0.522 & 0.949 & 0.98  & 0.98  \\ \hline
+        snms  & 0.584 & 0.888 & 0.951 & 0.603 & 0.912 & 0.965 & 0.965 \\ \hline
+        nwm   & 0.526 & 0.913 & 0.941 & 0.513 & 0.892 & 0.959 & 0.959 \\ \hline
+        wbf   & 0.573 & 0.918 & 0.975 & 0.569 & 0.956 & 0.981 & 0.981 \\ \hline
+        wbf-A & 0.572 & 0.92  & 0.974 & 0.566 & 0.956 & 0.98  & 0.98  \\ \hline
+    \end{tabular}
+\end{table}
+
+
+\begin{table}
+    \begin{tabular}{c||c|c|c|c}
+        Model - backbone & Precision & Recall & F-score & Confidence threshold \\ \hline \hline
+        nms              & 0.708     & 0.68   & 0.694   & 0.284                \\ \hline
+        snms             & 0.679     & 0.7    & 0.689   & 0.489                \\ \hline
+        nwm              & 0.713     & 0.71   & 0.712   & 0.792                \\ \hline
+        wbf              & 0.732     & 0.7    & 0.715   & 0.594                \\ \hline
+        wbf-A            & 0.745     & 0.69   & 0.716   & 0.201                \\ \hline
+    \end{tabular}
+    \caption{Precision, recall, and F-score based on the confidence threshold for different ensembling methods}
+    \label{tab:ensembling_prf}
+\end{table}

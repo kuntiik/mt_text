@@ -1,21 +1,47 @@
 \chapter{Theoretical background}
-\section{Data format in object detection}
-In object detection, the goal is to locate and recognize objects of interest in the given image. The ground truth objects are represented by bounding boxes and categories. The bounding box is a rectangle that specifies the position of an object in the image and thus can be fully described by four parameters. When the model tries to localize the location of an object, it outputs a bounding box, category, and number between 0 and 1 called the confidence. Sometimes we can see a term score instead of confidence, but the meaning remains the same: certainty of the network regarding the particular prediction described by the bounding box and category.
+\section{Computer vision tasks}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/computer_vision_tasks.png}
+    \caption{From the left: semantic segmentation, object localization, object detection, instance segmentation}
+    \label{fig:computer_vision_tasks}
+\end{figure}
+\subsection{Classification}
+Let say we have an image $\mathbf{x}$, in classification task, our goal is to assign one of $n$ possible classes to the image:
+\begin{align}
+    \hat{y} = f_\theta\left(\mathbf{x} \right),
+\end{align}
+Where $f$ is a mapping, sometimes called a model, and $\theta$ are model parameters. If it holds that $\hat{y}=y$, where $y$ is a true class of the image $\mathbf{x}$, the classification is considered to be correct.
+It is possible to output $\mathbf{p} \in \mathbb{R}^n$ instead of $\hat{y}$, where $p_i \in \mathbf{p}$ is probability of $i = y$, modeled by $f_\theta$.
 
-The four parameters used to describe a bounding box can be selected in multiple ways. This ambiguity led to disjoint notation. The most widespread are as follows.
+\subsection{Semantic segmentation}
+For an input image $x \in \mathbb{R}^{n \times m}$ the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $y{_i,j}$ is predicted class of pixel $i,j$ in the image $\mathbf{x}$. A sample of semantic segmentation output can be seen in figure \ref{fig:computer_vision_tasks}.
+
+\subsection{Object detection}
+\label{subsec:object_detection}
+In object detection, the goal is to locate and recognize objects of interest in the image $\mathbf{x}$. A rectangle and a category represent the ground truth objects. Model returns $\mathbf{Y} \in \mathbb{R}^{n \times 6}$ as predictions for the model. Each row of $\mathbf{Y}$ consists of four numbers, which describe a rectangle, the category of the object inside the rectangle and a number in the range from 0 to 1 called the confidence. In literature, we can see term score instead of confidence, but the meaning remains the same: Certainty of the network regarding the particular prediction described by the bounding box and category. Please note that the confidence of predictions does not sum to one, in other words, we are not talking about probabilities since multiple detections per image can correspond to ground truth.
+
+\subsection{Instance segmentation}
+Instance segmentation is similar task to semantic segmantation with the difference, that two objects of the same category would have different ground truth values. If we have $\mathcal{O}_1, \mathcal{O}_2$, where $\mathcal{O}_i \subset \mathbf{x}$ are pixels of object $i$ in image $\mathbf{x}$. Then
+\begin{align}
+    o_{1_i} \neq o_{2_i} \quad \text{for} \quad o_{1_i} \in \mathcal{O}_1, o_{2_i} \in \mathcal{O}_2;\forall i
+\end{align}
+
+\section{Data format in object detection}
+As described in section \ref{subsec:object_detection}, the position of an object is denoted by a bounding box.  The four parameters used to describe a bounding box can be selected in multiple ways. This ambiguity led to disjoint notation. The most widespread are as follows.
 \subsection{PASCAL VOC}
 The format was introduced together with the PASCAL VOC dataset, which was the most popular dataset for object detection algorithm benchmarking in 2010. The bounding box is described by points $p_1(x,y),p_2(x,y)$ located in the top-left and bottom right corner. The coordinates range from 0 to image width/height in pixels. All the annotations are stored into single XML file \cite{Everingham2009,Padilla2021}.
 \subsection{COCO}
-COCO data format is represented by a single JSON file containing all bounding boxes of the dataset. The boxes are described by top-left corner point $p(x,y)$ and the width and height of the box. Coordinated and box dimensions are again in the range 0 to image dimensions. In MS COCO, the annotation can be accompanied by additional information to solve the task as an instance segmentation problem.
+COCO data format is represented by a single JSON file containing all bounding boxes of the dataset. The boxes are described by the top-left corner point $p(x,y)$ and the width and height of the box. Coordinated and box dimensions are again in the range 0 to image dimensions. In MS COCO, the annotation can be accompanied by additional information to solve the task as an instance segmentation problem.
 \subsection{YOLO}
 This format was introduced together with the first YOLO architecture \cite{Redmon2015}, and this annotation style is still persistent whenever working with the YOLO-family neural networks.
 The annotations are divided into multiple TXT files in this format. Each of them contains annotations for a single image.
-The bounding box is described similarly to the COCO dataset, but the coordinates are normalized to be in the 0 to 1 range. The advantage of this approach is that when image dimensions are scaled, the annotations do not have to be modified \cite{Redmon2015,Padilla2021}.
+The bounding box is described similarly to the COCO dataset, but the coordinates are normalized to be in the 0 to 1 range. The advantage of this approach is that when image dimensions are scaled, the annotations do not have to be modified \cite{Redmon2015, Padilla2021}.
 
 
 \section{Metrics}
 \subsection{Intersection over union (IOU) }
-Intersection over union, also known as Jaccard index, is defined as follows: Let $B_{gt}$ and $B_p$ be a ground truth and predicted bounding box, the Jaccard index $J$ is calculated as
+Intersection over union, also known as Jaccard index, is defined as follows: Let $B_{gt}$ and $B_p$ be a ground truth and predicted bounding box, and the Jaccard index $J$ is calculated as
 \begin{align}
     IOU = J(B_p, B_{gt}) = \frac{area(B_p \bigcap B_{gt})}{area(B_p \bigcup B_{gt})}.
     \label{eq:iou}
@@ -45,6 +71,7 @@ If there is a ground truth bounding box for which there are no given detection v
     Recall(\tau, \gamma) = \frac{\sum_{n=1}^S TP_n(\tau, \gamma)}{\sum_{n=1}^S TP_n(\tau, \gamma) + \sum_{n=1}^{G-S} FN_n(\tau, \gamma)}.
 \end{align}
 Since the value of $FN(\gamma)$ increases with the growing value of $\gamma$, we see that recall is the decreasing function of $\gamma$.
+
 \subsubsection{F1 score}
 The value of the F1 score is computed as the harmonic mean of precision and recall.
 \begin{align}
@@ -77,6 +104,12 @@ In the subsections, \ref{subsec:precision} and \ref{subsec:recall}, we said that
 
 The letters S, M,  and L in the subscript, such as $AP_S$ denoted that the metrics is calculated for a subset of ground truth predictions only. Taking into the consideration only bounding boxes with area $\leq 32^2$ pixels, $32^2 \le $ area $ \leq 96^2$ pixels and area $> 96^2$ pixels
 
+\subsection{Mean avarage recall (mAR)}
+MS COCO uses little bit different definition of recall, than the one described in section \ref{subsec:recall}. In the MS COCO case, they sort predictions in descending order by their confidence score and take only top $n$ of those. After that, they callculate how many ground
+
+TODO
+
+
 \begin{figure}
     \includegraphics[width = \linewidth]{images/PR-curve.png}
     \caption{Normal and interpolated precision-recall curve, source \cite{Padilla2020}}
@@ -84,17 +117,228 @@ The letters S, M,  and L in the subscript, such as $AP_S$ denoted that the metri
 \end{figure}
 
 
+TODO metrics for segmentation
+\subsubsection{Dice Loss}
+TODO
+
+\subsubsection{Cross-Entropy loss}
+TODO
+
 
 \section{Optimization}
+\subsection{Optimizers}
+\subsubsection{Adam}
+TODO
+\subsubsection{AdamW}
+TODO
 THIS SECTION IS UNFINISHED
+
 \subsection{Learning rate schedulers}
 Learning rate is considered to be one of the most, if not the most important parameter, in deep learning. It is usually beneficial to change the learning rate during the course of training. This can be done either manually or can be automated by an algorithm that increases or decreases the learning rate based on the set of predefined rules. This algorithm is called learning rate scheduler.
 
 \subsubsection{Reduce learning-rate on plateau}
 We couple the scheduler with a model metric and when the improvement of the metric stalls for a predefined period of time, the learning rate is decreased.
 The scheduler is not heavily reliant on the setting of it's hyper-parameters, making it for most of the developers a go-to choice to start from.
+\subsubsection{Cosine }
+TODO
 
 \subsection{Image augmentations}
 
 
+\section{Arificial neural network (ANN)}
+Arificial neural networks are inspired by the mechanisms of human brain. Human neuron cells are in ANN replaced replaced by artificial neurons, which are difined as:
+\begin{align}
+    y = f \left( \boldsymbol{w}^T \boldsymbol{x}  + b \right).
+\end{align}
+Where $\boldsymbol{x}$ is vector of inptus, $\boldsymbol{w}$ are weights and $b$ is bias. Symbol $f$ denotes an activation funtion f : $\mathbb{R} \rightarrow \mathbb{R}$. The artificial neuron proposed by Frank Rosenblatt in the perceptron algorithm used step funtion \cite{Rosenblatt1958}, but nowadays different functions such as ReLu, sigmoid or tanh are used. Output of the neuron $y$ is called activation of the neuron.
 
+Neurons are ussally structured into layers. The connection between layers is depended upon the architecture choice. First ANN used fully connected layers, meaning that the input input a nuron in layer $n$ were all activation from layer $n_1$. Fully connected neural networks are nowdays sparsely used in computer vision and convolutional neural networks (CNNs) are used instead. In case of CNNs we limit the receptive field of neuron to local neighborhood only, this decreases the computation complexity and includes our prior knowledge of pixel neighborhood in input image. Having the same weights for whole input makes the network invariant to shifts in the input.
+
+\section{Convolutional layer}
+Convolutional layers consists of $C_{out}$ neurons, each having $C_{in}, H, W$ receptive field. Those neurons ale called kernels with width $W$ height $H$ and number of input channels $C_{in}$. In each layer we convolve\footnote{Even though we usually refer to convolution, in practice cross-corelation is used instead and terms cross-corelation and convolution are used interchangebly.} the input $X$  with the kernel $W$, the output $Y$ is defined by:
+\begin{align}
+    y_{o,i,j} = \sum_{c_{in}} \sum_{\Delta i} \sum_{\Delta j} x_{c, i+\Delta i, j + \Delta j}  w_{o,c, \Delta i, \Delta j}
+\end{align}
+Nowadays modifications of convolutional layers are proposed, such as dilated convolution, gruped convolution or depth-wise seprable convolutions are proposed, but the fundamentals are the same: Filter sliding over the input producing an output.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{images/conv_img.png}
+\end{figure}
+
+\section{Activation functions}
+Output of convolutional layer is usually folowed by non-linear activation function. Many activation function are at our disposal, but the most commonly used is ReLU and its derivatives such as: SERLU, SELU, ELU, Swish, Leaky ReLU. Values of those function are depicted in figure \ref{fig:activation_functions}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/activation_functions.png}
+    \caption{Graphs of ReLU based activation functions, source \cite{Zhang2018}}
+    \label{fig:activation_functions}
+\end{figure}
+
+\section{Batch-normalization and it derivatives}
+\subsection{Batch-normalization}
+
+
+\section{Transformer architecture}
+Transformer architecture debuted in the field of computer vison in 2021 and since then achieved great results, beating state of the art models in multiple benchmarks across all computer vision tasks. As of May 2022, the best performing models in the main computer vision benchmarks are based on transformer architecture. We think of the following benchmarks to be the main ones in computer vision:  ImageNet benchmark (classification task), COCO (object detection), ADE20K (semantic segmentation).
+
+The transformer architecture was proposed already in 2017 for the task of nature language processing (NLP), we will briefly introduce transformer architectire for the NLP task, since it is crucial for understanding of transformers for computer vison.
+
+\subsubsection{Transformers in NLP}
+Transformer architecture was introduced in paper Attention is all you need \cite{Vaswani2017} for the purpose of NLP. NLP is task, where input is a sequence of words of length $n$ and output is sequence of $m$ words, where $n$ and $m$ usualy differs. Sequence of words is converted into sequence of vectors, there are multuple options how to embed words into vector, commonly used is TD-IDF or Word2Vec\cite{Li2018}. Positional encoding is added to those vector and than processed by encoder block. The novel key layer is self-attention, where for input sequence of vector values $V$, keys $K$ and queries $Q$ are computed. From encoder we output values and keys and from decoder's self-attention module we output queries. We than take keys and values from encoder and queries form decoder and input the into another attention block:
+\begin{align}
+    Attention \left(Q,K,V \right) = \text{softmax} \left( \frac{QK^T}{\sqrt{d_k}} \right)V,
+\end{align}
+where $d_k$ is dimension of keys. More details can be seen in figure \ref{fig:nlp_transformer} or in \cite{Vaswani2017}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/two_layer_transformer.png}
+    \caption{Architecure of transformer with two encoders and two decoders, source \cite{Yin2020}}
+    \label{fig:nlp_transformer}
+\end{figure}
+
+\section{General architecture for object detection}
+Even thought, there is broad variety of architectures for object detection, the core principles remains the same. The model is composed from three main parts: backbone, neck, head as shown in figure \ref{fig:object_detection_architecture}. Each of those blocks can useally be swaped for different one, which is fullfiling the same purpose. This gives us great flexibility and allows us to try different combinations of those blocks.
+
+\subsection{Transformers in computer vision}
+The first trasnformer based model was Vision Transformer (ViT). It was capable of image classification only and it is composed of multiple encoder blocks stacked on top of each other. Those blocks are same as those used NLP task. On top encoder blocks is attached multi-layer perceptron (MLP) head, which outputs values for each class. Those can be converted into corresponding probabilities by softmax-layer. Input into ViT are $16 \times 16$ image patches lineary projected into vectors, the whole architecture is shown in figure
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/vision_transformer.png}
+    \caption{Architecture of ViT, source \cite{Dosovitskiy2020}}
+    \label{fig:vision_transformer}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/object_detection_architecture.png}
+    \caption{General architecture for object detection, source \cite{Chen2019}}
+    \label{fig:object_detection_architecture}
+\end{figure}
+
+\subsubsection{Backbone}
+The purpose of bacbkones is transformation of input image into feature maps. For this purpose are used classification models with classification head removed. Most parameters of object detection models are usually part of the backbone and extracting usefull feature maps is vital for other blocks to perform well. The most common backbones are models from the ResNet family.
+
+\subsubsection{Neck}
+Neck is responsible for merging of features from the backbone. This is not straight-forward task, since we usually use features from different layers of the backbone. This allows us to get semanticaly strong features from deeper layers as well as more detailed information from earlier ones. Common neck architectures are feature pyramid network or PANet.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/necks_architecture.png}
+    \caption{Architecture of different necks for feature fussion, source \cite{Tan2019}}
+    \label{fig:necks}
+\end{figure}
+
+\subsubsection{Head}
+
+\section{Classification models}
+\subsection{ResNet}
+ResNet architecture was introduced by He et al. \cite{He2015} and proposed a novel element of deep-learning architectures - identity shortcut connection, sometimes called as skip-connection. Let $\mathbf{x}$ be an input into a block, composed of multiple convolutional layers with activation functions in between\footnote{Addition of batch-normalization, or other layers is possible}, we will call this block a mapping $\mathcal{F}$. Output of residual block $\mathcal{H}$, derived from $\mathcal{F}$ is defined as:
+
+\begin{align}
+    \mathcal{H}\left(\mathbf{x}\right) = \mathcal{F} \left(\mathbf{x}\right) + \mathbf{x}.
+\end{align}
+The reasoning behind residual block, is to make it easier to learn identity mapping, if desired. This had other benefits especialy improvment of gradient flow during back-progation, making it ultimatelly easier to optimize such blocks. This ease of optimization can be seen by inspecting loss function landscape of model with and without skip-connections, figure \ref{fig:resnet_loss}.
+Final ResNet architecture is composed of multiple residual blocks stack one after other, the models vary in number of layers used, this is denoted in the name with a number such as ResNet50 or ResNet101.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/resnet_loss.png}
+    \caption{Comparison of loss landscapes, source \cite{Li2017}}
+    \label{fig:resnet_loss}
+\end{figure}
+
+\subsection{EfficientNet}
+When scaling model size we can increase: Number of layers (depth), number of filters in each layer (width) or the width and height of feature maps (resolution). I has been common practice to change only one of them. Tan and Le \cite{Tan2019a} did multi-objective neural network search, where they tried to maximize objective function $O$ defined as:
+\begin{align}
+    O = ACC \left( m \right) \times \left[ FLOPS \left(m \right) / T \right] ^w,
+\end{align}
+where $ACC(m)$ and $FLOPS(m)$ are accuracy and FLOPS of model $m$, $T$ is target number of FLOPS and $w$ is a hyper-paremter controling the trade-off between accuracy and number of FLOPS of the final model. From this search resulted the EfficientNet-B0 baseline model, which can be scaled to achieve a bigger network, those are called B1-B7.
+
+\subsection{Swin transformer}
+Swin transformer architecture overcomes limitations of ViT, which is working with $16 \times 16$. This is insuficient for task as segmentation and object detection, where dense predictions are needed. Swin transformers are in first layer working with $4 \times 4$ patches. Since computation complexity of self-attention layer grows quadraticaly with number of input tokens, the authors over-come this by ussage of neighbor pathces only. Attention is thus computed with respect to tokens in non-overlaping local window. This local window for computing  self-attention is shifted after every encoder layer as depicted in figure \ref{fig:swin_pathces}. This shift introduces cross-window connections, which increaes modeling capacity of the model. After particular number of encoder layers, neighbor patches are merged. This reduces number of patches, while increasing their size by predefined factor. This mimics the bahaviour of CNNs, where we start with big, semanticaly weak feature maps and gradualy decrease their dimensions, while increasing their number. Having this kind of feature maps allows use to use swin transformer as a general backbone for any task. \cite{Liu2021}
+
+\begin{figure}
+    \begin{floatrow}[2]
+        \ffigbox[\FBwidth]{\caption{Hierachical structure of Swin Transformer compared with ViT, source \cite{Liu2021}}\label{fig:swin_hierarchy}}%
+        {\includegraphics[width=\linewidth]{images/swint_transformer_hierarchy.png}}\qquad
+        \ffigbox[\FBwidth]{\caption{Shift of local window for computation of self-attention, source \cite{Liu2021}}\label{fig:swin_pathces}}%
+        {\includegraphics[width=\linewidth]{images/swint_transformer_patches.png}}
+    \end{floatrow}
+\end{figure}
+
+\section{Detection models}
+
+\subsection{Faster-RCNN}
+TODO
+
+\subsection{RetinaNet}
+TODO
+
+\subsection{YOLO family}
+TODO
+
+\subsection{EfficientDet}
+EfficientDet tries to achieve the same goal as EfficientNet: Propose as computationally effiective architecure for object detection, that would be scalable. Since efficient backbone architecture was alrady proposed \cite{Tan2019a}, they focus mainly on featue fussion from multiple layers. Based on the study of FPN, PANet and NAS-FPN Bidirectional feature pyramid network (BiFPN) was proposed as the most computationally effective neck architecture \cite{Tan2019}, it consists of multiple BiFPN blocks stacked on top of each other. The count of those blocks is dependent on the size of used backbone.
+
+\subsection{Models for image segmentation}
+\subsubsection{U-Net}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/U-Net.png}
+    \caption{Architecture of U-Net model, source \cite{Ronneberger2015}}
+    \label{fig:unet_architecture}
+\end{figure}
+U-Net is an architecture for semantic segmentation. It has an encoder-decoder structure as can be seen in figure \ref{fig:unet_architecture}. The decoder extracts feature maps from the input image with increasing semnatical stregth throught the layers. In the middle of the network is so called bottle-neck layer with the strongest semnatical information about the image, but lacking information about high-resolution details of the input image. Hence when the information from bottle neck is decoded by the decoder, it is combined with information from shallower layer, which contains information about image details, required to obtain precise dense prediction.
+\newline
+The decoder proposed by Rennenberger et al. \cite{Ronneberger2015} can be replaced by general-purpose backbone, as demonstrated by Baheti et al. \cite{Baheti2020}, who used EfficientNet as the backbone.
+
+\section{Model ensembling in object detection}
+
+Let say we have $M$ different models, each of them prediction $\mathcal{B}_i = \left\{b_1,...,b_N \right\} $ bounding boxes and $\mathcal{S}_i = \left\{ s_1,...,s_N \right\} $ confidence values for a given image corresponding to a single class. We merge predictions of all models together, it is possible to use weights $\mathit{W} = \{w_1,...,w_M \}$ to express our prior belief in given model. Set of all boxes $\mathcal{B}$ and confidence scores $\mathcal{S}$ is thus obtained by:
+\begin{align}
+    \mathcal{B} = \bigcup_{i=1}^{M} B_i \quad, \mathcal{S} = \bigcup_{i=1}^{M} S_i * w_i / F,
+\end{align}
+where F is optional normalization constant. It's only purpose is to ensure, that confidence score will be less than 1 after the ensembling. Commonly used value for F is $\sum_{i=1}^M w_i$. After obtaining sets $\mathcal{B}$ and $\mathcal{S}$ we post-process them by one of the following algorithms: Non-maximal supression, soft non-maximal supression, non-maximum weighted supression or weighted boxes fusion.
+
+\subsubsection{Non-maximal supression (NMS)}
+In non-maximal supression we first sort all boxes $\mathcal{B}$ by their confidence $\mathcal{S}$ in descending order. We go thru the sorted set $\mathcal{B}$ and check if any other box b in $\mathcal{B}$ has overlap greater than predefined threshold $N_t$, in that case remove box $b$ from $\mathcal{B}$. More details regrading NMS algorithm are in the pseudocode, which is in figure \ref{alg:nms}.
+\begin{figure}
+    \centering
+    \includegraphics{images/nms_algo.png}
+    \caption{Pseudo code of NMS and soft-NMS, source \cite{Bodla2017}}
+    \label{alg:nms}
+\end{figure}
+
+\subsubsection{Soft non-maximal supression {Soft-NMS}}
+Soft non-maximal supression extends the NMS algorithm by possibility to keep overlaping predictions if their confidences are high. Insted of removing boxes with overlap, we decrease their confidence value by the follwing Gaussian penalty function:
+\begin{align}
+    s_i = s_i e^{-\frac{\text{iou}\left( \mathcal{M}, b_i \right)^2}{\sigma}}, \forall b_i \notin \mathcal{D}
+\end{align}
+Where $\mathcal{M}$ is the currently processed bounding box and $\mathcal{D}$ is set of already processed boxes. After processing all boxes, those with $s_i < T$ are removed, where $T$ is confidence cut-off threshold \cite{Bodla2017}.
+
+\subsubsection{Non-maximum weighted superssion (NMW)}
+Non-maximum weighted supression does not remove boxes in the case of overlap, but merges them togehter by following formula:
+\begin{align}
+    \mathcal{M} & = \frac{\sum_{i=1}^n \omega_i \times b_i}{\sum_{i=1}^n \omega_i} \\
+    \omega_i    & = s_i \times \text{iou} \left( b_i, b_{ argmax_i s_i} \right)
+\end{align}
+where $\mathcal{M}$ is the merged bounding box, for which no confidence value is computed \cite{Zhou2017,Solovyev2019}.
+
+\subsubsection{Weighted boxes fusion (WBF)}
+Weighted boxes fusion is combining boxes similarly to NMW. The main difference is the iterative approach to the fusion, outputting confidence for the merged box, and awareness of a number of models, which contributed to the prediction.
+The steps of WBF are as follows:
+\begin{enumerate}
+    \item Sort $\mathcal{B}$ by $\mathcal{S}$ as in NMS.
+    \item Declare empty lists \boldmath{L} and \boldmath{F}, they would be used to store boxes clusters and merged box respectively
+    \item Iterate thru $\mathcal{B}$ and if there is a box in \boldmath{F} for which $IOU > \mathbf{Threshold}$ add the box from $\mathcal{B}$ to list \boldmath{L} on position corresponding to position of the matched box in \boldmath{F}. If not match is found add it to the end of \boldmath{L}.
+    \item Recalculate box coordinates $\mathcal{M}$ and confidence $c$ in the list \boldmath{F} on the position where box was added to \boldmath{L} by formulas \ref{eq:wbf1}.
+    \item After processing all boxes from $\mathcal{B}$ adjust confidence scores by formula \ref{eq:wbf2}, where $T$ is number of contributing boxes and $M$ is number of models used for ensembling.
+\end{enumerate}
+\begin{align}
+    \mathcal{M} & = \frac{\sum_{i=1}^n c_i \times b_i}{\sum_{i=1}^n c_i} ,\quad c=\frac{\sum_{i=1}^{T}c_i}{T} \label{eq:wbf1} \\
+    c           & = c * \frac{T}{M} \label{eq:wbf2}
+\end{align}

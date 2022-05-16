@@ -1,1 +1,114 @@
 \chapter{Project structure}
+
+\section{Organization of the project}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/Module.drawio.pdf}
+    \caption{Structure of modules and their configuration files}
+    \label{fig:structure_modules}
+\end{figure}
+
+\begin{figure}
+    \begin{forest}
+        for tree={
+        font=\ttfamily,
+        grow'=0,
+        child anchor=west,
+        parent anchor=south,
+        anchor=west,
+        calign=first,
+        inner xsep=7pt,
+        edge path={
+                \noexpand\path [draw, \forestoption{edge}]
+                (!u.south west) +(7.5pt,0) |- (.child anchor) pic {folder} \forestoption{edge label};
+            },
+        before typesetting nodes={
+                if n=1
+                    {insert before={[,phantom]}}
+                    {}
+            },
+        fit=band,
+        before computing xy={l=15pt},
+        }
+        [MT
+            [configs - root folder with all configuration files
+                    [callbacks]
+                    [datamodule]
+                    [experiment]
+                    [logger]
+                    [module]
+                    [trainer]
+                    [transforms]
+                    [train.yaml]
+            ]
+            [src - folder with all source files
+                    [core - structures for data manipulation]
+                    [data - utility functions for dataloaders and datasets]
+                    [datamodules]
+                    [models]
+                    [modules]
+                    [notebooks - jupyter notebook for auxilary tasks]
+                    [transforms]
+                    [utils - \text{functions for logging, losses, data conversion}]
+            ]
+        ]
+    \end{forest}
+    \caption{Folder structure of the projcet}
+    \label{fig:folder_structure}
+\end{figure}
+% \begin{figure}
+
+% \end{figure}
+The object detection framework developed for the purpose of this project was written in Python 3.8.12 programming language \cite{Python}. We structured it into multiple independent modules, which can be swapped for corresponding alternatives. This ensures maximal reuse of the written code and allows further extension of this framework. This modular approach was inspired by MetaAI research \cite{MetaAIStatement} and IceVision library \cite{Icevision2022}. The modularity of the framework even allows us to use it for semantic segmentation or classification problems.
+At the core of the project is the deep-learning framework PyTorch 1.11.0 \cite{Pytorch}, which is used to create and train neural networks. Even though there are many available open-source libraries with object detection framewroks, it is far from optimal to rely only on those libraries since the options to change the program's behavior are limited.
+We, therefore, decided to write our own. The framework handles all tasks required for training a model: Loading the data, model definition, optimization of the model, tracking the progress of training, etc.  It would be a waste of time to implement all models from scratch; therefore, we support third-party models' usage. However, only the bare model is used. Thus, we can change everything except for the architecture of the model and its forward pass.
+
+The project is divided into two folders: configurations and source (src). The former contains YAML files that are further dispersed into dedicated folders based on the module they configure. At the root of the configurations folder is train.yaml and test.yaml files, which define how to compose individual modules to perform the target tasks. Hydra \cite{Yadan2019Hydra} handles the composition of configuration files. The user can override the default configuration from the command line or by experiment.yaml file. The whole configuration pipeline can be seen in figure \ref{fig:structure_modules} and folder structure of the project is in figure \ref{fig:folder_structure}.
+
+
+
+\subsection{Models}
+Models are implementations of one of the architectures described in the section TODO. They can be either fully implemented by ourselves or we can rely on open-source libraries. In that case, we need to implement a function that transforms the data into the format required by the third-party model.
+
+\subsection{Modules}
+Modules is a wrapper around the model based on Pytroch-Lightning modules. In modules, we take care of the following:
+\begin{itemize}
+    \item Training and validation loop
+    \item Initialization of optimizer
+    \item Initialization of learning rate schedulers
+    \item Computing metrics
+    \item Logging metrics to a predefined logger
+    \item Transformations of outputs of models into the unified format
+\end{itemize}
+
+
+\subsection{Transformations}
+Transformations are defined by their YAML configuration file. This file is passed to the transforms composer class, which creates training and validation transformations passed to a datamodule. We rellied on the Albumentations library for the individual augmentations.
+
+\subsection{Data-Modules}
+Datamodules are based on PyTorch-Lightning datamodules. It consists of:
+\begin{itemize}
+    \item Dataset, where we take care of loading the data from the hard drive into memory and parsing the file with saved annotations. After loading the data, predefined transformations are applied.
+    \item Functions that transform the loaded data into the format required by the model we are about to train.
+    \item Definitions of data loaders, which are responsible for merging the data into chunks, so called batches.
+\end{itemize}
+\subsection{Trainer}
+Trainer defines properties of the training such as the number of GPUS used for the training or a maximal number of epochs that training is allowed to take before terminating.
+
+\subsection{Callbacks}
+Callbacks add capabilities to the training pipeline without changing any code. Typical ones that we used were: Definition of stopping criteria, adjusting policy for saving weights of the model, or saving images with their predictions during the training.
+
+\subsection{Logging}
+A logger is software capable of storing and visualizing logged values. In the beginning, we used Tensorboard TODO, but soon we switched to Weights and Biase TODO and used them throughout the rest of the thesis.
+
+\section{Aditional open-source software used}
+Throughout the project, we used the libraries mentioned above as well as the following:
+\begin{itemize}
+    \item OpenCV TODO  computer vision library during the segmentation of dental restorations for operations such as: Adaptive thresholding, morphological operations, etc.
+    \item Computer vision library Kornia TODO was used to quickly perform morphological operations on PyTorch tensors.
+    \item MMDetection  provides an implementation of multiple object detection models. We used their implementation of swin transformers, RetinaNet and Faster-RCNN
+    \item During the computation of metrics, we used pycocotools-official implementation of MS COCO metrics, which had to be significantly modified to provide us capabilities we required.
+    \item For the purpose of visualizing predictions we used Voxel Fiftyone \cite{moore2020fiftyone}. The program can be run on a self-hosted server. We used this to share predictions of the model with MDDr. Tichý, who was thus able to asses those and decide if the dataset conations any errorneus annotations
+    \item For model ensembling we used the methods implented by author of Weighted boxes fussion. We further enhanced capabilities of their methods.
+\end{itemize}
