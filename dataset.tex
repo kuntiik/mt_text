@@ -36,8 +36,22 @@ MDDr. Tichý reviewed all images annotated in the first stage, removing as well 
 Another 1400 images were uploaded onto the CVAT server. After training the model on the dataset created in stage three, it already achieved promisng performance of $AP@.5=0.61$. We downloaded all newly uploaded images and used the model to make predictions for those images. The confidence threshold achieving the maximizing F1 score on the validation dataset was used to filter out low-confidence predictions. We used the Voxel Fiftyone tool to upload all 1400 images and their respective predictions to CVAT, where those images were split into two separate tasks.
 MDDr. Tichý reviewed all predictions. Adjustments of bounding boxes as well as their removal and addition were conducted, according to personal statistics of MDDr. Tichý, there were roughly 200 predictions per 100 images. Around 20 predictions had to be added and removed in order to get the same quality annotations as in stage three. The upside of this approach was the speed, when annotation could be done in approximately half the time required to do the annotation without model predictions. In total, 3500 images were available after this stage. After removing corrupted images, we got 3489 images with 6087 annotations of carious lesions.
 
+\begin{figure}
+    \includegraphics[width = \linewidth]{images/dataset_histogram.pdf}
+    \caption{Histogram of bonding boxes dimensions in the dataset}
+    \label{fig:hist_caries_dim}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{images/caries_histogram.pdf}
+    \caption{Histogram of the amount of dental caries per image}
+    \label{fig:hist_caries_per_img}
+\end{figure}
+\subsubsection{Image augmentations}
+
 \subsubsection{Fifth stage}
-In this stage, the annotation of all 1400 images uploaded in stage four was finished, resulting in 3989 X-rays with 7257 annotations.
+In this stage, the annotation of all 1400 images uploaded in stage four was finished, resulting in 3989 X-rays with 7257 annotations. We plotted a histogram representing the distribution of the number of carries among images; it can be seen in figure \ref{fig:hist_caries_per_img}.
+
 
 \begin{table}
     \centering
@@ -53,7 +67,7 @@ In this stage, the annotation of all 1400 images uploaded in stage four was fini
 \end{table}
 
 \subsubsection{Sixth stage}
-We evaluated the performance of the model on the test, validation, and training part of the dataset. Although the model used for prediction achieved $AP@.5 = 0.72$, there were 1598 images with at least one false positive or false negative detection. We decided that doing a second round of dataset review would be more beneficial than further expansion of the size of the dataset. We decided to focus only on erroneous images and uploaded those 1598 images with at least a single error to the CVAT annotation tool for review.
+We evaluated the performance of the model on the test, validation, and training part of the dataset. Although the model used for prediction achieved $AP@.5 = 0.72$, there were 1598 images with at least one false positive or false negative detection. We decided that doing a second round of dataset review would be more beneficial than further expansion of the size of the dataset. We decided to focus only on erroneous images and uploaded those 1598 images with at least a single error to the CVAT annotation tool for review. At the time of writing this thesis, there is still undergoing work on the uploaded images. Therefore, we were not able to use the sixth stage.
 
 
 \section{Dental restorations}

@@ -1,25 +1,17 @@
 \chapter{Methods}
 \%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22%26lt%3Bfont%20color%3D%26quot%3B%23ffffff%26quot%3B%26gt%3B%26lt%3Bb%26gt%3Btrain%26lt%3Bbr%26gt%3B%26lt%3B%2Fb%26gt%3B%26lt%3B%2Ffont%26gt%3B%22%20style%3D%22shape%3Dnote%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3BbackgroundOutline%3D1%3BdarkOpacity%3D0.05%3BfillColor%3D%234D4D4D%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%22340%22%20y%3D%22315%22%20width%3D%2280%22%20height%3D%22100%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3Elabel{chapter:methods}
-\section{Dataset}
-The dataset was created by Dr. Tichy and his team using the Computer Vision Annotation Tool (CVAT). It has been extended and improved multiple times over the course of this work, and there is still ongoing work. At the time of writing this report, it consisted of 2599 bitewing X-ray images with 4575 annotations of tooth decay. Out of those, there are 890 images without any decay. The distribution of dental caries per image is depicted in the figure \ref{fig:hist_caries_per_img}. For clarity reasons, we omitted six images that contained more than ten caries. From the histogram on the figure \ref{fig:hist_caries_dim}, we observe that most caries have dimensions between 10 and 75 pixels. However, there are outliers as big as 380 pixels per dimension. This diversity is increasing the difficulty of the task.
 
-We used the COCO data-format to store data, and adapted this format even in the implementation only with rare exceptions when custom data-format was needed. During the experiments, we used the 70:15:15 split into training, validation and test dataset.
-\begin{figure}
-    \includegraphics[width = \linewidth]{images/dataset_histogram.pdf}
-    \caption{Histogram of bonding boxes dimensions in the dataset}
-    \label{fig:hist_caries_dim}
-\end{figure}
+\section{Caries detection - model comparison}
 
-\begin{figure}
-    \includegraphics[width=\linewidth]{images/caries_histogram.pdf}
-    \caption{Histogram of the amount of dental caries per image}
-    \label{fig:hist_caries_per_img}
-\end{figure}
-\subsubsection{Image augmentations}
+Firstly we implemented and tested multiple object-detection architectures. We compared them against each-other on the stage of dataset, that was currently avaliable.
+
+\subsection{Dataset}
+
+\subsection{Image augmentations}
 The image was augmented by a single pipeline that applied the following transformations with corresponding probabilities p.
 \begin{itemize}
-    \item Normalize by substracting the mean of the dataset and dividing by standard deviation of the dataset, $p=1$
-    \item Resize and pad to $1024\times1024$, $p=1$
+    \item Normalize by substracting the mean of the dataset and dividing by standard deviation of the dataset (mean$=0.37$, std$=0.28$), $p=1$
+    \item Resize and pad to $1024\times1024/896$, $p=1$
     \item Horizontal flip, $p=0.5$
     \item Vertical flip, $p=0.5$
     \item Rotation, $p=0.3$, rotation limit$=10^{\circ}$
@@ -27,19 +19,45 @@ The image was augmented by a single pipeline that applied the following transfor
     \item Gaussian blur flip, $p=0.3$, kernel size from 7 to 31
     \item Gamma correction, $p=0.3$, $\gamma$ in range from 0.6 to 1.4
 \end{itemize}
-
 The result of those augmentations can be seen in the appendix \ref{appendix:img_transformations}.
+
+The dimensions to which resize an image were selected due to limitations of some architectures, which requires the input to be divisible by 128. In the beginning, we used square images, due to the ease of implementation. We swithched to rectangular images after that, but no improvement on measured metrics was observed. Based on the architecture we observed decrease of GPU memory usage in range from 5\% to 10\%.
+
 \subsubsection{Computing power}
 All the computations were realized on the CMP cluster, consisting of multiple GPU nodes. The experiments were conducted on the Boruvka and Zorn machines. Both of them have 32 CPU cores, 256GB of RAM memory, and 8 NVIDIA GeForce GTX 1080-Ti graphics cards with 12GB of dedicated memory.
 
 \subsection{Neural network models}
-\subsubsection{YOLOv5}
-The YOLOv5 architecture was used with the 5l6 backbone. That is the second-largest backbone from the sixth generation of the backbone architectures. When experimenting with YOLOv5 we used a batch size of 3, which was the maximal size, that could fit into the GPU memory.
-\subsubsection{EfficientDet}
-We used the EfficientDet-D4 because it was proposed as the optimal-efficiency architecture to use for image size of 1024 pixels \cite{Tan2019}. Even though there are three bigger backbones available, the batch size has to be 1 for the network to fit into the GPU. This removed the option of trying more parameter-heavy backbones.
+Multiple architectures of neural networks were used. As the work on the thesis progressed the ammount grew larger, thus on the advanced stages of the dataset, bigger variety of models can be seen. We stopped using the YOLOv3 model after stage 2, since YOLOv5 model has superior performance on the stage one and two.
+
+All the models we used and their respective backbones are listed bellow
+\begin{itemize}
+    \item YOLOv3 with Darknet-53 backbone
+    \item YOLOv5 with backbones with sixth generation of backbones. We used the small, medium, large and extra lasrge vesions of those backbones. In the further text we will denote them as s6, m6, l6, x6.
+    \item Faster-RCNN with Resnet50 and Resnet101 backbone. R50 and R101 abbreviation will be used for those.
+    \item RetinaNet with Resnet50 and tiny swin transformer (swint) Backbones.
+    \item EfficientDet with D0,D1,D2,D3,D4 and D backbones
+\end{itemize}
+
+\subsubsection{Batch-size}
+The batch size differed based on the model architecture and selected backone. We always used the biggest batch size, that was able to fit into the graphics card memory.
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|}
+        YOLOv3 - Darknet & 4 \\ \hline
+        YOLOv5-s6        & x \\ \hline
+        YOLOv5-m6        & x \\ \hline
+        YOLOv5-l6        & x \\ \hline
+        YOLOv5-x6        & 2 \\ \hline
+        FRCNN-R50        & 5 \\ \hline
+        FRCNN-R101       & 3 \\ \hline
+        RetinaNet-swint  & 4 \\ \hline
+        RetinaNet-R50    & x \\ \hline
+    \end{tabular}
+\end{table}
 
 \subsubsection{Optimizers}
-The Adam optimizer was used during all experiments. The parameters $\beta_1, \beta_2$ were set to 0.9 and 0.999 and weight decay was chosen to be $1e^{-6}$. Since we could not fit a reasonably big batch size into the GPU, the optimization step was performed every four forward passes. This should emulate a bigger batch size and increase the chance of finding global optimization minima.
+The Adam optimizer was used during all experiments. The parameters $\beta_1, \beta_2$ were set to 0.9 and 0.999 and weight decay was chosen to be $10^{-6}$. Since we could not fit a reasonably big batch sizes into the GPU, the optimization step was performed every four forward passes. This should emulate a bigger batch size and increase the chance of finding global optimization minima.
 \subsubsection{Learning rate}
 The initial value of the learning rate was set to $1e^{-5}$ and reduced on plateau learning rate scheduler was used. The monitored value by the scheduler was validation loss, and the learning rate decreased by the factor of 5 when the improvement of the loss stalled for five consecutive epochs.
 \subsubsection{Termination condition}
@@ -48,14 +66,14 @@ The training was halted when the validation error did not decrease over the cour
 
 \section{Dental-restorations segmentation segmentation}
 \subsection{Non-deeplearning approach}
-We decided to test the approach, that was proposed by Abdalla-Aslan and Yeshua \cite{AbdallaAslan2020,Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means, that we defined a pipeline of image processing operations, where we:
+We decided to test the approach that Abdalla-Aslan proposed and Yeshua \cite{AbdallaAslan2020, Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means that we defined a pipeline of image processing operations, where we:
 \begin{itemize}
-    \item Threshold the image: We tried Otsu's thresholding method, Gaussian and mean adaptive thresholding methods where we tested different kernel sizes $K_t$ and threshold values $T$.
-    \item Removed predicted pixels at the border of X-ray image: Bitewing X-ray images usually do net have a ractangular shape as can be seen in \ref{fig:bitewing_sample}. This is a cause for hight contrast at the border of radigraph, which gets detected by adaptive thresholding methods. We therefore detect the image pading and morphologically dilate it by square kernel of size $K_b \times K_b$. Border pixels obtained by dilation are remoed from the thresholded image.
-    \item Morphological openning: To filter out falsely detected regions we apply morphological openning, for this purpose we use square-shaped kernel with size $K_o$.
+    \item Threshold the image: We tried Otsu's thresholding method, Gaussian, and mean adaptive thresholding methods, where we tested different kernel sizes $K_t$ and threshold values $T$.
+    \item Removed predicted pixels at the border of X-ray image: Bitewing X-ray images usually do not have a rectangular shape, as can be seen in \ref{fig:bitewing_sample}. Bitewing radiographs are therefore padded with black color to be rectangular-shaped. This is a cause for high contrast at the border of the radiograph, which gets detected by adaptive thresholding methods. We, therefore, detect this padding and morphologically dilate it by the square kernel of size $K_b \times K_b$. Border pixels obtained by dilation are remoed from the thresholded image.
+    \item Morphological opening: To filter out falsely detected regions, we apply morphological opening; we use a square-shaped kernel with size $K_o$.
 \end{itemize}
 
-The pipeline deffined above has four hyper-parameters to be tuned. We therefore define a grid-shaped search space as can be seen in table \ref{tab:hyper_param_segmentation}. The dataset was split into two equaly-sized parts, called tune and test. For each set of hyer-parameters we evalueted the IOU metric on each image of the tune part of the dataset. We selected best hyper-parametrs based on the average IOU value and used those to evaluate on the test-part of the dataset.
+The pipeline deffined above has four hyper-parameters to be tuned. We therefore define a grid-shaped search space as can be seen in table \ref{tab:hyper_param_segmentation}. The dataset was split into two equaly-sized parts, called tune and test. For each set of hyper-parameters, we evaluated the IOU metric on each image of the tune part of the dataset and averaged it. We selected the best hyper-parameters based on the average IOU value and used those to evaluate the test part of the dataset.
 
 as can be seen in table \ref{tab:hyper_param_segmentation}
 \begin{table}
@@ -72,10 +90,26 @@ as can be seen in table \ref{tab:hyper_param_segmentation}
 \end{table}
 
 \subsection{Deep-learning approach}
-The dataset was splited in training, validation and test part with 70:15:15 ratio. For the training part of the dataset we used image augmentations described in TODO. For the validation and test part of the dataset we only normalized the image by TODO.
-We used default U-Net architecture model with depth 5. As a loss function we used binary cross-entropy. Learning rate with value of 1e-2 was used and reduce on plateu scheduler was used. The model was trained for 50 epochs and at the end we selected the best model according to IOU on the validation dataset.
+\subsubsection{Model training}
+The dataset was split into training, validation, and test parts with 70:15:15 ratio. We used image augmentations described in TODO for the dataset's training part. We only normalized the image by TODO for the validation and test part of the dataset.
+We used the U-Net architecture model as proposed by author \cite{Ronneberger2015}, only changing the depth to 5 downscaling layers. As a loss function, we used binary cross-entropy. The learning rate value of $10^{-2}$ was used together with reduce on plateau learning rate scheduler. The model was trained for 50 epochs by Adam optimizer and at the end of training, we selected the best model according to IOU on the validation dataset and evaluated its performance on the test dataset.
 
-We used post-processing methods on the best-performing model.
+\subsubsection{Post-processing}
+We used post-processing methods inspired by the non-deep learning approach on the best-performing model. The image was first morphological opened by a square kernel with a size of $K_O$ and then closed by a kernel size of $K_C$.
+
+Since there were two hyper-parameters involved we performed a grid-search, searching for the kernel of size from 1 to 41 with the step size of 4. Firstly we saved predictions for all images in the validation dataset and applied post-processing with all defined kernel values. The best-performing hyper-parameters were selected and predictions post-processed with them evaluted on tast dataset.
+
+\subsection{Model training improvements}
+We tried the following changed to the model training pipeline:
+\begin{itemize}
+    \item AdamW optimizer was used insted of Adam
+    \item Cosine annealing learning rate scheduler was used. The half-period of cosine was set to 40 epochs and the minimal learning rate to $10^{-7}$.
+    \item Soft dice loss was tested insted of binary cross-entropy loss as well as combination of Soft dice loss with BCE.
+    \item We removed the maximal amount of epochs and insted used IOU value on validation set as a stoping criterion. Whenever no improvement of IOU was observed for 10 epochs, the training was stopped.
+\end{itemize}
+
+After the training, we performed the same post-processing. We found the best hyper-parameters by optuna optimization library. The search space was set to range from $1$ to $41$ for both kernels.
+
 
 
 
