@@ -3,16 +3,16 @@
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/computer_vision_tasks.png}
-    \caption{From the left: semantic segmentation, object localization, object detection, instance segmentation}
+    \caption{From the left: semantic segmentation, object localization, object detection, instance segmentation}.
     \label{fig:computer_vision_tasks}
 \end{figure}
-This section provides a quick overview of common computer vision tasks.
+This section provides a quick overview of standard computer vision tasks.
 \subsection{Classification}
-Let say we have an image $\mathbf{x}$, in classification task, our goal is to assign one of $n$ possible classes to the image:
+Let's say we have an image $\mathbf{x}$. In a classification task, our goal is to assign one of $n$ possible classes to the image:
 \begin{align}
     \hat{y} = f_\theta\left(\mathbf{x} \right),
 \end{align}
-Where $f$ is a mapping, sometimes called a model, and $\theta$ are model parameters. If it holds that $\hat{y}=y$, where $y$ is a true class of the image $\mathbf{x}$, the classification is considered to be correct.
+where $f$ is a mapping, sometimes called a model, and $\theta$  represents model parameters. If it holds that $\hat{y}=y$, where $y$ is a true class of the image $\mathbf{x}$, the classification is considered to be correct.
 It is possible to output $\mathbf{p} \in \mathbb{R}^n$ instead of $\hat{y}$, where $p_i \in \mathbf{p}$ is probability of $i = y$, modeled by $f_\theta$.
 
 \subsection{Semantic segmentation}
@@ -180,7 +180,11 @@ Nowadays, modifications of convolutional layers are proposed, such as dilated co
 \subsection{Activation functions}
 A non-linear activation function usually follows the output of the convolutional layer. Many activation functions are at our disposal, but the most commonly used is ReLU and its derivatives, such as SERLU, SELU, ELU, Swish, and Leaky ReLU. Values of those function are depicted in figure \ref{fig:activation_functions}.
 
-\subsection{Normalization }
+\subsection{Normalization layers}
+\subsubsection{Batch-normalization}
+TODO
+\subsubsection{Group-normalization}
+TODO
 
 \begin{figure}
     \centering
@@ -188,11 +192,6 @@ A non-linear activation function usually follows the output of the convolutional
     \caption{Graphs of ReLU based activation functions, source \cite{Zhang2018}}
     \label{fig:activation_functions}
 \end{figure}
-
-\subsection{Batch-normalization and it derivatives}
-\subsubsection{Batch-normalization}
-
-\subs
 
 
 \section{Transformer architecture}

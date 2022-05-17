@@ -51,7 +51,7 @@ MDDr. Tichý reviewed all predictions and conducted adjustments of bounding boxe
 \subsubsection{Image augmentations}
 
 \subsubsection{Fifth stage}
-In this stage, we finished the annotation of all 1400 images uploaded in stage four, resulting in 3989 X-rays with 7257 annotations. We plotted a histogram representing the distribution of the number of carries among images; it can be  in figure \ref{fig:hist_caries_per_img}.
+In this stage, we finished the annotation of all 1400 images uploaded in stage four, resulting in 3989 X-rays with 7257 annotations. We plotted a histogram representing the distribution of the number of carries among images; it can be  noticed in figure \ref{fig:hist_caries_per_img}.
 
 
 \begin{table}
@@ -68,20 +68,20 @@ In this stage, we finished the annotation of all 1400 images uploaded in stage f
 \end{table}
 
 \subsubsection{Sixth stage}
-We evaluated the performance of the model on the test, validation, and training part of the dataset. Although the model used for prediction achieved $AP@.5 = 0.72$, there were 1598 images with at least one false positive or false negative detection. We decided that doing a second round of dataset review would be more beneficial than further expansion of the size of the dataset. We decided to focus only on erroneous images and uploaded those 1598 images with at least a single error to the CVAT annotation tool for review. At the time of writing this thesis, there is still undergoing work on the uploaded images. Therefore, we were not able to use the sixth stage.
+We evaluated the model's performance on the test, validation, and training part of the dataset. Although the model used for prediction achieved $AP@.5 = 0.72$, there were 1598 images with at least one false positive or false negative detection. We decided that doing a second round of dataset review would be more beneficial than further expansion of the size of the dataset. We focused only on erroneous images and uploaded those 1598 images with no  less than a single error to the CVAT annotation tool for review. When writing this thesis, there is still undergoing work on the uploaded images. Therefore, we were not able to use the sixth stage.
 
 
 \section{Dental restorations}
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/segmentation_ds_sample.pdf}
-    \caption{Bitweing X-ray image on the left, pixel mask of the X-ray on the right (dental restorations have yellow color)}
+    \caption{Bitewing X-ray image on the left, pixel mask of the X-ray on the right (dental restorations have yellow color)}
     \label{fig:segmentation_sample}
 \end{figure}
-This dataset consists of a subset of images used in the dental caries dataset. It was annotated in the CVAT tool by drawing a polygon around each dental restoration. The work was done by the same group of dentistry students as stage one of the caries dataset and reviewed by a single fifth-year dentistry student. Evaluation of the whole dataset performed by a single person should ensure consistency among images. A total of 521 images were used to create this dataset. Inspection of the dataset revealed that 387 radiographs contained at least a single annotated restoration, and 134 had none.
-The dataset was exported from CVAT in COCO format and saved on the CMP server. When working with the data, we used a pixel mask instead of polygons to denote the position of dental restorations. A sample of the dataset with pixel mask can be seen in figure \ref{fig:segmentation_sample}.
+This dataset consists of a subset of images used in the dental caries dataset. MDDr. Tichy's  team annotated it in the CVAT tool by drawing a polygon around each dental restoration. The work was done by the same group of dentistry students as stage one of the caries dataset and reviewed by a single fifth-year dentistry student. Evaluation of the whole dataset performed by a single person should ensure consistency among images. A total of 521 images were used to create this dataset, and an inspection revealed that 387 radiographs contained at least a single annotated restoration, and 134 had none.
+The dataset was exported from CVAT in COCO format and saved on the CMP server. When working with the data, we used a pixel mask instead of polygons to denote the position of dental restorations. A sample of the dataset with a pixel mask is  featured in figure \ref{fig:segmentation_sample}.
 
-In figure \ref{fig:segmentation_restoration_size} we can see, how many percent of the X-ray image consists of restorations. This gives us an idea of how common restorations in our data are. In figure \ref{fig:segmentation_patch_size} we see, how the size of each individual restorations is distributed. Inspecting this figure, we observe that most restorations are smaller than $2\%$ of the image.
+In figure \ref{fig:segmentation_restoration_size} we can  notice how many percent of the X-ray image consists of restorations. This gives us an idea of how common dental restorations in our data are. In figure \ref{fig:segmentation_patch_size} we see how the size of each restoration is distributed. Inspecting this figure, we observe that most restorations are smaller than $2\%$ of the image.
 
 \begin{figure}
     \centering
@@ -91,4 +91,4 @@ In figure \ref{fig:segmentation_restoration_size} we can see, how many percent o
         \ffigbox[\FBwidth]{\caption{Histogram of areas of restorations, 10 largest omited}\label{fig:segmentation_patch_size}}
         {\includegraphics[width=\linewidth]{images/histogram_of_patch_size.pdf}}
     \end{floatrow}
-n\end{figure}
+\end{figure}
