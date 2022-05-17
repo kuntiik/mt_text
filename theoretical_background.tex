@@ -6,6 +6,7 @@
     \caption{From the left: semantic segmentation, object localization, object detection, instance segmentation}
     \label{fig:computer_vision_tasks}
 \end{figure}
+This section provides a quick overview of common computer vision tasks.
 \subsection{Classification}
 Let say we have an image $\mathbf{x}$, in classification task, our goal is to assign one of $n$ possible classes to the image:
 \begin{align}
@@ -15,11 +16,11 @@ Where $f$ is a mapping, sometimes called a model, and $\theta$ are model paramet
 It is possible to output $\mathbf{p} \in \mathbb{R}^n$ instead of $\hat{y}$, where $p_i \in \mathbf{p}$ is probability of $i = y$, modeled by $f_\theta$.
 
 \subsection{Semantic segmentation}
-For an input image $x \in \mathbb{R}^{n \times m}$ the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $y{_i,j}$ is predicted class of pixel $i,j$ in the image $\mathbf{x}$. A sample of semantic segmentation output can be seen in figure \ref{fig:computer_vision_tasks}.
+For an input image $x \in \mathbb{R}^{n \times m}$ the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $y{_i,j}$ is predicted class of pixel $i,j$ in the image $\mathbf{x}$. Similarly to classificaiton problem we can output matrix $\mathbf{P} \in \mathbb{R}^{n \times m \times c}$, where $p_{i,j,c}$ is probability of $pixel_{i,j}$ belonging to class $c$. A sample of semantic segmentation output can be seen in figure \ref{fig:computer_vision_tasks}.
 
 \subsection{Object detection}
 \label{subsec:object_detection}
-In object detection, the goal is to locate and recognize objects of interest in the image $\mathbf{x}$. A rectangle and a category represent the ground truth objects. Model returns $\mathbf{Y} \in \mathbb{R}^{n \times 6}$ as predictions for the model. Each row of $\mathbf{Y}$ consists of four numbers, which describe a rectangle, the category of the object inside the rectangle and a number in the range from 0 to 1 called the confidence. In literature, we can see term score instead of confidence, but the meaning remains the same: Certainty of the network regarding the particular prediction described by the bounding box and category. Please note that the confidence of predictions does not sum to one, in other words, we are not talking about probabilities since multiple detections per image can correspond to ground truth.
+In object detection, the goal is to locate and recognize objects of interest in the image $\mathbf{x}$. A ground truth object is represneted by a rectangle and a category. Model predicts $\mathbf{Y} \in \mathbb{R}^{n \times 6}$ values for each image. Each row of $\mathbf{Y}$ consists of four numbers, which describe a rectangle, the category of the object inside the rectangle, and a number in the range from 0 to 1 called the confidence. In literature, we can see term score instead of confidence, but the meaning remains the same: Certainty of the network regarding the particular prediction described by the bounding box and category. Please note that the confidence of predictions does not sum to one; in other words, we are not talking about probabilities since multiple detections per image can correspond to ground truth.
 
 \subsection{Instance segmentation}
 Instance segmentation is similar task to semantic segmantation with the difference, that two objects of the same category would have different ground truth values. If we have $\mathcal{O}_1, \mathcal{O}_2$, where $\mathcal{O}_i \subset \mathbf{x}$ are pixels of object $i$ in image $\mathbf{x}$. Then
@@ -49,6 +50,10 @@ Intersection over union, also known as Jaccard index, is defined as follows: Let
 From the equation \ref{eq:iou} we can see that the the lowest value of IOU is 0. That means there is no overlap at all and the maximal value is 1, hence meaning a perfect match.
 We use predefined threshold value of IOU to decide if the predicted bounding box matches the ground truth. Usually we choose this threshold to be 0.5 or above.
 
+Deffi
+
+TODO extend the definition to semantic segmentaion
+
 \begin{figure}
     \includegraphics[width = \linewidth]{images/IOU.jpg}
     \caption{Examples of IOUs for different overlaps between GT and predicted box, source \cite{Cowton2019}}
@@ -60,15 +65,17 @@ We use predefined threshold value of IOU to decide if the predicted bounding box
 \label{subsec:precision}
 When speaking about object detection, we say that a prediction is a true positive (TP) if the IOU value is greater than the predefined threshold $\tau$. If otherwise, the prediction is treated as a false positive (FP). Let's assume there are N predictions of our model, from which S are correct. Precision is defined as
 \begin{align}
-    Precision(\tau, \gamma) = \frac{\sum_{n=1}^S TP_n(\tau, \gamma)}{\sum_{n=1}^S TP_n(\tau, \gamma) + \sum_{n=1}^{N-S} FP_n(\tau, \gamma)}
+    Precision(\tau, \gamma) = \frac{TP(\tau, \gamma)}{TP(\tau, \gamma) + FP(\tau, \gamma)}
 \end{align}
 where $\gamma$ is confidence threshold. That means we discard all predictions with confidence smaller than $\gamma$. Note that for fixed value of $\tau$ are $FP(\gamma)$ and $TP(\gamma)$ decreasing functions of $\gamma$ \cite{Padilla2021}.
+
+\
 
 \subsubsection{Recall}
 \label{subsec:recall}
 If there is a ground truth bounding box for which there are no given detection values of $\gamma$ and $\tau$, we say it is a false negative (FN). If we consider a dataset with G ground-truths and N predictions of which S is correct, where $(S \leq G)$, the recall is expressed as:
 \begin{align}
-    Recall(\tau, \gamma) = \frac{\sum_{n=1}^S TP_n(\tau, \gamma)}{\sum_{n=1}^S TP_n(\tau, \gamma) + \sum_{n=1}^{G-S} FN_n(\tau, \gamma)}.
+    Recall(\tau, \gamma) = \frac{TP(\tau, \gamma)}{ TP(\tau, \gamma) + FN(\tau, \gamma)}.
 \end{align}
 Since the value of $FN(\gamma)$ increases with the growing value of $\gamma$, we see that recall is the decreasing function of $\gamma$.
 

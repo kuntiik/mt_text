@@ -6,6 +6,7 @@
 Firstly we implemented and tested multiple object-detection architectures. We compared them against each-other on the stage of dataset, that was currently avaliable.
 
 \subsection{Dataset}
+We used first five stages of dataset mention in chapter \ref{chapter:dataset}. The dataset was always split into train, validation and test part. Each of them consising of 70\%, 15\% and 15\% of the dataset.
 
 \subsection{Image augmentations}
 The image was augmented by a single pipeline that applied the following transformations with corresponding probabilities p.
@@ -35,34 +36,37 @@ All the models we used and their respective backbones are listed bellow
     \item YOLOv5 with backbones with sixth generation of backbones. We used the small, medium, large and extra lasrge vesions of those backbones. In the further text we will denote them as s6, m6, l6, x6.
     \item Faster-RCNN with Resnet50 and Resnet101 backbone. R50 and R101 abbreviation will be used for those.
     \item RetinaNet with Resnet50 and tiny swin transformer (swint) Backbones.
-    \item EfficientDet with D0,D1,D2,D3,D4 and D backbones
+    \item EfficientDet with D0,D1,D2,D3,D4 and D5 backbones
 \end{itemize}
 
 \subsubsection{Batch-size}
-The batch size differed based on the model architecture and selected backone. We always used the biggest batch size, that was able to fit into the graphics card memory.
+The batch size differed based on the model architecture and selected backone. We always used the biggest batch size, that was able to fit into the graphics card memory. Overiview of batch sizes for different combination of architectures and backbones is in table TODO. Note, that those batch size values allow for accumulation of 4 forward passes into the GPU memory.
 
 \begin{table}
     \centering
-    \begin{tabular}{|c|c|}
-        YOLOv3 - Darknet & 4 \\ \hline
-        YOLOv5-s6        & x \\ \hline
-        YOLOv5-m6        & x \\ \hline
-        YOLOv5-l6        & x \\ \hline
-        YOLOv5-x6        & 2 \\ \hline
-        FRCNN-R50        & 5 \\ \hline
-        FRCNN-R101       & 3 \\ \hline
-        RetinaNet-swint  & 4 \\ \hline
-        RetinaNet-R50    & x \\ \hline
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        model-backbone  & batch size & model-backbone   & batch size \\ \hline
+        YOLOv5-s6       & 16         & EfficientDet-D0  & 5          \\ \hline
+        YOLOv5-m6       & 8          & EfficientDet-D1  & 4          \\ \hline
+        YOLOv5-l6       & 4          & EfficientDet-D2  & 3          \\ \hline
+        YOLOv5-x6       & 2          & EfficientDet-D3  & 2          \\ \hline
+        FRCNN-R50       & 2          & EfficientDet-D4  & 1          \\ \hline
+        FRCNN-R101      & 5          & EfficientDet-D5  & 1          \\ \hline
+        RetinaNet-swint & 3          & YOLOv3 - Darknet & 4          \\ \hline
+        RetinaNet-R50   & 4          & -                & -          \\ \hline
     \end{tabular}
+    \caption{Maximal batch sizes, that fit into 12GB GPU for a given model}
+    \label{tab:batch_sizes}
 \end{table}
 
 \subsubsection{Optimizers}
 The Adam optimizer was used during all experiments. The parameters $\beta_1, \beta_2$ were set to 0.9 and 0.999 and weight decay was chosen to be $10^{-6}$. Since we could not fit a reasonably big batch sizes into the GPU, the optimization step was performed every four forward passes. This should emulate a bigger batch size and increase the chance of finding global optimization minima.
-\subsubsection{Learning rate}
-The initial value of the learning rate was set to $1e^{-5}$ and reduced on plateau learning rate scheduler was used. The monitored value by the scheduler was validation loss, and the learning rate decreased by the factor of 5 when the improvement of the loss stalled for five consecutive epochs.
-\subsubsection{Termination condition}
-The training was halted when the validation error did not decrease over the course of 10 epochs, but not earlier than after 50 epochs from the beginning of the training.
 
+\subsubsection{Learning rate}
+We initialy experimented with different learinig rates and used the learning rate test to find the initial learning rate. In the end there was no difference in final performance of the model and the number of epochs required to train the model did not differ significantly. In rare cases the learning rate found by learning rate test did not led to model convergence. We therefore set initial learning rate to to $10^{-4}$ and used reduced on plateau learning rate scheduler. The monitored value by the scheduler was validation loss, and the learning rate decreased by a factor of 5 when the improvement of the loss stalled for five consecutive epochs.
+\subsubsection{Termination condition}
+The training was halted when the $AP@.5$ did not increase throughout 10 epochs, but not earlier than after 50 epochs from the beginning of the training.
 
 \section{Dental-restorations segmentation segmentation}
 \subsection{Non-deeplearning approach}
@@ -130,10 +134,10 @@ We performed grid search over hyper-paramers in to following manner: Defined par
 \begin{table}
     \centering
     \begin{tabular}{|c|c|c|c|}
-        Parameter                                         & minimal value & maximal value & step \\ \hline
-        Model weight                                      & x             & x             & x    \\ \hline
-        IOU $T$                                           & x             & x             & x    \\ \hline
-        Sigma & x             & x             & x    \\ \hline
+        Parameter    & minimal value & maximal value & step \\ \hline
+        Model weight & x             & x             & x    \\ \hline
+        IOU $T$      & x             & x             & x    \\ \hline
+        Sigma        & x             & x             & x    \\ \hline
     \end{tabular}
     \caption{Hyper parameter search-space for model ensembling}
     \label{tab:ensembling_search_space}

@@ -1,4 +1,5 @@
 \chapter{Dataset}
+\label{chapter:dataset}
 In total, two datasets were created. One dataset was used for the detection of dental caries and the other for semantic segmentation of dental restorations. The majority of work was done on the first-mentioned set of data.
 
 \begin{figure}
@@ -33,8 +34,8 @@ After inspection of the dataset created in the first stage, we observed in-homog
 MDDr. Tichý reviewed all images annotated in the first stage, removing as well as adding an unspecified amount of annotations. In the end, the dataset consisted of 2599 images with 4575 annotations of dental caries.
 
 \subsubsection{Fourth stage}
-Another 1400 images were uploaded onto the CVAT server. After training the model on the dataset created in stage three, it already achieved promisng performance of $AP@.5=0.61$. We downloaded all newly uploaded images and used the model to make predictions for those images. The confidence threshold achieving the maximizing F1 score on the validation dataset was used to filter out low-confidence predictions. We used the Voxel Fiftyone tool to upload all 1400 images and their respective predictions to CVAT, where those images were split into two separate tasks.
-MDDr. Tichý reviewed all predictions. Adjustments of bounding boxes as well as their removal and addition were conducted, according to personal statistics of MDDr. Tichý, there were roughly 200 predictions per 100 images. Around 20 predictions had to be added and removed in order to get the same quality annotations as in stage three. The upside of this approach was the speed, when annotation could be done in approximately half the time required to do the annotation without model predictions. In total, 3500 images were available after this stage. After removing corrupted images, we got 3489 images with 6087 annotations of carious lesions.
+Another 1400 images were uploaded onto the CVAT server. All the images were downloaded and uploaded to CMP server. We used a  YOLOv5 model\footnote{For further information about the performance of the model, see table \ref{tab:model_results:stage_three:test}} trained on the third stage dataset to generate predictions for each image. Confidence threshold maximizing F1 score on the validation dataset was used to filter out low confidence predictions of the model. We used Voxel Fiftyone tool to upload all 1400 images and their respective predictions to CVAT, where those images were split into two separate tasks.
+MDDr. Tichý review all predictions. Adjustments of bounding boxes as well as their removal and addition were conducted. According to a personal statistics of MDDr. Tichý there were roughly 200 predictions per 100 images. Around 20 predictions has to be added and removed in order to get the same quality annotations as in the stage three. The upside of using model prediction as a starting point for annotaion process was the speed, when annotation could be done in approximately half the time required to do the annotation without model predictons. In total, 3500 images were available after this stage. After removal of corrupted images, we got 3489 X-rays with 6087 annotations.
 
 \begin{figure}
     \includegraphics[width = \linewidth]{images/dataset_histogram.pdf}
