@@ -1,41 +1,41 @@
 \chapter{Dataset}
 \label{chapter:dataset}
-In total, two datasets were created. One dataset was used for the detection of dental caries and the other for semantic segmentation of dental restorations. The majority of work was done on the first-mentioned set of data.
+In total,  MDDr. Tichy and his team created two datasets. One dataset was used to detect dental caries and the other for semantic segmentation of dental restorations. The majority of work was done on the first-mentioned set of data.
 
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/cvat.png}
-    \caption{The evironment of CVAT with annotated carious lesion and dental restorations}
+    \caption{The environment of CVAT with annotated carious lesion and dental restorations}
     \label{fig:cvat}
 \end{figure}
 
 \section{Dental caries}
-The dataset was created by MDDr. Tichý and his team. They began to work on it in September of 2021, along with beginning of work on this thesis, and we were thus able to discuss the format of the data. We decided to annotate every dental caries lesion with a minimal bounding box. The annotation process was conducted in the Computer Vision Annotation Tool (CVAT), which was running on the Faculty of biomedical informatics server. The web address is www.gdiag.fbmi.cvut.cz.
+MDDr. Tichy and his team began to work on the datasets in September of 2021, along with the beginning of work on this thesis. This led  to an opportunity to discuss the format of the data. We decided to annotate every dental caries lesion with a minimal bounding box. The annotation process was conducted in the Computer Vision Annotation Tool (CVAT), running on the Faculty of biomedical informatics server. The web address is www.gdiag.fbmi.cvut.cz.
 
 While denoting the position of the carious lesion, the annotator tried to be consistent with the following guidelines:
 
 \begin{itemize}
-    \item Carious lesion is denoted by a rectangle. The rectangle should contain the whole lesion, while being as small as possible.
+    \item Carious lesion is denoted by a rectangle. The rectangle should contain the entire lesion while being as small as possible.
     \item When the lesion is on the proximal surface, and booth teeth are infected, draw a separate box for each of them.
 \end{itemize}
 
-Due to constant work on the dataset, we decided to use the same data as long as there was no major update. This ensured that we were able to compare the performance of our models to each other until a major update was released. In total, six major releases were done. We call these releases the stages of the dataset.
+Due to constant work on the dataset, we decided to use the same data as long as there was no major update. This ensured that we were able to compare the performance of our models to each other until a significant update was released. In total, six major releases were done. We call these releases the stages of the dataset.
 
 \subsubsection{First stage}
 In the very first stage MDDr. Tichý instructed a group of general dentistry students on how to approach the annotation to get as homogenous dataset as possible. They then annotated a couple of images under his supervision before continuing independently.
-Dental X-ray images were uploaded into CVAT and divided into multiple projects, where each project contained between 400-800 images. This was done due to technical limitations regarding exporting and uploading X-ray images from a dental database. Each project was further split into jobs consisting of 100 images each and assigned to a particular student. We had 1695 X-ray images at our disposal with 2416 dental caries annotated when the first stage was done.
-CVAT does not allow exporting and merging multiple tasks, so each task was exported separately in COCO format. All images and files with metadata were uploaded to the CMP server and combined in one annotation.json file, which contained the information about the dataset in COCO format and one folder with all the images. We checked the task for duplicates and non-reviewed radiographs and removed those. This resulted in 1626 images with 2399 decay annotations. Out of those, 946 images contained at least one cavity.
+Dental X-ray images were uploaded into CVAT and divided into multiple projects, where each project contained between 400-800 images. This was essential due to technical limitations regarding exporting and uploading X-ray images from a dental database. We further split each project into jobs consisting of 100 images each and  assigned them to a particular student. We had 1695 X-ray images at our disposal with 2416 dental caries annotated when the first stage was done.
+CVAT does not allow exporting and merging multiple tasks, so we exported each task separately in COCO format. We uploaded all images and files with annotations  to the CMP server. The server contains annotations combined in one annotation.json file, which carries the information about the dataset in COCO format, and one folder with all the images. We checked the task for duplicates and non-reviewed radiographs and removed those, which resulted in 1626 images with 2399 decay annotations. Out of those, 946 images contained at least one cavity.
 
 
 \subsubsection{Second stage}
-After inspection of the dataset created in the first stage, we observed in-homogeneity across the annotations. Some of the guidelines were violated, especially the one regarding caries in proximal surfaces. In addition, multiple overlooked lesions were observed. This led us to a reconsideration of our approach to labeling and MDDr. Tichý himself did all the annotation work from this moment further on. After the second stage, the dataset was extended to 2599 non-duplicate images containing 4328 annotations of tooth decay. In this stage, no corrections of previous errors were done.
+After inspection of the dataset created in the first stage, we observed in-homogeneity across the annotations. Some of the guidelines were violated, especially the one regarding caries on proximal surfaces. In addition, we observed multiple overlooked lesions. This led us to a reconsideration of our approach to labeling and MDDr. Tichý himself did all the annotation work from this moment further on. After the second stage, the dataset was extended to 2599 non-duplicate images containing 4328 annotations of tooth decay. In this stage, we did no corrections of previous errors.
 
 \subsubsection{Third stage}
 MDDr. Tichý reviewed all images annotated in the first stage, removing as well as adding an unspecified amount of annotations. In the end, the dataset consisted of 2599 images with 4575 annotations of dental caries.
 
 \subsubsection{Fourth stage}
-Another 1400 images were uploaded onto the CVAT server. All the images were downloaded and uploaded to CMP server. We used a  YOLOv5 model\footnote{For further information about the performance of the model, see table \ref{tab:model_results:stage_three:test}} trained on the third stage dataset to generate predictions for each image. Confidence threshold maximizing F1 score on the validation dataset was used to filter out low confidence predictions of the model. We used Voxel Fiftyone tool to upload all 1400 images and their respective predictions to CVAT, where those images were split into two separate tasks.
-MDDr. Tichý review all predictions. Adjustments of bounding boxes as well as their removal and addition were conducted. According to a personal statistics of MDDr. Tichý there were roughly 200 predictions per 100 images. Around 20 predictions has to be added and removed in order to get the same quality annotations as in the stage three. The upside of using model prediction as a starting point for annotaion process was the speed, when annotation could be done in approximately half the time required to do the annotation without model predictons. In total, 3500 images were available after this stage. After removal of corrupted images, we got 3489 X-rays with 6087 annotations.
+We uploaded another 1400 images onto the CVAT server. All the images were downloaded and uploaded to the CMP server. We used a  YOLOv5 model\footnote{For further information about the performance of the model, see table \ref{tab:model_results:stage_three:test}} trained on the third stage dataset to generate predictions for each image. Confidence threshold maximizing F1 score on the validation dataset was used to filter out low confidence predictions of the model. We used Voxel Fiftyone tool to upload all 1400 images and their respective predictions to CVAT, where those images were split into two separate tasks.
+MDDr. Tichý reviewed all predictions and conducted adjustments of bounding boxes as well as their removal and addition.  According to his personal statistics, there were roughly 200 predictions per 100 images. Around 20 predictions had to be added and removed to get the same quality annotations as in stage three. The upside of using model prediction as a starting point for the annotation process was the speed. The annotation  was done in approximately half the time required to do the annotation without model predictions. In total, 3500 images were available after this stage. After removing corrupted images, we got 3489 X-rays with 6087 annotations.
 
 \begin{figure}
     \includegraphics[width = \linewidth]{images/dataset_histogram.pdf}
@@ -45,13 +45,13 @@ MDDr. Tichý review all predictions. Adjustments of bounding boxes as well as th
 
 \begin{figure}
     \includegraphics[width=\linewidth]{images/caries_histogram.pdf}
-    \caption{Histogram of the amount of dental caries per image}
+    \caption{Histogram of the number of dental caries per image}
     \label{fig:hist_caries_per_img}
 \end{figure}
 \subsubsection{Image augmentations}
 
 \subsubsection{Fifth stage}
-In this stage, the annotation of all 1400 images uploaded in stage four was finished, resulting in 3989 X-rays with 7257 annotations. We plotted a histogram representing the distribution of the number of carries among images; it can be seen in figure \ref{fig:hist_caries_per_img}.
+In this stage, we finished the annotation of all 1400 images uploaded in stage four, resulting in 3989 X-rays with 7257 annotations. We plotted a histogram representing the distribution of the number of carries among images; it can be  in figure \ref{fig:hist_caries_per_img}.
 
 
 \begin{table}
@@ -91,4 +91,4 @@ In figure \ref{fig:segmentation_restoration_size} we can see, how many percent o
         \ffigbox[\FBwidth]{\caption{Histogram of areas of restorations, 10 largest omited}\label{fig:segmentation_patch_size}}
         {\includegraphics[width=\linewidth]{images/histogram_of_patch_size.pdf}}
     \end{floatrow}
-\end{figure}
+n\end{figure}
