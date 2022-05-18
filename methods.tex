@@ -1,5 +1,4 @@
 \chapter{Methods}
-\%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22%26lt%3Bfont%20color%3D%26quot%3B%23ffffff%26quot%3B%26gt%3B%26lt%3Bb%26gt%3Btrain%26lt%3Bbr%26gt%3B%26lt%3B%2Fb%26gt%3B%26lt%3B%2Ffont%26gt%3B%22%20style%3D%22shape%3Dnote%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3BbackgroundOutline%3D1%3BdarkOpacity%3D0.05%3BfillColor%3D%234D4D4D%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%22340%22%20y%3D%22315%22%20width%3D%2280%22%20height%3D%22100%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3Elabel{chapter:methods}
 
 \section{Caries detection - model comparison}
 
@@ -70,24 +69,26 @@ The training was halted when the $AP@.5$ did not increase throughout 10 epochs, 
 
 \section{Dental-restorations segmentation segmentation}
 \subsection{Non-deeplearning approach}
-We decided to test the approach that Abdalla-Aslan proposed and Yeshua \cite{AbdallaAslan2020, Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means that we defined a pipeline of image processing operations, where we:
+We decided to test the approach that Abdalla-Aslan proposed, and Yeshua \cite{AbdallaAslan2020, Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means that we defined a pipeline of image processing operations, where we:
 \begin{itemize}
-    \item Threshold the image: We tried Otsu's thresholding method, Gaussian, and mean adaptive thresholding methods, where we tested different kernel sizes $K_t$ and threshold values $T$.
+    \item Threshold the image: We tried Otsu's thresholding method where Gaussian blur with kernel size $K_b$ was applied prior to that, Gaussian and mean adaptive thresholding methods, where we tested different kernel sizes $K_t$ and threshold values $T$.
     \item Removed predicted pixels at the border of X-ray image: Bitewing X-ray images usually do not have a rectangular shape, as can be seen in \ref{fig:bitewing_sample}. Bitewing radiographs are therefore padded with black color to be rectangular-shaped. This is a cause for high contrast at the border of the radiograph, which gets detected by adaptive thresholding methods. We, therefore, detect this padding and morphologically dilate it by the square kernel of size $K_b \times K_b$. Border pixels obtained by dilation are remoed from the thresholded image.
-    \item Morphological opening: To filter out falsely detected regions, we apply morphological opening; we use a square-shaped kernel with size $K_o$.
+    \item Morphological opening: We apply morphological opening to filter out falsely detected regions; we use a square-shaped kernel with size $K_o$.
 \end{itemize}
 
-The pipeline deffined above has four hyper-parameters to be tuned. We therefore define a grid-shaped search space as can be seen in table \ref{tab:hyper_param_segmentation}. The dataset was split into two equaly-sized parts, called tune and test. For each set of hyper-parameters, we evaluated the IOU metric on each image of the tune part of the dataset and averaged it. We selected the best hyper-parameters based on the average IOU value and used those to evaluate the test part of the dataset.
+The pipeline defined above has four hyper-parameters to be tuned and three thresholding methods. We therefore define a grid-shaped search space as can be seen in table \ref{tab:hyper_param_segmentation}. Note that when we searched for the value of $K_t$ we did not searched for $K_b$ and vice versa.
+The dataset was split into two equally-sized parts, called tune and test. For each set of hyper-parameters, we evaluated the IOU metric on each image of the tune part of the dataset and averaged it. We selected the best hyper-parameters based on the average IOU value and used those to evaluate the test part of the dataset.
 
 as can be seen in table \ref{tab:hyper_param_segmentation}
 \begin{table}
     \begin{tabular}{|c|c|c|c|}
         \hline
         Hyper-parameter & minimal value & maximal value & step \\ \hline
-        $K_t$           & 3             & 153           & 10   \\ \hline
-        $T$             & 1             & 11            & 2    \\ \hline
-        $K_b$           & 41            & 101           & 20   \\ \hline
-        $K_o$           & 1             & 51            & 5    \\ \hline
+        $K_t$           & 33            & 83            & 10   \\ \hline
+        $K_b$           & 1             & 26            & 5    \\ \hline
+        $T$             & 1             & 15            & 2    \\ \hline
+        $K_b$           & 41            & 81            & 20   \\ \hline
+        $K_o$           & 1             & 36            & 5    \\ \hline
     \end{tabular}
     \caption{Hyper-parameter search space for restorations segmentation pipeline}
     \label{tab:hyper_param_segmentation}

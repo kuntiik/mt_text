@@ -48,9 +48,9 @@
                     [datamodules]
                     [models]
                     [modules]
-                    [notebooks - jupyter notebook for auxilary tasks]
-                    [transforms]
-                    [utils - \text{functions for logging, losses, data conversion}]
+                    [notebooks] - \text{jupyter notebooks for auxilary tasks}
+                [transforms] - \text{classes to compose transformations given by configuration file}
+                [utils ] - \text{functions for logging, losses, data conversion}
             ]
         ]
     \end{forest}
@@ -111,4 +111,5 @@ Throughout the project, we used the libraries mentioned above as well as the fol
     \item During the computation of metrics, we used pycocotools-official \cite{pycocotools} implementation of MS COCO metrics, which had to be significantly modified to provide us capabilities we required.
     \item For the purpose of visualizing predictions we used Voxel Fiftyone \cite{moorefiftyone}. The program can be run on a self-hosted server. We used this to share predictions of the model with MDDr. Tichý, who was thus able to asses those and decide if the dataset conations any errorneus annotations
     \item For model ensembling we used the methods implented by author of Weighted boxes fussion \cite{Solovyev2019}. We further enhanced capabilities of their methods.
-t\end{itemize}
+    \item We used pretrained YOLOv5 from the ultralytics repozitory \cite{glennjocher2020}
+          t\end{itemize}
