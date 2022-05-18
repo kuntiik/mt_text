@@ -48,28 +48,26 @@
                     [datamodules]
                     [models]
                     [modules]
-                    [notebooks] - \text{jupyter notebooks for auxilary tasks}
-                [transforms] - \text{classes to compose transformations given by configuration file}
-                [utils ] - \text{functions for logging, losses, data conversion}
+                    [notebooks - \text{jupyter notebooks for auxilary tasks}]
+                    [transforms - \text{classes to compose transformations given by configuration file}]
+                    [utils  - \text{functions for logging, losses, data conversion}]
             ]
+            [tests - contains multiple subfolders with unit tests for the program]
         ]
     \end{forest}
     \caption{Folder structure of the projcet}
     \label{fig:folder_structure}
 \end{figure}
-% \begin{figure}
+The object detection framework developed for this project was written in Python 3.8.12 programming language \cite{Python}. We structured it into multiple independent modules, which can be swapped for corresponding alternatives. This ensures maximal reuse of the written code and allows further extension of this framework. This modular approach was inspired by MetaAI research \cite{MetaAIStatement} and IceVision library \cite{Icevision2022}. The framework's modularity even allows us to use it for semantic segmentation or classification problems.
+At the core of the project is the deep-learning framework PyTorch 1.11.0 \cite{Pytorch}, which is used to create and train neural networks. Although there are many available open-source libraries with object detection frameworks, it is far from optimal to rely only on those libraries since the options to change the program's behavior are limited.
+We, therefore, decided to write our own. The framework handles all tasks required for training a model: Loading the data, model definition, optimization of the model, tracking the progress of training, etc.  Implementing all models from scratch would be a waste of time; therefore, we support third-party models' usage. However, only the bare model is used. Thus, we can change everything except for the architecture of the model and its forward pass.
 
-% \end{figure}
-The object detection framework developed for the purpose of this project was written in Python 3.8.12 programming language \cite{Python}. We structured it into multiple independent modules, which can be swapped for corresponding alternatives. This ensures maximal reuse of the written code and allows further extension of this framework. This modular approach was inspired by MetaAI research \cite{MetaAIStatement} and IceVision library \cite{Icevision2022}. The modularity of the framework even allows us to use it for semantic segmentation or classification problems.
-At the core of the project is the deep-learning framework PyTorch 1.11.0 \cite{Pytorch}, which is used to create and train neural networks. Even though there are many available open-source libraries with object detection framewroks, it is far from optimal to rely only on those libraries since the options to change the program's behavior are limited.
-We, therefore, decided to write our own. The framework handles all tasks required for training a model: Loading the data, model definition, optimization of the model, tracking the progress of training, etc.  It would be a waste of time to implement all models from scratch; therefore, we support third-party models' usage. However, only the bare model is used. Thus, we can change everything except for the architecture of the model and its forward pass.
-
-The project is divided into two folders: configurations and source (src). The former contains YAML files that are further dispersed into dedicated folders based on the module they configure. At the root of the configurations folder is train.yaml and test.yaml files, which define how to compose individual modules to perform the target tasks. Hydra \cite{Yadan2019Hydra} handles the composition of configuration files. The user can override the default configuration from the command line or by experiment.yaml file. The whole configuration pipeline can be seen in figure \ref{fig:structure_modules} and folder structure of the project is in figure \ref{fig:folder_structure}.
+The project is divided into three folders: configurations, tests, and source (src). The first mentioned contains YAML files that are further dispersed into dedicated folders based on the module they configure. At the root of the configurations folder are train.yaml and test.yaml files, which define how to compose individual modules to perform the target tasks. Hydra \cite{Yadan2019Hydra} handles the composition of configuration files. The user can override the default configuration from the command line or by experiment.yaml file. The whole configuration pipeline can be seen in figure \ref{fig:structure_modules} and folder structure of the project is in figure \ref{fig:folder_structure}.
 
 
 
 \subsection{Models}
-Models are implementations of one of the architectures described in the section TODO. They can be either fully implemented by ourselves or we can rely on open-source libraries. In that case, we need to implement a function that transforms the data into the format required by the third-party model.
+Models are implementations of one of the architectures described in the section \ref{sec:deteciton_models}. They can be either fully implemented by ourselves or we can rely on open-source libraries. In that case, we need to implement a function that transforms the data into the format required by the third-party model.
 
 \subsection{Modules}
 Modules is a wrapper around the model based on Pytroch-Lightning modules \cite{falcon2019pytorch}. In modules, we take care of the following:
@@ -109,7 +107,7 @@ Throughout the project, we used the libraries mentioned above as well as the fol
     \item Computer vision library Kornia \cite{eriba2019kornia} was used to quickly perform morphological operations on PyTorch tensors.
     \item MMDetection \cite{mmdetection} provides an implementation of multiple object detection models. We used their implementation of swin transformers, RetinaNet and Faster-RCNN
     \item During the computation of metrics, we used pycocotools-official \cite{pycocotools} implementation of MS COCO metrics, which had to be significantly modified to provide us capabilities we required.
-    \item For the purpose of visualizing predictions we used Voxel Fiftyone \cite{moorefiftyone}. The program can be run on a self-hosted server. We used this to share predictions of the model with MDDr. Tichý, who was thus able to asses those and decide if the dataset conations any errorneus annotations
-    \item For model ensembling we used the methods implented by author of Weighted boxes fussion \cite{Solovyev2019}. We further enhanced capabilities of their methods.
-    \item We used pretrained YOLOv5 from the ultralytics repozitory \cite{glennjocher2020}
-          t\end{itemize}
+    \item To visualize predictions, we used Voxel Fiftyone \cite{moorefiftyone}. The program can on a self-hosted server. We used this to share predictions of the model with MDDr. Tichý, who was thus able to asses those and decide if the dataset conations any errorneus annotations
+    \item For model ensembling, we used the methods implemented by the author of Weighted box fusion \cite{Solovyev2019}. We further enhanced the capabilities of their methods.
+    \item We used YOLOv5 models from the Ultralytics repository \cite{glennjocher2020}.
+\end{itemize}

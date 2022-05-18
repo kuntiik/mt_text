@@ -16,15 +16,6 @@ In the next step, we inspected the precision and recall of each model. Those val
 
 \subsection{Model ensembling}
 For each image, we accumulated prediction boxes and scores from multiple models and merged those into one image based on the selected method from those described in section TODO. Since all methods have multiple hyper-parameters, such as minimal IOU overlap or weights for different models, we picked those parameters based on the model performance on the validation dataset and then evaluated the metrics on the test set. Because we had 6 models to choose from, the random search approach became quickly infeasible, thus we hand-picked the best performing and most diverse models. After doing a search for the best performing hyper-parameters on the validation dataset we got test results, that can be seen in the table\ref{tab:model_ensembling}.
-\begin{table}
-    \begin{tabular}{c||c|c|c|c|c|c|c}
-        Ensembled models             & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline \hline
-        RN-sw, YOLO-m, RN-res        & 0.303 & 0.776   & 0.694   & 0.216    & 0.605     & 0.729     & 0.803     \\ \hline
-        F-RCNN-res101, YOLO-m, RN-sw & 0.305 & 0.783   & 0.695   & 0.218    & 0.598     & 0.733     & 0.807     \\
-    \end{tabular}
-    \caption{Ensemble of multiple models}
-    \label{tab:model_ensembling}
-\end{table}
 
 \subsection{Segmentation of dental restorations}
 From the dataset, it seemed, that there is a higher probability of observing dental caries in the proximity of dental restorations. To get verify this foreboding we decided to segment out dental restorations in the bitewing x-ray images. We had 400 images with 380 polygon-shaped annotations at our disposal. We tried two different approaches to segmentation.

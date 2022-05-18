@@ -2,17 +2,18 @@
 \label{chapter:results}
 \section{Model comparison}
 \subsection{Stage one dataset}
-\begin{table}
+\begin{table}[h]
     \centering
-    \begin{tabular}{l|c|c|c|c|c|c}
+    \begin{tabular}{|l|c|c|c|c|c|c|}
         % Model                                 & $AP_{50}$ & $AP$    & $AP_{small}$ & $AP_{medium}$ & $AP_{large}$ & $AP_{75}$             \\\hline
+        \hline
         Model                  & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        Faster R-CNN           & 0.045 & 0.168   & 0.0064   & 0.031     & 0.064     & 0.0058    \\ \hline
+        FRCNN-R50              & 0.045 & 0.168   & 0.0064   & 0.031     & 0.064     & 0.0058    \\ \hline
         YOLOv3                 & 0.093 & 0.258   & -        & -         & -         & -         \\ \hline
-        YOLOv5 L               & 0.097 & 0.318   & 0.03     & 0.211     & 0.309     & 0.0.397   \\ \hline
-        YOLOv5 XL              & 0.105 & 0.337   & 0.05     & 0.204     & 0.324     & 0.413     \\ \hline
-        EfficientDet d4        & 0.101 & 0.298   & 0.02     & 0.215     & 0.404     & 0354      \\ \hline
-        EfficientDet d4, train & 0.421 & 0.839   & 0.362    & 0.251     & 0.501     & 0.535     \\ \hline
+        YOLOv5-l6              & 0.097 & 0.318   & 0.03     & 0.211     & 0.309     & 0.0.397   \\ \hline
+        YOLOv5-x6              & 0.105 & 0.337   & 0.05     & 0.204     & 0.324     & 0.413     \\ \hline
+        EfficientDet-d4        & 0.101 & 0.298   & 0.02     & 0.215     & 0.404     & 0354      \\ \hline
+        EfficientDet-d4, train & 0.421 & 0.839   & 0.362    & 0.251     & 0.501     & 0.535     \\ \hline
     \end{tabular}
     \caption{Comparision of trained model on the stage one dataset}
     \label{tab:model_results:stage_one}
@@ -20,10 +21,10 @@
 
 \subsection{Stage two dataset}
 
-\begin{table}
+\begin{table}[h]
     \centering
-    \begin{tabular}{l|c|c|c|c|c|c}
-        % Model                                 & $AP_{50}$ & $AP$    & $AP_{small}$ & $AP_{medium}$ & $AP_{large}$ & $AP_{75}$             \\\hline
+    \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
         Model                  & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
         YOLOv3                 & 0.093 & 0.258   & -        & -         & -         & -         \\ \hline
         YOLOv5 L               & 0.097 & 0.318   & 0.03     & 0.904     & 0.12      & 0.05      \\ \hline
@@ -31,44 +32,45 @@
         EfficientDet d4        & 0.31  & 0.699   & 0.2054   & 0.215     & 0.404     & 0.47      \\ \hline
         EfficientDet d4, train & 0.421 & 0.839   & 0.362    & 0.251     & 0.501     & 0.535     \\ \hline
     \end{tabular}
-    \caption{Comparision of trained model on the stage one dataset}
+    \caption{Comparision of trained model on the stage two dataset}
     \label{tab:model_results:stage_two}
 \end{table}
 
 \subsection{Stage three dataset}
 
-\begin{table}
+\begin{table}[H]
     \centering
-    \begin{tabular}{l|c|c|c|c|c|c|c}
-        % Model                                 & $AP_{50}$ & $AP$    & $AP_{small}$ & $AP_{medium}$ & $AP_{large}$ & $AP_{75}$             \\\hline
-        Model        & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        YOLOv5       & 0.463 & 0.869   & 0.841   & 0.442    & 0.697     & 0.887     & 0.974     \\ \hline
-        EfficientDet & 0.297 & 0.82    & 0.735   & 0.164    & 0.552     & 0.838     & 0.815     \\ \hline
+    \begin{tabular}{|l|c|c|c|c|c|c|c|}
+        \hline
+        Model-backbone  & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        YOLOv5-l6       & 0.463 & 0.869   & 0.841   & 0.442    & 0.697     & 0.887     & 0.974     \\ \hline
+        EfficientDet-D4 & 0.297 & 0.82    & 0.735   & 0.164    & 0.552     & 0.838     & 0.815     \\ \hline
     \end{tabular}
-    \caption{Comparision of trained model on the stage one dataset}
+    \caption{Comparision of trained models on the train part of stage three dataset}
     \label{tab:model_results:stage_three:train}
 \end{table}
 
-\begin{table}
+\begin{table}[H]
     \centering
-    \begin{tabular}{l|c|c|c|c|c|c|c}
-        % Model                                 & $AP_{50}$ & $AP$    & $AP_{small}$ & $AP_{medium}$ & $AP_{large}$ & $AP_{75}$             \\\hline
-        Model & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        test  & 0.249 & 0.734   & 0.631   & 0.132    & 0.598     & 0.671     & 0.607     \\
-        test  & 0.168 & 0.666   & 0.525   & 0.041    & 0.435     & 0.606     & 0.527     \\
+    \begin{tabular}{|l|c|c|c|c|c|c|c|}
+        \hline
+        Model        & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        YOLOv5       & 0.249 & 0.734   & 0.631   & 0.132    & 0.598     & 0.671     & 0.607     \\ \hline
+        EfficientDet & 0.168 & 0.666   & 0.525   & 0.041    & 0.435     & 0.606     & 0.527     \\ \hline
     \end{tabular}
-    \caption{Comparision of trained model on the stage one dataset}
+    \caption{Comparision of trained models on the test part of stage three dataset}
     \label{tab:model_results:stage_three:test}
 \end{table}
 
 
-\begin{table}
-    \begin{tabular}{c|c|c|c|c|c}
+\begin{table}[H]
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
         Backbone & $AP@.5$ & $AP$  & Parameters[M] & Flops[G] & Time[h] \\ \hline
         5s6      & 0.593   & 0.231 & 12            & 21       & 2.1     \\ \hline
         5m6      & 0.621   & 0.242 & 35            & 63       & 3.5     \\ \hline
         5l6      & 0.611   & 0.241 & 76            & 141      & 5.2     \\ \hline
-        5x6      & 0.601   & 0.238 & 140           & 267      & 8.5     \\
+        5x6      & 0.601   & 0.238 & 140           & 267      & 8.5     \\ \hline
     \end{tabular}
     \caption{Results of the YOLOv5 architecture with different backbones}
     \label{tab:yolov5_backbones}
@@ -76,31 +78,33 @@
 
 \subsection{Stage four dataset}
 
-\begin{table}
-    \begin{tabular}{c||c|c|c|c|c|c|c}
-        model - backbone         & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline \hline
-        faster r-cnn - resnet101 & 0.285 & 0.763   & 0.675   & 0.198    & 0.568     & 0.717     & 0.772     \\ \hline
-        faster r-cnn - resnet50  & 0.284 & 0.76    & 0.658   & 0.204    & 0.557     & 0.695     & 0.77      \\ \hline
-        yolov5 - mediump6        & 0.288 & 0.748   & 0.644   & 0.209    & 0.593     & 0.667     & 0.766     \\ \hline
-        yolov5 - largep6         & 0.284 & 0.74    & 0.644   & 0.203    & 0.551     & 0.701     & 0.612     \\ \hline
-        efficientdet - d4        & 0.251 & 0.716   & 0.605   & 0.15     & 0.49      & 0.677     & 0.545     \\ \hline
-        retinanet - swint        & 0.266 & 0.766   & 0.66    & 0.175    & 0.497     & 0.721     & 0.786     \\ \hline
-        retinanet - resnet50     & 0.263 & 0.734   & 0.643   & 0.174    & 0.547     & 0.696     & 0.663     \\
+\begin{table}[H]
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Model-backbone  & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        FRCNN-R101      & 0.285 & 0.763   & 0.675   & 0.198    & 0.568     & 0.717     & 0.772     \\ \hline
+        FRCNN-R50       & 0.284 & 0.76    & 0.658   & 0.204    & 0.557     & 0.695     & 0.77      \\ \hline
+        YOLOv5-m6       & 0.288 & 0.748   & 0.644   & 0.209    & 0.593     & 0.667     & 0.766     \\ \hline
+        YOLOv5-l6       & 0.284 & 0.74    & 0.644   & 0.203    & 0.551     & 0.701     & 0.612     \\ \hline
+        Efficientdet-d4 & 0.251 & 0.716   & 0.605   & 0.15     & 0.49      & 0.677     & 0.545     \\ \hline
+        RetinaNet-swint & 0.266 & 0.766   & 0.66    & 0.175    & 0.497     & 0.721     & 0.786     \\ \hline
+        RetinaNet-R50   & 0.263 & 0.734   & 0.643   & 0.174    & 0.547     & 0.696     & 0.663     \\ \hline
     \end{tabular}
     \caption{performance comparison of multiple models based on mean average precision metrics}
     \label{tab:model_results:stage_four}
 \end{table}
 
-\begin{table}
-    \begin{tabular}{c||c|c|c|c}
-        Model - backbone         & Precision & Recall & F-score & Confidence threshold \\ \hline \hline
-        Faster R-CNN - ResNet101 & 0.69      & 0.64   & 0.664   & 0.662                \\ \hline
-        Faster R-CNN - ResNet50  & 0.623     & 0.68   & 0.65    & 0.489                \\ \hline
-        YOLOv5 mediumP6          & 0.671     & 0.6    & 0.634   & 0.273                \\ \hline
-        YOLOv5 largeP6           & 0.621     & 0.64   & 0.63    & 0.219                \\ \hline
-        EfficientDet - d4        & 0.621     & 0.59   & 0.605   & 0.216                \\ \hline
-        RetinaNet - swint        & 0.661     & 0.63   & 0.645   & 0.24                 \\ \hline
-        RetinaNet - ResNet50     & 0.674     & 0.6    & 0.635   & 0.41                 \\
+\begin{table}[H]
+    \begin{tabular}{|c||c|c|c|c|}
+        \hline
+        Model-backbone  & Precision & Recall & F-score & $\gamma$ \\ \hline
+        FRCNN-R101      & 0.69      & 0.64   & 0.664   & 0.662    \\ \hline
+        FRCNN-R50       & 0.623     & 0.68   & 0.65    & 0.489    \\ \hline
+        YOLOv5-m6       & 0.671     & 0.6    & 0.634   & 0.273    \\ \hline
+        YOLOv5-l6       & 0.621     & 0.64   & 0.63    & 0.219    \\ \hline
+        EfficientDet-d4 & 0.621     & 0.59   & 0.605   & 0.216    \\ \hline
+        RetinaNet-swint & 0.661     & 0.63   & 0.645   & 0.24     \\ \hline
+        RetinaNet-R50   & 0.674     & 0.6    & 0.635   & 0.41     \\ \hline
     \end{tabular}
     \caption{Precision, recall, and F-score based on the confidence threshold}
     \label{tab:model_prf:stage_four}
@@ -108,32 +112,34 @@
 
 \section{Stage five}
 
-\begin{table}
-    \begin{tabular}{c||c|c|c|c|c|c|c}
-        model - backbone         & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline \hline
-        faster r-cnn - resnet101 & 0.328 & 0.8     & 0.71    & 0.263    & 0.613     & 0.742     & 0.816     \\ \hline
-        faster r-cnn - resnet50  & 0.334 & 0.81    & 0.715   & 0.273    & 0.595     & 0.757     & 0.809     \\ \hline
-        yolov5 - mediump6        & 0.346 & 0.787   & 0.708   & 0.284    & 0.622     & 0.744     & 0.754     \\ \hline
-        yolov5 - largep6         & 0.295 & 0.706   & 0.625   & 0.232    & 0.533     & 0.691     & 0.489     \\ \hline
-        efficientdet - d4        & 0.288 & 0.745   & 0.648   & 0.219    & 0.548     & 0.699     & 0.655     \\ \hline
-        retinanet - swint        & 0.328 & 0.805   & 0.72    & 0.241    & 0.565     & 0.776     & 0.775     \\
+\begin{table}[H]
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Model-backbone  & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        FRCNN-R101      & 0.328 & 0.8     & 0.71    & 0.263    & 0.613     & 0.742     & 0.816     \\ \hline
+        FRCNN-R50       & 0.334 & 0.81    & 0.715   & 0.273    & 0.595     & 0.757     & 0.809     \\ \hline
+        YOLOv5-m6       & 0.346 & 0.787   & 0.708   & 0.284    & 0.622     & 0.744     & 0.754     \\ \hline
+        yolov5-l6       & 0.295 & 0.706   & 0.625   & 0.232    & 0.533     & 0.691     & 0.489     \\ \hline
+        EfficientDet-d4 & 0.288 & 0.745   & 0.648   & 0.219    & 0.548     & 0.699     & 0.655     \\ \hline
+        RetinaNet-swint & 0.328 & 0.805   & 0.72    & 0.241    & 0.565     & 0.776     & 0.775     \\ \hline
     \end{tabular}
-    \caption{performance comparison of multiple models based on mean average precision metrics}
-    \label{tab:model_comparison4k}
+    \caption{Performance comparison of multiple models based on mean average precision metrics}
+    \label{tab:model_results:stage_five}
 \end{table}
 
-\begin{table}
-    \begin{tabular}{c||c|c|c|c}
-        Model - backbone         & Precision & Recall & F-score & Confidence threshold \\ \hline \hline
-        Faster R-CNN - ResNet101 & 0.701     & 0.67   & 0.685   & 0.664                \\ \hline
-        Faster R-CNN - ResNet50  & 0.679     & 0.7    & 0.689   & 0.663                \\ \hline
-        YOLOv5 mediumP6          & 0.672     & 0.69   & 0.681   & 0.238                \\ \hline
-        YOLOv5 largeP6           & 0.609     & 0.62   & 0.615   & 0.114                \\ \hline
-        EfficientDet - d4        & 0.648     & 0.62   & 0.634   & 0.183                \\ \hline
-        RetinaNet - swint        & 0.714     & 0.67   & 0.691   & 0.401                \\ \hline
+\begin{table}[H]
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        Model-backbone  & Precision & Recall & F-score & $\gamma$ \\ \hline
+        FRCNN-R101      & 0.701     & 0.67   & 0.685   & 0.664    \\ \hline
+        FRCNN-R50       & 0.679     & 0.7    & 0.689   & 0.663    \\ \hline
+        YOLOv5-m6       & 0.672     & 0.69   & 0.681   & 0.238    \\ \hline
+        YOLOv5-l6       & 0.609     & 0.62   & 0.615   & 0.114    \\ \hline
+        EfficientDet-d4 & 0.648     & 0.62   & 0.634   & 0.183    \\ \hline
+        RetinaNet-swint & 0.714     & 0.67   & 0.691   & 0.401    \\ \hline
     \end{tabular}
     \caption{Precision, recall, and F-score based on the confidence threshold}
-    \label{tab:model_prf4k}
+    \label{tab:model_prf:stage_five}
 \end{table}
 
 
@@ -193,15 +199,27 @@ Once again, we kept the same setting and changed only the size to which images a
 \end{figure}
 
 \section{Ensembling}
+\section{Hand-picked parameters}
+\begin{table}[h]
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Ensembled models      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        RN-sw, YOLO-m, RN-res & 0.303 & 0.776   & 0.694   & 0.216    & 0.605     & 0.729     & 0.803     \\ \hline
+        FR-R101, Y5-m, RN-sw  & 0.305 & 0.783   & 0.695   & 0.218    & 0.598     & 0.733     & 0.807     \\ \hline
+    \end{tabular}
+    \caption{Ensemble of multiple models}
+    \label{tab:model_ensembling}
+\end{table}
 \subsection{Grid search results}
 
 % \subsection{Reduced training dataset}
 % We fixed the validation and test dataset and changed the number of samples in the training dataset. The dependency of $AP$ on the number of training samples is depicted in figure \ref{fig:training_set_sizes}.
 
 
-\begin{table}
-    \begin{tabular}{c||c|c|c|c|c|c}
-        Method & FRCNN-R50      & YOLOV5-M       & RET-SWINT      & FRCNN-R101     & $T$  & $\sigma$ \\ \hline
+\begin{table}[h]
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+        Method & FRCNN-R50      & YOLOv5-m6      & RetN-swint     & FRCNN-R101     & $T$  & $\sigma$ \\ \hline
         nms    & 1              & 0.4            & 0.4            & 0.85           & 0.6  &          \\ \hline
         snms   & 1              & 0.12           & 0.12           & 0.12           & 0.7  & 0.8      \\ \hline
         nwm    & 0.85           & 0.25           & 0.70           & 0.85           & 0.45 &          \\ \hline
@@ -212,11 +230,11 @@ Once again, we kept the same setting and changed only the size to which images a
 \end{table}
 
 
-\begin{table}
+\begin{table}[h]
     \centering
-    \begin{tabular}{c|c|c|c|c|c|c|c}
-
-        method & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline \hline
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        method & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
         nms    & 0.346 & 0.818   & 0.735   & 0.28     & 0.618     & 0.775     & 0.829     \\ \hline
         snms   & 0.348 & 0.807   & 0.722   & 0.295    & 0.609     & 0.758     & 0.819     \\ \hline
         nwm    & 0.364 & 0.829   & 0.759   & 0.302    & 0.641     & 0.802     & 0.854     \\ \hline
@@ -226,10 +244,11 @@ Once again, we kept the same setting and changed only the size to which images a
 \end{table}
 
 
-\begin{table}
+\begin{table}[h]
     \centering
-    \begin{tabular}{c|c|c|c|c|c|c|c}
-        enms  & 0.546 & 0.91  & 0.971 & 0.522 & 0.949 & 0.98  & 0.98  \\ \hline
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        nms   & 0.546 & 0.91  & 0.971 & 0.522 & 0.949 & 0.98  & 0.98  \\ \hline
         snms  & 0.584 & 0.888 & 0.951 & 0.603 & 0.912 & 0.965 & 0.965 \\ \hline
         nwm   & 0.526 & 0.913 & 0.941 & 0.513 & 0.892 & 0.959 & 0.959 \\ \hline
         wbf   & 0.573 & 0.918 & 0.975 & 0.569 & 0.956 & 0.981 & 0.981 \\ \hline
@@ -238,9 +257,10 @@ Once again, we kept the same setting and changed only the size to which images a
 \end{table}
 
 
-\begin{table}
-    \begin{tabular}{c||c|c|c|c}
-        Model - backbone & Precision & Recall & F-score & Confidence threshold \\ \hline \hline
+\begin{table}[h]
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        Model - backbone & Precision & Recall & F-score & Confidence threshold \\ \hline
         nms              & 0.708     & 0.68   & 0.694   & 0.284                \\ \hline
         snms             & 0.679     & 0.7    & 0.689   & 0.489                \\ \hline
         nwm              & 0.713     & 0.71   & 0.712   & 0.792                \\ \hline
@@ -261,11 +281,12 @@ Once again, we kept the same setting and changed only the size to which images a
 
 \begin{table}
     \centering
-    \begin{tabular}{c|c|c}
+    \begin{tabular}{|c|c|c|}
+        \hline
         Model                 & Dice & IOU \\ \hline
         U-Net                 & x    & x   \\ \hline
         U-Net - postprocessed & x    & x   \\ \hline
         U-Net improved        & x    & x   \\ \hline
-        Non-DL approach       & x    & x   \\
+        Non-DL approach       & x    & x   \\ \hline
     \end{tabular}
 \end{table}
