@@ -16,45 +16,45 @@ where $f$ is a mapping, sometimes called a model, and $\theta$  represents model
 It is possible to output $\mathbf{p} \in \mathbb{R}^n$ instead of $\hat{y}$, where $p_i \in \mathbf{p}$ is probability of $i = y$, modeled by $f_\theta$.
 
 \subsection{Semantic segmentation}
-For an input image $x \in \mathbb{R}^{n \times m}$ the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $y{_i,j}$ is predicted class of pixel $i,j$ in the image $\mathbf{x}$. Similarly to classificaiton problem we can output matrix $\mathbf{P} \in \mathbb{R}^{n \times m \times c}$, where $p_{i,j,c}$ is probability of $pixel_{i,j}$ belonging to class $c$. A sample of semantic segmentation output can be seen in figure \ref{fig:computer_vision_tasks}.
+For an input image $x \in \mathbb{R}^{n \times m}$, the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $y{_i,j}$ is predicted class of pixel $i,j$ in the image $\mathbf{x}$. Similarly to the classification problem, we can output matrix $\mathbf{P} \in \mathbb{R}^{n \times m \times c}$, where $p_{i,j,c}$ is the probability of $pixel_{i,j}$ belonging to class $c$. A sample of semantic segmentation output can be seen in figure \ref{fig:computer_vision_tasks}.
 
 \subsection{Object detection}
 \label{subsec:object_detection}
-In object detection, the goal is to locate and recognize objects of interest in the image $\mathbf{x}$. A ground truth object is represneted by a rectangle and a category. Model predicts $\mathbf{Y} \in \mathbb{R}^{n \times 6}$ values for each image. Each row of $\mathbf{Y}$ consists of four numbers, which describe a rectangle, the category of the object inside the rectangle, and a number in the range from 0 to 1 called the confidence. In literature, we can see term score instead of confidence, but the meaning remains the same: Certainty of the network regarding the particular prediction described by the bounding box and category. Please note that the confidence of predictions does not sum to one; in other words, we are not talking about probabilities since multiple detections per image can correspond to ground truth.
+In object detection, the goal is to locate and recognize objects of interest in the image $\mathbf{x}$. A rectangle and a category represent a ground truth object. Model predicts $\mathbf{Y} \in \mathbb{R}^{n \times 6}$ values for each image. Each row of $\mathbf{Y}$ consists of four numbers, which describe a rectangle, the category of the object inside the rectangle, and a number in the range from 0 to 1 called the confidence. In literature, we can see the term score instead of confidence. Still, the meaning remains the same: Certainty of the network regarding the particular prediction described by the bounding box and category. Please note that the confidence of predictions does not sum to one. In other words, we are not talking about probabilities since multiple detections per image can correspond to the ground truth.
 
 \subsection{Instance segmentation}
-Instance segmentation is similar task to semantic segmantation with the difference, that two objects of the same category would have different ground truth values. If we have $\mathcal{O}_1, \mathcal{O}_2$, where $\mathcal{O}_i \subset \mathbf{x}$ are pixels of object $i$ in image $\mathbf{x}$. Then
+Instance segmentation is similar to semantic segmentation, with the alteration saying that two objects of the same category would have different ground truth values. If we have $\mathcal{O}_1, \mathcal{O}_2$, where $\mathcal{O}_i \subset \mathbf{x}$ are pixels of object $i$ in image $\mathbf{x}$. Then
 \begin{align}
     o_{1_i} \neq o_{2_i} \quad \text{for} \quad o_{1_i} \in \mathcal{O}_1, o_{2_i} \in \mathcal{O}_2;\forall i
 \end{align}
 
 \section{Data format in object detection}
-As described in section \ref{subsec:object_detection}, the position of an object is denoted by a bounding box.  The four parameters used to describe a bounding box can be selected in multiple ways. This ambiguity led to disjoint notation. The most widespread are as follows.
+As described in section \ref{subsec:object_detection}, the position of an object is denoted by a bounding box.  The four parameters used to describe a bounding box can be selected in multiple ways. This ambiguity led to a disjoint notation. The most widespread are as follows.
 \subsection{PASCAL VOC}
-The format was introduced together with the PASCAL VOC dataset, which was the most popular dataset for object detection algorithm benchmarking in 2010. The bounding box is described by points $p_1(x,y),p_2(x,y)$ located in the top-left and bottom right corner. The coordinates range from 0 to image width/height in pixels. All the annotations are stored into single XML file \cite{Everingham2009,Padilla2021}.
+The format was introduced together with the PASCAL VOC dataset, which was the most popular dataset for object detection algorithm benchmarking in 2010. The bounding box is described by points $p_1(x,y),p_2(x,y)$ located in the top-left and bottom right corner. The coordinates range from 0 to image width/height in pixels. All the annotations are stored in a single XML file \cite{Everingham2009,Padilla2021}.
 \subsection{COCO}
-COCO data format is represented by a single JSON file containing all bounding boxes of the dataset. The boxes are described by the top-left corner point $p(x,y)$ and the width and height of the box. Coordinated and box dimensions are again in the range 0 to image dimensions. In MS COCO, the annotation can be accompanied by additional information to solve the task as an instance segmentation problem.
+COCO data format is represented by a single JSON file containing all bounding boxes of the dataset. The boxes are described by the top-left corner point $p(x,y)$ and the width and height of the box. The coordinates and box dimensions are again in the range 0 to image dimensions. In MS COCO, the annotation can be accompanied by a piece of additional information to solve the task as an instance segmentation problem.
 \subsection{YOLO}
 This format was introduced together with the first YOLO architecture \cite{Redmon2015}, and this annotation style is still persistent whenever working with the YOLO-family neural networks.
 The annotations are divided into multiple TXT files in this format. Each of them contains annotations for a single image.
-The bounding box is described similarly to the COCO dataset, but the coordinates are normalized to be in the 0 to 1 range. The advantage of this approach is that when image dimensions are scaled, the annotations do not have to be modified \cite{Redmon2015, Padilla2021}.
+The bounding box is described similarly to the COCO dataset, but the coordinates are normalized to be in the 0 to 1 range. The advantage of this approach is that the annotations do not have to be modified when image dimensions are scaled \cite{Redmon2015, Padilla2021}.
 
 
 \section{Metrics}
 \subsection{Intersection over union (IOU) }
-Intersection over union, also known as Jaccard index, is defined as follows: Let $B_{gt}$ and $B_p$ be a ground truth and predicted bounding box, and the Jaccard index $J$ is calculated as
+Intersection over union, also known as Jaccard index, is defined as demonstrated: Let $B_{gt}$ and $B_p$ be a ground truth and a predicted bounding box. The Jaccard index $J$ is calculated as
 \begin{align}
     IOU = J(B_p, B_{gt}) = \frac{area(B_p \bigcap B_{gt})}{area(B_p \bigcup B_{gt})}.
     \label{eq:iou}
 \end{align}
-From the equation \ref{eq:iou} we can see that the the lowest value of IOU is 0. That means there is no overlap at all and the maximal value is 1, hence meaning a perfect match.
-We use predefined threshold value of IOU to decide if the predicted bounding box matches the ground truth. Usually we choose this threshold to be 0.5 or above.
+From the equation \ref{eq:iou}, we can observe that the lowest value of IOU is 0. That means there is no overlap, and the maximal value is 1, indicating a perfect match.
+We use a predefined threshold value of IOU to decide if the predicted bounding box matches the ground truth. Usually, we choose this threshold to be 0.5 or above.
 
-IOU can be defined for semantic segmentation task with two classes (eg. background and target class). Let $\mathbb{\hat{Y}} \in \mathbb{R}^{m \times n}$ be a mask of predicted values, where $\hat{y}_{i,j} = 1$ if the model predicts, that pixel $i,j$ belongs to target class. The IOU is defined as:
+IOU can be defined for the semantic segmentation task with two classes (e.g. background and target class). Let $\mathbb{\hat{Y}} \in \mathbb{R}^{m \times n}$ be a mask of predicted values, where $\hat{y}_{i,j} = 1$ if the model predicts, that pixel $i,j$ belongs to target class. The IOU is defined as:
 \begin{align}
     IOU = \frac{\sum_{i=1}^{m} \sum_{j=1}^{n} \hat{y}_{i,j} \wedge  y_{i,j}}{\sum_{i=1}^{m} \sum_{j=1}^{n} \hat{y}_{i,j} \vee  y_{i,j}}
 \end{align}
-where $y_{i,j} \in \mathbf{Y} \in \mathbb{R} ^ {m \ times n}$ is ground truth value for pixel $i,j$.
+where $y_{i,j} \in \mathbf{Y} \in \mathbb{R} ^ {m \ times n}$ is the ground truth value for pixel $i,j$.
 
 
 \begin{figure}
@@ -70,7 +70,7 @@ When speaking about object detection, we say that a prediction is a true positiv
 \begin{align}
     Precision(\tau, \gamma) = \frac{TP(\tau, \gamma)}{TP(\tau, \gamma) + FP(\tau, \gamma)}
 \end{align}
-where $\gamma$ is confidence threshold. That means we discard all predictions with confidence smaller than $\gamma$. Note that for fixed value of $\tau$ are $FP(\gamma)$ and $TP(\gamma)$ decreasing functions of $\gamma$ \cite{Padilla2021}.
+where $\gamma$ is the confidence threshold, meaning we discard all predictions with confidence smaller than $\gamma$. Note that for fixed value of $\tau$ are $FP(\gamma)$ and $TP(\gamma)$ decreasing functions of $\gamma$ \cite{Padilla2021}.
 
 \
 
@@ -89,7 +89,7 @@ The value of the F1 score is computed as the harmonic mean of precision and reca
 \end{align}
 
 \subsubsection{Precision-recall curve}
-From subsection \ref{subsec:precision} and \ref{subsec:recall} we were able to see that precision mostly increases as we increase the confidence threshold $\gamma$, while recall decreases. The relation between precision and recall is captured by precision-recall curve. An example of precision-recall curve can be seen as the blue line in the figure \ref{fig:pr_curve}. In other words, we can say that the precision-recall curve is a mapping
+From subsection \ref{subsec:precision} and\ref{subsec:recall}we were able to see that precision mainly grows as we increase the confidence threshold $\gamma$, while at the same time recall decreases. The precision-recall curve captures the relation between precision and recall. An example of the curve is illustrated as the blue line in figure \ref{fig:pr_curve}. In other words, we can say that the precision-recall curve is a mapping
 \begin{align}
     \gamma \rightarrow Precision(\gamma) \times  Recall(\gamma),
     \label{eq:pr_curve}
@@ -97,7 +97,7 @@ From subsection \ref{subsec:precision} and \ref{subsec:recall} we were able to s
 where $\gamma$ ranges from 1 to 0.
 
 \subsubsection{Mean average precision (mAP)}
-To calculate MAP we first need to get the PR-curve and then interpolate the precision values. Suppose, that we have $K$ different confidence values $\gamma$ among model predictions, which are ordered as
+To calculate mAP we first need to get the PR-curve and then interpolate the precision values. Suppose that we have $K$ different confidence values $\gamma$ among model predictions, which are ordered as
 \begin{align}
     \gamma(k),\: k = 1,2,...,K,  \; \text{such that } \gamma(i) > \gamma(j) \: for \: i > j.
 \end{align}
@@ -106,24 +106,24 @@ The interpolated precision-recall curve is defined as
     Precision_{interp}(R) = \max_{k|Recall(\gamma(k)) \geq R} \{  Precision(\gamma(k)) \},
 \end{align}
 where $R$ is a real value contained in interval [0,1] \cite{Padilla2021}.
-The interpolated precision-recall is pictured in the figure \ref{fig:pr_curve} in red color. Now, we can compute the average precision (AP) as the area under the interpolated PR curve.
+The interpolated precision-recall is pictured in figure \ref{fig:pr_curve} in red color. Now, we can compute the average precision (AP) as the area under the interpolated PR curve.
 In practice, there are two different ways to approach the Reimann integral. They differ in the number of samples used to compute the integral and are called N-point and all-point interpolation. The N-point, specifically 101 point interpolation, is used in the MS COCO competition. On the other hand, the all-point interpolation is nowadays used in PASCAL VOC challenges \cite{Padilla2020, Padilla2020}.
 
 Since the AP is calculated per class, the mean average precision is defined as the average over all categories.
 
-In the subsections, \ref{subsec:precision} and \ref{subsec:recall}, we said that both precision and recall depending on predefined IOU threshold $\tau$ to consider prediction as true positive. This dependency makes the value of MAP vary over different values of $\tau$. The threshold value used for computation of the mAP is usually denoted in the metrics name, such as $AP@.5$ in the case of MS COCO. \footnote{Note that even though the mean average precision is computed, the $AP$ shortcut, which stands for average precision, is used.} The standalone $AP$ without any numerical values attached to it usually refers to the official COCO metric. The official COCO metric is in its explicit form written as $AP@[.5:0.05:0.95]$ and is computed as the average of MAP values for ten different $\tau$ values, ranging from 0.5 to 0.95.
+In subsections \ref{subsec:precision} and \ref{subsec:recall}, we stated that precision and recall depend on a predefined IOU threshold $\tau$ to consider prediction as true positive. This dependency makes the value of MAP vary over different values of $\tau$. The threshold value used for computation of the mAP is usually denoted in the metrics name, such as $AP@.5$ in case of MS COCO. \footnote{Note that even though the mean average precision is computed, the $AP$ shortcut, which stands for average precision, is used.} The standalone $AP$ without any numerical values attached to it usually refers to the official COCO metric. The official COCO metric is in its explicit form written as $AP@[.5:0.05:0.95]$ and is computed as the average of MAP values for ten different $\tau$ values, ranging from 0.5 to 0.95.
 
 The letters S, M,  and L in the subscript, such as $AP_S$ denote that the metrics are calculated for a subset of ground truth predictions only. Taking into the consideration only bounding boxes with area $\leq 32^2$ pixels, $32^2 \le $ area $ \leq 96^2$ pixels and area $> 96^2$ pixels
 
-\subsection{Mean avarage recall (mAR)}
-MS COCO uses little bit different definition of recall, than the one described in section \ref{subsec:recall}. In the MS COCO case, they sort predictions in descending order by their confidence score and take only top $n$ of those. After that, they callculate how many ground TODO finish this
+\subsection{Mean average recall (mAR)}
+MS COCO uses a slightly different definition of recall than the one described in the section \ref{subsec:recall}. In this case, they sort predictions in descending order by their confidence score and take only the top $n$ of those. After that, they calculate how many ground TODO finish this
 
 TODO
 
 
 \begin{figure}
     \includegraphics[width = \linewidth]{images/PR-curve.png}
-    \caption{Normal and interpolated precision-recall curve, source \cite{Padilla2020}}
+    \caption{Standard and interpolated precision-recall curve, source \cite{Padilla2020}}
     \label{fig:pr_curve}
 \end{figure}
 
@@ -156,21 +156,21 @@ TODO
 TODO
 
 
-\section{Arificial neural network (ANN)}
-Arificial neural networks are inspired by the mechanisms of human brain. Human neuron cells are in ANN replaced replaced by artificial neurons, which are difined as:
+\section{Artificial neural network (ANN)}
+The mechanisms of the human brain inspire artificial neural networks. Human neuron cells are in ANN replaced by artificial neurons, which are defined as:
 \begin{align}
     y = f \left( \boldsymbol{w}^T \boldsymbol{x}  + b \right).
 \end{align}
-Where $\boldsymbol{x}$ is vector of inptus, $\boldsymbol{w}$ are weights and $b$ is bias. Symbol $f$ denotes an activation funtion f : $\mathbb{R} \rightarrow \mathbb{R}$. The artificial neuron proposed by Frank Rosenblatt in the perceptron algorithm used step funtion \cite{Rosenblatt1958}, but nowadays, different functions such as ReLu, sigmoid or tanh are used. The output of the neuron $y$ is called activation of the neuron.
+Where $\boldsymbol{x}$ is a vector of inputs, $\boldsymbol{w}$ stands for weights and $b$ is bias. Symbol $f$ denotes an activation function f : $\mathbb{R} \rightarrow \mathbb{R}$. The artificial neuron proposed by Frank Rosenblatt in the perceptron algorithm worked with a step function \cite{Rosenblatt1958}, but nowadays, different functions such as ReLu, sigmoid or tanh are used. The output of the neuron $y$ is called activation of the neuron.
 
-Neurons are ussally structured into layers. The connection between layers is depended upon the architectural choice. First ANNs used fully connected layers, meaning that the input into a neuron in layer $n$ were composed of all activations from layer $n-1$. Fully connected neural networks are nowadays sparsely used in computer vision. Convolutional neural networks (CNNs) or vision transformers are used instead. In the case of CNNs we limit neurons' receptive field to the local neighborhood only; this decreases the computation complexity and includes our prior knowledge of pixel neighborhood in the input image. Having the same weights for the whole input makes the network invariant to shifts in the input.
+Neurons are usually structured into layers. The connection between layers depends upon the architectural choice. First ANNs used fully connected layers, meaning that the input into a neuron in layer $n$ was composed of all activations from layer $n-1$. Fully connected neural networks are nowadays sparsely used in computer vision. Convolutional neural networks (CNNs) or vision transformers are used instead. In the case of CNNs we limit neurons' receptive field to the local neighborhood only; this decreases the computation complexity and includes our prior knowledge of pixel neighborhood in the input image. Having the same weights for the whole input makes the network invariant to shifts in the input.
 
 \subsection{Convolutional layer}
-Convolutional layers consists of $C_{out}$ neurons, each having $C_{in}, H, W$ receptive field. Those neurons are called kernels with width $W$ height $H$ and a number of input channels $C_{in}$. In each layer, we convolve\footnote{Even though we usually refer to convolution, in practice cross-correlation is used instead and terms cross-correlation and convolution are used interchangeably.} the input $X$  with the kernel $W$, the output $Y$ is defined by:
+A convolutional layer consists of $C_{out}$ neurons, each having $C_{in}, H, W$ receptive field. Those neurons are called kernels with width $W$ height $H$ and several input channels $C_{in}$. In each layer, we convolve\footnote{Even though we usually refer to convolution, in practice, cross-correlation is used instead. Terms cross-correlation and convolution are used interchangeably.} the input $X$  with the kernel $W$, the output $Y$ is defined by:
 \begin{align}
     y_{o,i,j} = \sum_{c_{in}} \sum_{\Delta i} \sum_{\Delta j} x_{c, i+\Delta i, j + \Delta j}  w_{o,c, \Delta i, \Delta j}
 \end{align}
-Nowadays, modifications of convolutional layers are proposed, such as dilated convolution, grouped convolution, or depth-wise separable convolutions are used, but the fundamentals are the same: Filter sliding over the input produces an output.
+Nowadays, modifications of convolutional layers are proposed, such as dilated convolution, grouped convolution, or depth-wise separable convolutions are used. However, the fundamentals remain the same: Filter sliding over the input produces an output.
 
 \begin{figure}
     \centering
@@ -178,7 +178,7 @@ Nowadays, modifications of convolutional layers are proposed, such as dilated co
 \end{figure}
 
 \subsection{Activation functions}
-A non-linear activation function usually follows the output of the convolutional layer. Many activation functions are at our disposal, but the most commonly used is ReLU and its derivatives, such as SERLU, SELU, ELU, Swish, and Leaky ReLU. Values of those function are depicted in figure \ref{fig:activation_functions}.
+A non-linear activation function usually follows the output of the convolutional layer. Many activation functions are at our disposal, but the most commonly used is ReLU and its derivatives, such as SERLU, SELU, ELU, Swish, and Leaky ReLU. Values of those functions are depicted in figure \ref{fig:activation_functions}.
 
 \subsection{Normalization layers}
 \subsubsection{Batch-normalization}
@@ -195,12 +195,12 @@ TODO
 
 
 \section{Transformer architecture}
-Transformer architecture debuted in computer vision in 2021 and since then achieved outstanding results, beating state-of-the-art models in multiple benchmarks across all computer vision tasks. As of May 2022, the best-performing models in the main computer vision benchmarks are based on transformer architecture. We think of the following benchmarks to be the main ones in computer vision:  ImageNet benchmark (classification task), COCO (object detection), ADE20K (semantic segmentation).
+Transformer architecture debuted in computer vision in 2021 and has achieved outstanding results, beating state-of-the-art models in multiple benchmarks across all computer vision tasks. As of May 2022, the best-performing models in the main computer vision benchmarks are based on transformer architecture. We think of the following benchmarks to be the main ones in computer vision:  ImageNet benchmark (classification task), COCO (object detection), ADE20K (semantic segmentation).
 
-The transformer architecture was proposed already in 2017 for the task of natural language processing (NLP); we will briefly introduce transformer architecture for the NLP task since it is crucial for the understanding of transformers for computer vision.
+The transformer architecture was proposed already in 2017 for the task of natural language processing (NLP). We will briefly introduce transformer architecture for the NLP task since it is crucial for understanding of transformers for computer vision.
 
 \subsubsection{Transformers in NLP}
-Transformer architecture was introduced in the paper Attention is all you need \cite{Vaswani2017} for NLP. NLP is a task where input is a sequence of words of length $n$ and output is a sequence of $m$ words, where $n$ and $m$ usually differ. The sequence of words is converted into a sequence of vectors. There are multiple options for how to embed words into vector, commonly used is TD-IDF or Word2Vec\cite{Li2018}. Positional encoding is added to those vectors are then processed by the encoder block. The novel key component is the self-attention module, where for the input sequence of vector values $V$, keys $K$ and queries $Q$ are computed. From encoder, we output values and keys, and from the decoder's self-attention module, we output queries. We then take keys and values from the encoder and queries from the decoder and input them into another attention block:
+Transformer architecture was introduced in the paper Attention is all you need \cite{Vaswani2017} for NLP. NLP is a task where input is a sequence of words of length $n$ and output is a sequence of $m$ words, where $n$ and $m$ usually differ. The sequence of words is converted into a sequence of vectors. There are multiple options for how to embed words into the vector, commonly used is TD-IDF or Word2Vec\cite{Li2018}. Positional encoding is added to those vectors are then it is processed by the encoder block. The novel key component is the self-attention module, where for the input sequence of vector values $V$, keys $K$ and queries $Q$ are computed. From the encoder, we output values and keys, and from the decoder's self-attention module, we output queries. We then take keys and values from the encoder and queries from the decoder and input them into another attention block:
 \begin{align}
     Attention \left(Q,K,V \right) = \text{softmax} \left( \frac{QK^T}{\sqrt{d_k}} \right)V,
 \end{align}
@@ -214,7 +214,7 @@ where $d_k$ is dimension of keys. More details can be seen in figure \ref{fig:nl
 \end{figure}
 
 \subsection{Transformers in computer vision}
-The first trasnformer-based model was Vision Transformer (ViT). It was capable of image classification only, and it is composed of multiple encoder blocks stacked on top of each other. Those blocks are the same as those used by the transformer for the NLP task. On the top encoder, blocks are attached multi-layer perceptron (MLP) head, which outputs values for each class. Those can be converted into corresponding probabilities by softmax-layer. Input into ViT are $16 \times 16$ image patches linearly projected into vectors; the whole architecture is shown in figure
+The first trasnformer-based model was Vision Transformer (ViT) which is capable of image classification only. It is composed of multiple encoder blocks stacked on top of each other; those blocks are the same as those used by the transformer for the NLP task. On the top encoder block is attached a multi-layer perceptron (MLP) head, which outputs values for each class. Those can be converted into corresponding probabilities by a softmax-layer. The input into ViT are $16 \times 16$ image patches linearly projected into vectors; the whole architecture is shown in figure
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/vision_transformer.png}
@@ -224,7 +224,7 @@ The first trasnformer-based model was Vision Transformer (ViT). It was capable o
 
 
 \section{General architecture for object detection}
-Even though there is a wide variety of architectures for object detection, the core principles remain the same. The model is composed of three main parts: backbone, neck, and head, as shown in figure \ref{fig:object_detection_architecture}. Each of those blocks can usually be swapped for a different one, fulfilling the same purpose. This gives us great flexibility and allows us to try different combinations of those blocks.
+Even though there is a wide variety of architectures for object detection, the core principles remain the same. The model is composed of three main parts: backbone, neck, and head, as depicted in figure \ref{fig:object_detection_architecture}. Each of those blocks can usually be swapped for a different one, fulfilling the same purpose. This gives us a great flexibility and allows us to try different combinations of those blocks.
 
 
 \begin{figure}
@@ -235,10 +235,10 @@ Even though there is a wide variety of architectures for object detection, the c
 \end{figure}
 
 \subsubsection{Backbone}
-The purpose of backbones is to transform the input image into feature maps. For this purpose, we use classification models with the classification head removed. Most parameters of object detection models are usually part of the backbone. Extraction of useful feature maps is vital for other blocks to perform well. The most common backbones are models from the ResNet family.
+The purpose of backbones is to transform the input image into feature maps. For this purpose, we use classification models with the classification head removed. Most parameters of object detection models are usually part of the backbone. The extraction of useful feature maps is vital for other blocks to perform well. The most common backbones are models from the ResNet family.
 
 \subsubsection{Neck}
-The neck is responsible for the merging of features from the backbone. This is not a straightforward task since we usually use features from different backbone layers. This allows us to get semanticaly strong features from deeper layers as well as more detailed information from earlier ones. Common neck architectures are feature pyramid network or PANet.
+The neck is responsible for the merging of features from the backbone. This is not a straightforward task since we usually use features from different backbone layers. This allows us to get semantically strong features from deeper layers as well as more detailed information from earlier ones. Common neck architectures are feature pyramid network or PANet.
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/necks_architecture.png}
@@ -251,11 +251,11 @@ The neck is responsible for the merging of features from the backbone. This is n
 \section{Backbone models}
 This section will introduce multiple architectures of neural networks, which were used as a backbone throughout our work.
 \subsection{ResNet}
-ResNet architecture was introduced by He et al. \cite{He2015} and proposed a novel element of deep-learning architectures - identity shortcut connection, sometimes called skip-connection. Let $\mathbf{x}$ be input into a block composed of multiple convolutional layers with activation functions in between\footnote{Addition of batch-normalization, or other layers is possible}; we will call this block a mapping $\mathcal{F}$. The output of residual block $\mathcal{H}$, derived from $\mathcal{F}$ is defined as:
+ResNet architecture was introduced by He et al. \cite{He2015} and proposed a novel element of deep-learning architectures - identity shortcut connection, sometimes called skip-connection. Let $\mathbf{x}$ be the input into a block composed of multiple convolutional layers with activation functions in between\footnote{Addition of batch-normalization, or other layers is possible}; we will call this block a mapping $\mathcal{F}$. The output of residual block $\mathcal{H}$, derived from $\mathcal{F}$ is defined as:
 \begin{align}
     \mathcal{H}\left(\mathbf{x}\right) = \mathcal{F} \left(\mathbf{x}\right) + \mathbf{x}.
 \end{align}
-The reasoning behind the residual block is to make it easier to learn identity mapping if desired. This had other benefits, especially the improvement of gradient flow during back-propagation, making it easier to optimize such blocks. This ease of optimization can be seen by inspecting the loss function landscape of a model with and without skip-connections, figure \ref{fig:resnet_loss}.
+The reasoning behind the residual block is to make it easier to learn identity mapping if desired. This had other benefits, especially the improvement of the gradient flow during back-propagation, making it easier to optimize such blocks. This ease of optimization can be seen by inspecting the loss function landscape of a model with and without skip-connections, figure \ref{fig:resnet_loss}.
 Final ResNet architecture is composed of multiple residual blocks stacked one after another; the models vary in the number of layers used; this is denoted in the name with a number such as ResNet50 or ResNet101.
 
 \begin{figure}
