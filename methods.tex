@@ -1,6 +1,6 @@
 \chapter{Methods}
 
-\section{Caries detection - model comparison}
+\section{Caries detection - baseline model comparison}
 
 Firstly we implemented and tested multiple object-detection architectures. We compared them against each other on the stage of the dataset that was currently available.
 
@@ -27,6 +27,7 @@ The dimensions to which resize an image were selected due to limitations of some
 All the computations were realized on the CMP cluster, consisting of multiple GPU nodes. The experiments were conducted on the Boruvka and Zorn machines. Both of them have 32 CPU cores, 256GB of RAM memory, and 8 NVIDIA GeForce GTX 1080-Ti graphics cards with 12GB of dedicated memory.
 
 \subsection{Neural network models}
+\label{sec:methods:nns}
 Multiple architectures of neural networks were used. As the work on the thesis progressed, the amount grew larger; thus on the advanced stages of the dataset, a wider variety of models can be seen. We stopped using the YOLOv3 model after stage 2, since the YOLOv5 model has superior performance on stages one and two.
 
 All the models we used and their respective backbones are listed bellow
@@ -59,6 +60,8 @@ The batch size differed based on the model architecture and selected backone. We
     \label{tab:batch_sizes}
 \end{table}
 
+
+
 \subsubsection{Optimizers}
 The Adam optimizer was used during all experiments. The parameters $\beta_1, \beta_2$ were set to 0.9 and 0.999 and weight decay was chosen to be $10^{-6}$. Since we could not fit reasonably big batch sizes into the GPU, the optimization step was performed every four forward passes. This should emulate a bigger batch size and increase the chance of finding global optimization minima.
 
@@ -66,6 +69,22 @@ The Adam optimizer was used during all experiments. The parameters $\beta_1, \be
 We initialy experimented with different learinig rates and used the learning rate test to find the initial learning rate. In the end, there was no difference in the final performance of the model, and the number of epochs required to train the model did not differ significantly. In rare cases, the learning rate test's learning rate did not leadd to model convergence. We, therefore, set the initial learning rate to $10^{-4}$ and used a reduced on plateau learning rate scheduler. The monitored value by the scheduler was validation loss, and the learning rate decreased by a factor of 5 when the improvement of the loss stalled for five consecutive epochs.
 \subsubsection{Termination condition}
 The training was halted when the $AP@.5$ did not increase throughout 10 epochs, but not earlier than after 50 epochs from the beginning of the training.
+
+\section{Caries detection - model improvements}
+\subsection{General changes}
+\label{sec:general_changes}
+We replaced the Adam optimizer with AdamW with the same $\beta_1$ and $\beta_2$. Furthermore, a cosine annealing learning rate scheduler was used. The half-period of cosine was set to 70 epochs and the minimal learning rate to $10^{-7}$.
+Multiple models from section \ref{sec:methods:nns} were used and the training was done on stage five dataset.
+\subsection{Group normalization}
+
+
+\section{Model instpection}
+We conducted several experiments to asses model behavior. All experiments were made on dataset made in fifth stage with models, whose results are in tables \ref{tab:improved:precision}, \ref{tab:improved:recall},\ref{tab:imrpoved:prf}.
+\subsection{Size of backbone}
+We explored the influence of the backbone choice on the performance of the model. We therefore used YOLOv5 model and trained it multiple times with small, medium and large backbone. The training was done by the approach described in sections this section including improvements mentioned in subsection \ref{sec:general_changes}.
+
+\subsection{Weight decay}
+We experimented with different values of weight decay. We used Faster-RCNN architecture with ResNet50 backbone and YOLOv5 with medium size backbone and tried the following values of weight decay: $10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}$.
 
 \section{Dental-restorations segmentation segmentation}
 \subsection{Non-deeplearning approach}
@@ -186,3 +205,11 @@ We used results from table TODO and normalized all confidence values o
     \caption{Structure of the data in .json file used to store model predictions}
     \label{fig:predictions_json}
 \end{figure}
+
+\subsection{Assesing importance of different models in ensembling}
+To get an insight into what affects the performance of model ensembling we compare the following: Ensemble of multiple models with the same architecture and backbone, ensemble of models with the same architecture and different backbones, ensemble of different architectures.
+
+
+
+\subsubsection{The same architecture and backbone}
+We selected a total of eight pretrained YOLOv5 model with medium size backbone. All those model were trained on stage five dataset.

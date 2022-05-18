@@ -37,6 +37,7 @@
 \end{table}
 
 \subsection{Stage three dataset}
+Results of trained models evaluated on the training part and the test part of the dataset are available in tables \ref{tab:model_results:stage_three:train} and \ref{tab:model_results:stage_three:test}. Performance comparison of different YOLOv5 backbones can be seen in table \ref{tab:stage_three:yolov5_backbones}
 
 \begin{table}[H]
     \centering
@@ -62,7 +63,6 @@
     \label{tab:model_results:stage_three:test}
 \end{table}
 
-
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|}
         \hline
@@ -73,10 +73,11 @@
         5x6      & 0.601   & 0.238 & 140           & 267      & 8.5     \\ \hline
     \end{tabular}
     \caption{Results of the YOLOv5 architecture with different backbones}
-    \label{tab:yolov5_backbones}
+    \label{tab:stage_three:yolov5_backbones}
 \end{table}
 
 \subsection{Stage four dataset}
+Average precision of models trained on this stage of the dataset are in table
 
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
@@ -142,54 +143,83 @@
     \label{tab:model_prf:stage_five}
 \end{table}
 
-
-\section{Basic setup}
-In this section we trained the model with the parameters described in chapter \ref{chapter:methods}.
-\subsection{YOLOv5}
-The results of the YOLOv5 model for training and test dataset are available in table \ref{tab:yolov5_basic}, and more in-depth information about the $AP$ can be seen from precision-recall curves for which are plotted in figure \ref{fig:yolov5_pr_curves}. Furthermore, samples from the test part of the dataset with overlayed predictions and ground truth boxes are in the appendix \ref{appendix:model_predictions}.
-
-\begin{paracol}{2}
-    \begin{figure}
-        \includegraphics[width=\linewidth]{images/iou_val_multiple.pdf}
-        \caption{Precision-recall curve of the YOLOv5 model}
-        \label{fig:yolov5_pr_curves}
-    \end{figure}
-    \switchcolumn
-    \begin{figure}
-        \includegraphics[width=\linewidth]{images/iou_threshold.pdf}
-        \caption{The value of MAP based on the IOU threshold $\gamma$}
-        \label{fig:yolov5_map_iou_thresholds}
-    \end{figure}
-\end{paracol}
-
-\subsection{EfficientDet}
-We evaluated the EfficientDet model in the same fashion as YOLOv5 and resulting metrics are strored into the table \ref{tab:effdet_basic}.
+\section{Model improvements}
+\subsection{General improvements}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Model      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        YOLOv5-l6  & 0.347 & 0.796   & 0.725   & 0.291    & 0.597     & 0.772     & 0.753     \\ \hline
+        YOLOv5-m6  & 0.343 & 0.795   & 0.719   & 0.287    & 0.636     & 0.752     & 0.785     \\ \hline
+        YOLOv5-s6  & 0.327 & 0.79    & 0.697   & 0.281    & 0.559     & 0.739     & 0.826     \\ \hline
+        Effdet-D1  & 0.319 & 0.787   & 0.701   & 0.251    & 0.584     & 0.752     & 0.808     \\ \hline
+        FRCNN-R50  & 0.311 & 0.788   & 0.705   & 0.231    & 0.629     & 0.737     & 0.788     \\ \hline
+        FRCNN-R101 & 0.316 & 0.792   & 0.688   & 0.239    & 0.563     & 0.732     & 0.793     \\ \hline
+        RetN-swint & 0.325 & 0.803   & 0.723   & 0.249    & 0.579     & 0.78      & 0.758     \\ \hline
+    \end{tabular}
+    \caption{Comparision of AP values between different models}
+    \label{tab:improved:precision}
+\end{table}
 
 
-\section{Experiments}
-The YOLOv5 model was selected since it was better performing than EfficientDet. Unless stated otherwise, we kept the same parameters as described in chapter\ref{chapter:methods}. Through a series of experiments, we tried to get an insight into the importance of model parameters.
-\subsection{Different backbones}
-We changed the batch size to 2 (to fit 5x6 backbone into the GPU memory) and trained the model with different backbones for 50 epochs each. Results of all runs are in table \ref{tab:yolov5_backbones}.
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Model      & $AR$  & $AR@.5_{10}$ & $AR@.5$ & $AR@.75$ & $AR@.5_S$ & $AR@.5_M$ & $AR@.5_L$ \\ \hline
+        YOLOv5-l6  & 0.559 & 0.895        & 0.956   & 0.559    & 0.916     & 0.971     & 0.971     \\ \hline
+        YOLOv5-m6  & 0.547 & 0.899        & 0.957   & 0.541    & 0.933     & 0.971     & 0.971     \\ \hline
+        YOLOv5-s6  & 0.545 & 0.877        & 0.951   & 0.549    & 0.916     & 0.968     & 0.968     \\ \hline
+        Effdet-D1  & 0.531 & 0.87         & 0.958   & 0.488    & 0.909     & 0.978     & 0.978     \\ \hline
+        FRCNN-R50  & 0.475 & 0.867        & 0.883   & 0.445    & 0.832     & 0.899     & 0.899     \\ \hline
+        FRCNN-R101 & 0.478 & 0.864        & 0.89    & 0.458    & 0.815     & 0.917     & 0.917     \\ \hline
+        RetN-swint & 0.508 & 0.89         & 0.946   & 0.468    & 0.902     & 0.967     & 0.967     \\ \hline
+    \end{tabular}
+    \caption{Average racall of improved models}
+    \label{tab:improved:recall}
+\end{table}
 
 
-\subsection{Different image size}
-Once again, we kept the same setting and changed only the size to which images are resized. The relation between input image size and $AP@.5$ can be observed in figure \ref{fig:img_sizes}.
+\begin{table}[h]
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        Model      & Precision & Recall & F-score & Confidence threshold \\ \hline
+        YOLOv5-l6  & 0.689     & 0.69   & 0.689   & 0.271                \\ \hline
+        YOLOv5-m6  & 0.74      & 0.64   & 0.686   & 0.326                \\ \hline
+        YOLOv5-s6  & 0.692     & 0.64   & 0.665   & 0.295                \\ \hline
+        Effdet-D1  & 0.739     & 0.64   & 0.686   & 0.339                \\ \hline
+        FRCNN-R50  & 0.719     & 0.66   & 0.688   & 0.759                \\ \hline
+        FRCNN-R101 & 0.704     & 0.63   & 0.665   & 0.684                \\ \hline
+        RetN-swint & 0.681     & 0.69   & 0.685   & 0.367                \\ \hline
+    \end{tabular}
+    \caption{Precision, recall, and F-score based on the confidence threshold for different models}
+    \label{tab:imrpoved:prf}
+\end{table}
 
-\begin{paracol}{2}
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.99\linewidth]{images/img_size_dependency.pdf}
-        \caption{The relation between image size and $AP@.5$}
-        \label{fig:img_sizes}
-    \end{figure}
-    \switchcolumn
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.99\linewidth]{images/training_set_dependency.pdf}
-        \caption{Mean average precision based on the size of training set}
-        \label{fig:training_set_sizes}
-    \end{figure}
-\end{paracol}
+\subsection{Group normalization}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/batch_norm_group_norm.png}
+\end{figure}
+
+
+
+% \begin{paracol}{2}
+%     \begin{figure}
+%         \centering
+%         \includegraphics[width=0.99\linewidth]{images/img_size_dependency.pdf}
+%         \caption{The relation between image size and $AP@.5$}
+%         \label{fig:img_sizes}
+%     \end{figure}
+%     \switchcolumn
+%     \begin{figure}
+%         \centering
+%         \includegraphics[width=0.99\linewidth]{images/training_set_dependency.pdf}
+%         \caption{Mean average precision based on the size of training set}
+%         \label{fig:training_set_sizes}
+%     \end{figure}
+% \end{paracol}
 
 \begin{figure}
     \begin{floatrow}[2]
@@ -207,26 +237,25 @@ Once again, we kept the same setting and changed only the size to which images a
         RN-sw, YOLO-m, RN-res & 0.303 & 0.776   & 0.694   & 0.216    & 0.605     & 0.729     & 0.803     \\ \hline
         FR-R101, Y5-m, RN-sw  & 0.305 & 0.783   & 0.695   & 0.218    & 0.598     & 0.733     & 0.807     \\ \hline
     \end{tabular}
-    \caption{Ensemble of multiple models}
-    \label{tab:model_ensembling}
+    \caption{WBF ensemble of multiple models, wehre we handpicked the parameters of the ensemble process. The models were trained on stage four dataset.}
+    \label{tab:model_ensembling:handpicked}
 \end{table}
 \subsection{Grid search results}
-
-% \subsection{Reduced training dataset}
-% We fixed the validation and test dataset and changed the number of samples in the training dataset. The dependency of $AP$ on the number of training samples is depicted in figure \ref{fig:training_set_sizes}.
-
+The best hyper-parameters for a given ensemble method found by a grid search are in the table \ref{tab:ensemble_params:grid_search}. We omited from the table parameter $sigma$, used only in snms. Its optimal value, according to the grid search, was $0.8$.
+Average precision of the models ensembled with parameters from table \ref{tab:ensemble_params:grid_search} are available in table \ref{tab:precision:grid_search} and average recall values are in the table \ref{tab:recall:grid_search}. Precison and recall values based on the confidence threshold, that maximizes F-score can be seen in table \ref{tab:ensembling_prf:grid_search}.
 
 \begin{table}[h]
     \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
-        Method & FRCNN-R50      & YOLOv5-m6      & RetN-swint     & FRCNN-R101     & $T$  & $\sigma$ \\ \hline
-        nms    & 1              & 0.4            & 0.4            & 0.85           & 0.6  &          \\ \hline
-        snms   & 1              & 0.12           & 0.12           & 0.12           & 0.7  & 0.8      \\ \hline
-        nwm    & 0.85           & 0.25           & 0.70           & 0.85           & 0.45 &          \\ \hline
-        wbf    & 1              & 0.4            & 0.85           & 0.85           & 0.65 &          \\ \hline
-        wbf-A  & 0.94/0.77/0.84 & 0.31/0.47/0.31 & 0.98/0.85/0.88 & 0.72/0.69/0.91 & 0.64 &          \\ \hline
+        Method & FRCNN-R50      & YOLOv5-m6      & RetN-swint     & FRCNN-R101     & $T$  \\ \hline
+        nms    & 1              & 0.4            & 0.4            & 0.85           & 0.6  \\ \hline
+        snms   & 1              & 0.12           & 0.12           & 0.12           & 0.7  \\ \hline
+        nwm    & 0.85           & 0.25           & 0.70           & 0.85           & 0.45 \\ \hline
+        wbf    & 1              & 0.4            & 0.85           & 0.85           & 0.65 \\ \hline
+        wbf-A  & 0.94/0.77/0.84 & 0.31/0.47/0.31 & 0.98/0.85/0.88 & 0.72/0.69/0.91 & 0.64 \\ \hline
     \end{tabular}
-    \caption{}
+    \caption{Hyper-parameter values of ensemble methods found by a grid-seach}
+    \label{tab:ensemble_params:grid_search}
 \end{table}
 
 
@@ -241,6 +270,8 @@ Once again, we kept the same setting and changed only the size to which images a
         wbf    & 0.378 & 0.832   & 0.77    & 0.323    & 0.663     & 0.807     & 0.875     \\ \hline
         wbf-A  & 0.376 & 0.832   & 0.768   & 0.318    & 0.651     & 0.806     & 0.875     \\ \hline
     \end{tabular}
+    \caption{Average precision of models ensembled by parameters from table \ref{tab:ensemble_params:grid_search}}
+    \label{tab:precision:grid_search}
 \end{table}
 
 
@@ -248,12 +279,15 @@ Once again, we kept the same setting and changed only the size to which images a
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        nms   & 0.546 & 0.91  & 0.971 & 0.522 & 0.949 & 0.98  & 0.98  \\ \hline
-        snms  & 0.584 & 0.888 & 0.951 & 0.603 & 0.912 & 0.965 & 0.965 \\ \hline
-        nwm   & 0.526 & 0.913 & 0.941 & 0.513 & 0.892 & 0.959 & 0.959 \\ \hline
-        wbf   & 0.573 & 0.918 & 0.975 & 0.569 & 0.956 & 0.981 & 0.981 \\ \hline
-        wbf-A & 0.572 & 0.92  & 0.974 & 0.566 & 0.956 & 0.98  & 0.98  \\ \hline
+        method & $AR$  & $AR@.5_{10}$ & $AR@.5$ & $AR@.75$ & $AR@.5_S$ & $AR@.5_M$ & $AR@.5_L$ \\ \hline
+        nms    & 0.546 & 0.91         & 0.971   & 0.522    & 0.949     & 0.98      & 0.98      \\ \hline
+        snms   & 0.584 & 0.888        & 0.951   & 0.603    & 0.912     & 0.965     & 0.965     \\ \hline
+        nwm    & 0.526 & 0.913        & 0.941   & 0.513    & 0.892     & 0.959     & 0.959     \\ \hline
+        wbf    & 0.573 & 0.918        & 0.975   & 0.569    & 0.956     & 0.981     & 0.981     \\ \hline
+        wbf-A  & 0.572 & 0.92         & 0.974   & 0.566    & 0.956     & 0.98      & 0.98      \\ \hline
     \end{tabular}
+    \caption{Average recall of models ensembled by parameters from table \ref{tab:ensemble_params:grid_search}}
+    \label{tab:recall:grid_search}
 \end{table}
 
 
@@ -268,25 +302,54 @@ Once again, we kept the same setting and changed only the size to which images a
         wbf-A            & 0.745     & 0.69   & 0.716   & 0.201                \\ \hline
     \end{tabular}
     \caption{Precision, recall, and F-score based on the confidence threshold for different ensembling methods}
-    \label{tab:ensembling_prf}
+    \label{tab:ensembling_prf:grid_search}
 \end{table}
 
-\section{segmentaion}
+
+\section{Dental retorations segmentation}
 \subsection{U-Net}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=1\linewidth]{images/unet_1_img_12.pdf}
+        \caption{Baseline U-Net model}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=1\linewidth]{images/unet_2_img_12.pdf}
+        \caption{Imrpoved U-Net model}
+    \end{subfigure}
+    \caption{From the left: X-ray image, ground-truth pixel mask, output of the model, output processed by morphological opening, output post-processed by morphological opening and closing.}
+\end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[]{images/heatmap_of_unetpostproc_search.pdf}
+    \caption{Value of IOU metric based on the size of kernels $K_O$, $K_C$ in morphological operations, that were used for post-processing}
+    \label{fig:heatmap_postprocess}
 \end{figure}
 
 \begin{table}
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
-        Model                 & Dice & IOU \\ \hline
-        U-Net                 & x    & x   \\ \hline
-        U-Net - postprocessed & x    & x   \\ \hline
-        U-Net improved        & x    & x   \\ \hline
-        Non-DL approach       & x    & x   \\ \hline
+        Parameter      & $K_O$ & $K_C$ \\ \hline
+        U-Net          & 37    & 25    \\ \hline
+        U-Net improved & 33    & 5     \\ \hline
     \end{tabular}
 \end{table}
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Model      & Dice  & IOU   \\ \hline
+        U-Net-B    & 0.663 & 0.575 \\ \hline
+        U-Net-B-PP & 0.714 & 0.623 \\ \hline
+        U-Net-I    & 0.747 & 0.662 \\ \hline
+        U-Net-I-PP & 0.760 & 0.676 \\ \hline
+    \end{tabular}
+    \caption{Results of U-Net models}
+\end{table}
+
