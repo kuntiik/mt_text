@@ -47,7 +47,7 @@ Intersection over union, also known as Jaccard index, is defined as demonstrated
     IOU = J(B_p, B_{gt}) = \frac{area(B_p \bigcap B_{gt})}{area(B_p \bigcup B_{gt})}.
     \label{eq:iou}
 \end{align}
-From the equation \ref{eq:io, we can observe that the lowest value of IOU is 0. This means there is no overlap, and the maximal value is 1, indicating a perfect match.
+From the equation \ref{eq:iou}, we can observe that the lowest value of IOU is 0. This means there is no overlap, and the maximal value is 1, indicating a perfect match.
 We use a predefined threshold value of IOU to decide if the predicted bounding box matches the ground truth. Usually, we choose this threshold to be 0.5 or above.
 
 IOU can be defined for the semantic segmentation task with two classes (e.g., background and target class). Let $\mathbb{\hat{Y}} \in \mathbb{R}^{m \times n}$ be a mask of predicted values, where $\hat{y}_{i,j} = 1$ if the model predicts, that pixel $i,j$ belongs to target class. The IOU is defined as:
