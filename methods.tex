@@ -78,7 +78,8 @@ Multiple models from section \ref{sec:methods:nns} were used and the training wa
 \subsection{Group normalization}
 
 
-\section{Model instpection}
+\section{Model inspection}
+\label{sec:model_inspection}
 We conducted several experiments to asses model behavior. All experiments were made on dataset made in fifth stage with models, whose results are in tables \ref{tab:improved:precision}, \ref{tab:improved:recall},\ref{tab:imrpoved:prf}.
 \subsection{Size of backbone}
 We explored the influence of the backbone choice on the performance of the model. We therefore used YOLOv5 model and trained it multiple times with small, medium and large backbone. The training was done by the approach described in sections this section including improvements mentioned in subsection \ref{sec:general_changes}.
@@ -91,7 +92,7 @@ We experimented with different values of weight decay. We used Faster-RCNN archi
 We decided to test the approach that Abdalla-Aslan proposed, and Yeshua \cite{AbdallaAslan2020, Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means that we defined a pipeline of image processing operations, where we:
 \begin{itemize}
     \item Threshold the image: We tried Otsu's thresholding method where Gaussian blur with kernel size $K_b$ was applied prior to that, Gaussian and mean adaptive thresholding methods, where we tested different kernel sizes $K_t$ and threshold values $T$.
-    \item Removed predicted pixels at the border of X-ray image: Bitewing X-ray images usually do not have a rectangular shape, as can be seen in \ref{fig:bitewing_sample}. Bitewing radiographs are therefore padded with black color to be rectangular-shaped. This is a cause for high contrast at the border of the radiograph, which gets detected by adaptive thresholding methods. We, therefore, detect this padding and morphologically dilate it by the square kernel of size $K_b \times K_b$. Border pixels obtained by dilation are remoed from the thresholded image.
+    \item Removed predicted pixels at the border of X-ray image: Bitewing X-ray images usually do not have a rectangular shape, as can be seen in \ref{fig:bitewing_sample}. Bitewing radiographs are therefore padded with black color to be rectangular-shaped. This is a cause for high contrast at the border of the radiograph, which gets detected by adaptive thresholding methods. We, therefore, detect this padding and morphologically dilate it by the square kernel of size $K_d \times K_d$. Border pixels obtained by dilation are remoed from the thresholded image.
     \item Morphological opening: We apply morphological opening to filter out falsely detected regions; we use a square-shaped kernel with size $K_o$.
 \end{itemize}
 
@@ -106,7 +107,7 @@ as can be seen in table \ref{tab:hyper_param_segmentation}
         $K_t$           & 33            & 83            & 10   \\ \hline
         $K_b$           & 1             & 26            & 5    \\ \hline
         $T$             & 1             & 15            & 2    \\ \hline
-        $K_b$           & 41            & 81            & 20   \\ \hline
+        $K_d$           & 41            & 81            & 20   \\ \hline
         $K_o$           & 1             & 36            & 5    \\ \hline
     \end{tabular}
     \caption{Hyper-parameter search space for restorations segmentation pipeline}
@@ -207,9 +208,8 @@ We used results from table TODO and normalized all confidence values o
 \end{figure}
 
 \subsection{Assesing importance of different models in ensembling}
-To get an insight into what affects the performance of model ensembling we compare the following: Ensemble of multiple models with the same architecture and backbone, ensemble of models with the same architecture and different backbones, ensemble of different architectures.
-
+To get an insight into what affects the performance of model ensembling we compare the following: Ensemble of multiple models with the same architecture and backbone, ensemble of models with the same architecture and different backbones, and ensemble of different architectures. All models selected for ensembling were trained on stage five dataset included the changes proposed in section \ref{sec:general_changes}.
 
 
 \subsubsection{The same architecture and backbone}
-We selected a total of eight pretrained YOLOv5 model with medium size backbone. All those model were trained on stage five dataset.
+We used YOLOv5 architecture with a medium sized backbone, since multiple models were trained for experiments mentioned in section \ref{sec:model_inspection}.

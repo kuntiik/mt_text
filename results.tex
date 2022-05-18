@@ -145,7 +145,7 @@ Average precision of models trained on this stage of the dataset are in table
 
 \section{Model improvements}
 \subsection{General improvements}
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
@@ -163,7 +163,7 @@ Average precision of models trained on this stage of the dataset are in table
 \end{table}
 
 
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
@@ -181,7 +181,7 @@ Average precision of models trained on this stage of the dataset are in table
 \end{table}
 
 
-\begin{table}[h]
+\begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|}
         \hline
         Model      & Precision & Recall & F-score & Confidence threshold \\ \hline
@@ -198,39 +198,43 @@ Average precision of models trained on this stage of the dataset are in table
 \end{table}
 
 \subsection{Group normalization}
-\begin{figure}
+Chart of $AP@.5$ for EfficientDet-D5 models with batach-normalization layers and group normlization layer is in figure \ref{fig:batch_group_dff}.
+\begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{images/batch_norm_group_norm.png}
+    \includegraphics[width=\textwidth]{images/batch_norm_group_norm.png}
+    \caption{Difference in $AP@.5$ among EfficientDet-D5 model with batch normalization and group normalization}
+    \label{fig:batch_group_diff}
 \end{figure}
 
+\section{Model inspection}
+\subsection{Size of backbone}
+\begin{table}[H]
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        Backbone & mean  & std    & max   & min   \\ \hline
+        small    & 0.68  & 0.0197 & 0.651 & 0.697 \\ \hline
+        medium   & 0.696 & 0.0126 & 0.669 & 0.719 \\ \hline
+        large    & 0.703 & 0.0136 & 0.681 & 0.725 \\ \hline
+    \end{tabular}
+    \caption{Comparision of $AP.@5$ metric for different backbones of YOLOv5}
+    \label{tab:backbone_comparison}
+\end{table}
 
+\subsection{Weight decay}
 
-% \begin{paracol}{2}
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=0.99\linewidth]{images/img_size_dependency.pdf}
-%         \caption{The relation between image size and $AP@.5$}
-%         \label{fig:img_sizes}
-%     \end{figure}
-%     \switchcolumn
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=0.99\linewidth]{images/training_set_dependency.pdf}
-%         \caption{Mean average precision based on the size of training set}
-%         \label{fig:training_set_sizes}
-%     \end{figure}
-% \end{paracol}
-
-\begin{figure}
+\begin{figure}[H]
     \begin{floatrow}[2]
-        \includegraphics[width=0.5\linewidth]{images/img_size_dependency.pdf}\qquad
-        \includegraphics[width=0.5\linewidth]{images/training_set_dependency.pdf}\qquad
+        \ffigbox[\FBwidth]{
+            \caption{$AP@.5$ of Faster-RCNN model with varying weight decay values. The metric is computed on validation part of the dataset during the course of triaing.  \label{fig:fasterrcnn_weight_decay}}
+        }{\includegraphics[width=\linewidth]{images/weight_decay_fasterrcnn.png}}
+        \ffigbox[\FBwidth]{\caption{$AP@.5$ of YOLOv5 model with varying weight decay values. The metric is computed on validation part of the dataset during the course of triaing. \label{fig:yolo_weight_decay}}}
+        { \includegraphics[width=\linewidth]{images/weight_decay_yolo.png} }
     \end{floatrow}
 \end{figure}
 
 \section{Ensembling}
 \section{Hand-picked parameters}
-\begin{table}[h]
+\begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
         Ensembled models      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
@@ -244,7 +248,7 @@ Average precision of models trained on this stage of the dataset are in table
 The best hyper-parameters for a given ensemble method found by a grid search are in the table \ref{tab:ensemble_params:grid_search}. We omited from the table parameter $sigma$, used only in snms. Its optimal value, according to the grid search, was $0.8$.
 Average precision of the models ensembled with parameters from table \ref{tab:ensemble_params:grid_search} are available in table \ref{tab:precision:grid_search} and average recall values are in the table \ref{tab:recall:grid_search}. Precison and recall values based on the confidence threshold, that maximizes F-score can be seen in table \ref{tab:ensembling_prf:grid_search}.
 
-\begin{table}[h]
+\begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
         Method & FRCNN-R50      & YOLOv5-m6      & RetN-swint     & FRCNN-R101     & $T$  \\ \hline
@@ -305,11 +309,49 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
     \label{tab:ensembling_prf:grid_search}
 \end{table}
 
+\section{Assesing importance of different models}
+
+%  ('ensembling_wbf & 0.389& 0.838 & 0.774 & 0.338 & 0.665 & 0.811 & 0.876 \\ \\hline',
+%  '0.751 & 0.7 & 0.725 & 0.294',
+%  'ensembling_wbf & 0.586& 0.917 & 0.978 & 0.582 & 0.946 & 0.991 & 0.991 \\ \\hline')
 
 \section{Dental retorations segmentation}
+\subsection{Non-deeplearning approach}
+Hyper-parameters ensuring the best performance on validation part of the datset are in table \ref{tab:nondl_restorations:best_params}. Performance of the pipelie on test dataset given the parameters in table \ref{tab:nondl_restorations:best_params} can be seen in table \ref{tab:nondl_results}.
+
+\begin{table}[H]
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Hyper-parameter & Adaptive mean & Adaptive Gaussian & Otsu's \\ \hline
+        $K_t$           & 71            & x                 & -      \\ \hline
+        $T$             & 15            & x                 & -      \\ \hline
+        $K_d$           & 41            & x                 & 61     \\ \hline
+        $K_o$           & 31            & x                 & 36     \\ \hline
+        $K_b$           & -             & x                 & 21     \\ \hline
+    \end{tabular}
+    \caption{Best hyper-parameters for non-deeplerning pipeline}
+    \label{tab:nondl_restorations:best_params}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Model               & Dice  & IOU   \\ \hline
+        Adaptive mean       & 0.364 & 0.314 \\ \hline
+        Adaptive Gaussian   & 0.102 & 0.088 \\ \hline
+        Otus's thresholding & 0.102 & 0.088 \\ \hline
+    \end{tabular}
+    \caption{Results of non-deeplerning approach to dental resotrations segmentation given the hyper-parameters in table \ref{tab:nondl_restorations:best_params}}
+    \label{tab:nondl_results}
+\end{table}
+
+
+
 \subsection{U-Net}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{subfigure}[b]{\textwidth}
         \includegraphics[width=1\linewidth]{images/unet_1_img_12.pdf}
@@ -323,24 +365,24 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
     \caption{From the left: X-ray image, ground-truth pixel mask, output of the model, output processed by morphological opening, output post-processed by morphological opening and closing.}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[]{images/heatmap_of_unetpostproc_search.pdf}
-    \caption{Value of IOU metric based on the size of kernels $K_O$, $K_C$ in morphological operations, that were used for post-processing}
+    \caption{Value of IOU metric based on the size of kernels $K_o$, $K_c$ in morphological operations, that were used for post-processing}
     \label{fig:heatmap_postprocess}
 \end{figure}
 
-\begin{table}
+\begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
-        Parameter      & $K_O$ & $K_C$ \\ \hline
+        Parameter      & $K_o$ & $K_c$ \\ \hline
         U-Net          & 37    & 25    \\ \hline
         U-Net improved & 33    & 5     \\ \hline
     \end{tabular}
 \end{table}
 
-\begin{table}
+\begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
