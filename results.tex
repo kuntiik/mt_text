@@ -311,6 +311,36 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
 
 \section{Assesing importance of different models}
 
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        method & $AP$ & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+    \end{tabular}
+    \caption{Average precision of models ensembled by parameters from table \ref{tab:ensemble_params:grid_search}}
+    \label{tab:precision:grid_search}
+\end{table}
+
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        method & $AR$ & $AR@.5_{10}$ & $AR@.5$ & $AR@.75$ & $AR@.5_S$ & $AR@.5_M$ & $AR@.5_L$ \\ \hline
+    \end{tabular}
+    \caption{Average recall of models ensembled by parameters from table \ref{tab:ensemble_params:grid_search}}
+    \label{tab:recall:grid_search}
+\end{table}
+
+
+\begin{table}[h]
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+    \end{tabular}
+    \caption{Precision, recall, and F-score based on the confidence threshold for different ensembling methods}
+    \label{tab:ensembling_prf:grid_search}
+\end{table}
+
 %  ('ensembling_wbf & 0.389& 0.838 & 0.774 & 0.338 & 0.665 & 0.811 & 0.876 \\ \\hline',
 %  '0.751 & 0.7 & 0.725 & 0.294',
 %  'ensembling_wbf & 0.586& 0.917 & 0.978 & 0.582 & 0.946 & 0.991 & 0.991 \\ \\hline')
