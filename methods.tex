@@ -213,3 +213,16 @@ To get an insight into what affects the performance of model ensembling we compa
 
 \subsubsection{The same architecture and backbone}
 We used YOLOv5 architecture with a medium sized backbone, since multiple models were trained for experiments mentioned in section \ref{sec:model_inspection}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        Experiment & num.models & mean  & std   & min   & max   \\ \hline
+        YOLOv5-m   & 8          & 0.696 & 0.014 & 0.668 & 0.719 \\ \hline
+        YOLOv5-all & 8          & 0.693 & 0.017 & 0.659 & 0.719 \\ \hline
+        All        & 10         & 0.707 & 0.014 & 0.676 & 0.725 \\ \hline
+    \end{tabular}
+    \caption{Comparison of models envolved in ensembling by statics of their $AP@.5$ metrics}
+    \label{tab:ensemlbe_models_envolved}
+\end{table}
