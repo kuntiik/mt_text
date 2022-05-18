@@ -3,45 +3,45 @@
 \section{Caries detection - baseline model comparison}
 \label{sec:caries_detection}
 
-Firstly we implemented and tested multiple object-detection architectures. We compared them against each other on the stage of the dataset that was currently available.
+Firstly, we implemented and tested multiple object-detection architectures, and we compared them against each other on the stage of the dataset that was currently available.
 
 \subsection{Dataset}
-We used the first five stages of the dataset mentioned in the chapter \ref{chapter:dataset}. The dataset was always split into train, validation, and test parts. Each consisted of 70\%, 15\%, and 15\% of the dataset.
+We used the first five stages of the dataset mentioned in chapter \ref{chapter:dataset}. The dataset was always split into train, validation, and test parts, each consisting of 70\%, 15\%, and 15\% of the dataset.
 
 \subsection{Image augmentations}
-The image was augmented by a single pipeline that applied the following transformations with corresponding probabilities p.
+The image was augmented by a single pipeline that applied the following transformations with corresponding probabilities $p$.
 \begin{itemize}
-    \item Normalize by substracting the mean of the dataset and dividing by standard deviation of the dataset (mean$=0.37$, std$=0.28$), $p=1$
-    \item Resize and pad to $1024\times1024/896$, $p=1$
-    \item Horizontal flip, $p=0.5$
-    \item Vertical flip, $p=0.5$
-    \item Rotation, $p=0.3$, rotation limit$=10^{\circ}$
-    \item Translation, $p=0.5$, translation limit$=10\%$ of the image size
-    \item Gaussian blur flip, $p=0.3$, kernel size from 7 to 31
-    \item Gamma correction, $p=0.3$, $\gamma$ in range from 0.6 to 1.4
+    \item Normalize the image by substracting the mean of the dataset and divide by standard deviation of the dataset (mean$=0.37$, std$=0.28$), $p=1$.
+    \item Resize and pad to $1024\times1024/896$, $p=1$.
+    \item Horizontal flip, $p=0.5$.
+    \item Vertical flip, $p=0.5$.
+    \item Rotation, $p=0.3$, rotation limit$=10^{\circ}$.
+    \item Translation, $p=0.5$, translation limit$=10\%$ of the image size.
+    \item Gaussian blur flip, $p=0.3$, kernel size from 7 to 31.
+    \item Gamma correction, $p=0.3$, $\gamma$ in range from 0.6 to 1.4.
 \end{itemize}
-The result of those augmentations can be seen in the appendix \ref{appendix:img_transformations}.
+The results of those augmentations can be seen in appendix \ref{appendix:img_transformations}.
 
-The dimensions to which to resize an image were selected due to limitations of some architectures, which require the input to be divisible by 128. In the beginning, we used square images, due to the ease of implementation. We swithched to rectangular images after that, but no improvement on measured metrics was observed. Based on the architecture, we observed a decrease in GPU memory usage in the range from 5\% to 10\%.
+The dimensions to which to resize an image were selected due to limitations of some of the architectures, where they require the input to be divisible by 128. In the beginning, we used square images, due to the ease of implementation. After that, we switched to rectangular images, however no improvement on measured metrics was observed. Based on the architecture, we noticed a decrease in GPU memory usage in the range from 5\% to 10\%.
 
 \subsubsection{Computing power}
-All the computations were realized on the CMP cluster, consisting of multiple GPU nodes. The experiments were conducted on the Boruvka and Zorn machines. Both of them have 32 CPU cores, 256GB of RAM memory, and 8 NVIDIA GeForce GTX 1080-Ti graphics cards with 12GB of dedicated memory.
+All the computations were realized on the CMP cluster, consisting of multiple GPU nodes and the experiments were conducted on the Boruvka and Zorn machines. Both of them have 32 CPU cores, 256GB of RAM memory, and 8 NVIDIA GeForce GTX 1080-Ti graphics cards with 12GB of dedicated memory.
 
 \subsection{Neural network models}
 \label{sec:methods:nns}
-Multiple architectures of neural networks were used. As the work on the thesis progressed, the amount grew larger; thus, a wider variety of models can be seen in the advanced stages of the dataset. We stopped using the YOLOv3 model after stage 2 since the YOLOv5 model has superior performance on stages one and two, see tables \ref{tab:model_results:stage_one} and \ref{tab:model_results:stage_two}.
+Multiple architectures of neural networks were used. As the work on the thesis progressed, the amount grew larger; thus, a wider variety of models can be seen in the advanced stages of the dataset. We stopped using the YOLOv3 model after stage 2, since the YOLOv5 model had a superior performance on stages one and two, see tables \ref{tab:model_results:stage_one} and \ref{tab:model_results:stage_two}.
 
-All the models we used and their respective backbones are listed bellow
+All the models we used and their respective backbones are listed bellow.
 \begin{itemize}
     \item YOLOv3 with Darknet-53 backbone
-    \item YOLOv5 with backbones with the sixth generation of backbones. We used the small, medium, large and extra lasrge vesions of those backbones. In the further text, we will denote them as s6, m6, l6, and x6.
+    \item YOLOv5 with backbones with the sixth generation of backbones. We used the small, medium, large and extra large versions of those backbones. In further text, we will denote them as s6, m6, l6, and x6.
     \item Faster-RCNN with Resnet50 and Resnet101 backbone; R50 and R101 abbreviations will be used.
-    \item RetinaNet with Resnet50 and tiny swin transformer (swint) Backbones.
-    \item EfficientDet with D0,D1,D2,D3,D4 and D5 backbones
+    \item RetinaNet with Resnet50 and a tiny swin transformer (swint) Backbones.
+    \item EfficientDet with D0,D1,D2,D3,D4 and D5 backbones.
 \end{itemize}
 
 \subsubsection{Batch-size}
-The batch size differed based on the model architecture and selected backone. We always used the biggest batch size to fit into the graphics card memory. An overview of batch sizes for a different combination of architectures and backbones is in table \ref{tab:batch_sizes}. Note that those batch size values allow for the accumulation of 4 forward passes into the GPU memory.
+The batch size differed based on the model's architecture and the selected backbone. We always used the biggest batch size to fit into the graphic card memory. An overview of batch sizes for a different combination of architectures and backbones is in table \ref{tab:batch_sizes}. Note that those batch size values allow for the accumulation of four forward passes into the GPU memory.
 
 \begin{table}
     \centering
@@ -64,37 +64,37 @@ The batch size differed based on the model architecture and selected backone. We
 
 
 \subsubsection{Optimizers}
-The Adam optimizer was used during all experiments. The parameters $\beta_1, \beta_2$ were set to 0.9 and 0.999 and weight decay was chosen to be $10^{-6}$. Since we could not fit reasonably big batch sizes into the GPU, the optimization step was performed every four forward passes. This should emulate a bigger batch size and increase the chance of finding global optimization minima.
+The Adam optimizer was used during all experiments. The parameters $\beta_1, \beta_2$ were set to 0.9 and 0.999 and weight decay was chosen to be $10^{-6}$. Since we could not fit reasonably big batch sizes into the GPU, the optimization step was performed every four forward passes. This should emulate a bigger batch size and increase the chance of finding a global optimization minima.
 
 \subsubsection{Learning rate}
-We initialy experimented with different learinig rates and used the learning rate test to find the initial learning rate. There was no difference in the final performance of the model, and the number of epochs required to train the model did not differ significantly. In rare cases, the learning rate test's learning rate did not lead to model convergence. We, therefore, set the initial learning rate to $10^{-4}$ and used a reduced on plateau learning rate scheduler. The monitored value by the scheduler was validation loss, and the learning rate decreased by a factor of 5 when the improvement of the loss stalled for five consecutive epochs.
+To start with, we experimented with different learning rates and used the learning rate test to find the initial learning rate. There was no difference in the final performance of the model, and the number of epochs required to train the model did not differ significantly. In rare cases, the learning rate test's learning rate did not lead to model convergence. We, therefore, set the initial learning rate to $10^{-4}$ and used a Reduced on Plateau Learning Rate scheduler. The value monitored by the scheduler was the validation loss, and the learning rate decreased by a factor of 5 when the improvement of the loss stalled for five consecutive epochs.
 \subsubsection{Termination condition}
 The training was halted when the $AP@.5$ did not increase throughout ten epochs, but not earlier than after 50 epochs from the beginning of the training.
 
 \section{Caries detection - model improvements}
 \subsection{General changes}
 \label{sec:general_changes}
-We replaced the Adam optimizer with AdamW with the same $\beta_1$ and $\beta_2$. Furthermore, a cosine annealing learning rate scheduler was used. The half-period of cosine was set to 70 epochs and the minimal learning rate to $10^{-7}$.
+We replaced the Adam optimizer with AdamW with the same $\beta_1$ and $\beta_2$. Furthermore, a Cosine Annealing learning rate scheduler was used. The half-period of cosine was set to 70 epochs and the minimal learning rate to $10^{-7}$.
 Multiple models from section \ref{sec:methods:nns} were used and the training was done on the stage five dataset.
 \subsection{Group normalization}
 TODO
 
 \section{Model inspection}
 \label{sec:model_inspection}
-We conducted several experiments to asses model behavior. All experiments were made on dataset made in fifth stage with models, whose results are in tables \ref{tab:improved:precision}, \ref{tab:improved:recall} and \ref{tab:imrpoved:prf}.
+We conducted several experiments to asses the model's behavior. All experiments were made on the dataset created in the fifth stage with models, whose results are in tables \ref{tab:improved:precision}, \ref{tab:improved:recall} and \ref{tab:imrpoved:prf}.
 
 \subsection{Size of backbone}
-We explored the influence of the backbone choice on the model's performance. We used the YOLOv5 model and trained it multiple times with small, medium, and large backbones. The training was done by the approach described in section \ref{sec:caries_detection}, including improvements mentioned in subsection \ref{sec:general_changes}.
+We explored the influence of the backbone choice on the model's performance by using the YOLOv5 model and training it multiple times with small, medium, and large backbones. The training was approached as described in section \ref{sec:caries_detection}, including the improvements mentioned in subsection \ref{sec:general_changes}.
 
 \subsection{Weight decay}
-We experimented with different values of weight decay. We used Faster-RCNN architecture with ResNet50 backbone and YOLOv5 with medium size backbone and tried the following values of weight decay: $10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}$ on both models.
+We experimented with different values of weight decay. Eventually, we used the Faster-RCNN architecture with ResNet50 backbone, and YOLOv5 with medium size backbone, and tried the following values of weight decay: $10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}$ on both models.
 
 \section{Dental-restorations segmentation segmentation}
 \subsection{Non-deeplearning approach}
 We decided to test the approach proposed by Abdalla-Aslan, and Yeshua \cite{AbdallaAslan2020, Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means that we defined a pipeline of image processing operations, where we:
 \begin{itemize}
-    \item Threshold the image: We tried Otsu's thresholding method where Gaussian blur with kernel size $K_b$ was applied prior to that, Gaussian and mean adaptive thresholding methods, where we tested different kernel sizes $K_t$ and threshold values $T$.
-    \item Removed predicted pixels at the border of X-ray image: Bitewing X-ray images usually do not have a rectangular shape, as can be seen in \ref{fig:bitewing_sample}. Bitewing radiographs are therefore padded with black color to be rectangular-shaped. This is a cause for high contrast at the border of the radiograph, which gets detected by adaptive thresholding methods. We, therefore, detect this padding and morphologically dilate it by the square kernel of size $K_d \times K_d$. Border pixels obtained by dilation are remoed from the thresholded image.
+    \item Thresholded the image: We tried Otsu's thresholding method and Gaussian blur with kernel size $K_b$ applied prior to that. Furthermore, Gaussian and mean adaptive thresholding methods were tried, where we tested different kernel sizes $K_t$ and threshold values $T$.
+    \item Removed predicted pixels at the border of the X-ray image: Bitewing X-ray images usually do not have a rectangular shape, as can be seen in \ref{fig:bitewing_sample}. Bitewing radiographs are therefore padded with black color to reach the rectangular-shaped. This leads to a high contrast at the border of the radiograph, which gets detected by adaptive thresholding methods. We, therefore, detect this padding and morphologically dilate it by the square kernel of size $K_d \times K_d$. Border pixels obtained by dilation are removed from the thresholded image.
     \item Morphological opening: We apply morphological opening to filter out falsely detected regions; we use a square-shaped kernel with size $K_o$.
 \end{itemize}
 
@@ -213,10 +213,10 @@ We used results from table TODO and normalized all confidence values o
     \label{fig:predictions_json}
 \end{figure}
 
-\subsection{Assesing importance of different models in ensembling}
+\subsection{Assessing importance of different models in ensembling}
 To get an insight into what affects the performance of model ensembling we compare the following: Ensemble of multiple models with the same architecture and backbone, ensemble of models with the same architecture and different backbones, and ensemble of different architectures. All models selected for ensembling were trained on stage five dataset included the changes proposed in section \ref{sec:general_changes}.
 
-After selecting models we ensembled them using WBF fusion method. Model weights and IOU threshold $T$ value were optimized on validation dataset as described in section \cite{sec:ensembling}. Optuna optimization software were used to find those, where we set search-space to be in the range from 0 to 1 for all model weights as well as for the IOU threshold $T$. The optimization process was terminated after $3000$ trials.
+After selecting models we ensembled them using WBF fusion method. Model weights and IOU threshold $T$ value were optimized on validation dataset as described in section \cite{sec:ensembling}. The Optuna optimization software were used to find those, where we set search-space to be in the range from 0 to 1 for all model weights as well as for the IOU threshold $T$. The optimization process was terminated after $3000$ trials.
 
 \subsubsection{The same architecture and backbone}
 We used YOLOv5 architecture with a medium sized backbone, since multiple models were trained for experiments mentioned in section \ref{sec:model_inspection}. Summary of used models is available in table \ref{tab:ensemble_models_involved}.
