@@ -311,6 +311,7 @@ U-Net is an architecture for semantic segmentation, with an encoder-decoder stru
 The decoder proposed by Rennenberger et al. \cite{Ronneberger2015} can be replaced by a general-purpose backbone, as demonstrated by Baheti et al. \cite{Baheti2020}, who used EfficientNet as the backbone.
 
 \section{Model ensembling in object detection}
+\label{sec:model_ensembling}
 
 Let say we have $M$ different models, each of them predicting $\mathcal{B}_i = \left\{b_1,...,b_N \right\} $ bounding boxes and $\mathcal{S}_i = \left\{ s_1,...,s_N \right\} $ confidence values for a given image corresponding to a single class. We merge predictions of all models together. It is possible to use weights $\mathit{W} = \{w_1,...,w_M \}$ to express our prior belief in the given model. Set of all boxes $\mathcal{B}$ and confidence scores $\mathcal{S}$ is thus obtained by:
 \begin{align}

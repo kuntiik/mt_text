@@ -1,11 +1,12 @@
 \chapter{Methods}
 
 \section{Caries detection - baseline model comparison}
+\label{sec:caries_detection}
 
 Firstly we implemented and tested multiple object-detection architectures. We compared them against each other on the stage of the dataset that was currently available.
 
 \subsection{Dataset}
-We used the first five stages of the dataset mentioned in chapter \ref{chapter:dataset}. The dataset was always split into train, validation and test parts. Each of them consising of 70\%, 15\%, and 15\% of the dataset.
+We used the first five stages of the dataset mentioned in the chapter \ref{chapter:dataset}. The dataset was always split into train, validation, and test parts. Each consisted of 70\%, 15\%, and 15\% of the dataset.
 
 \subsection{Image augmentations}
 The image was augmented by a single pipeline that applied the following transformations with corresponding probabilities p.
@@ -21,26 +22,26 @@ The image was augmented by a single pipeline that applied the following transfor
 \end{itemize}
 The result of those augmentations can be seen in the appendix \ref{appendix:img_transformations}.
 
-The dimensions to which resize an image were selected due to limitations of some architectures, which require the input to be divisible by 128. In the beginning, we used square images, due to the ease of implementation. We swithched to rectangular images after that, but no improvement on measured metrics was observed. Based on the architecture, we observed a decrease in GPU memory usage in the range from 5\% to 10\%.
+The dimensions to which to resize an image were selected due to limitations of some architectures, which require the input to be divisible by 128. In the beginning, we used square images, due to the ease of implementation. We swithched to rectangular images after that, but no improvement on measured metrics was observed. Based on the architecture, we observed a decrease in GPU memory usage in the range from 5\% to 10\%.
 
 \subsubsection{Computing power}
 All the computations were realized on the CMP cluster, consisting of multiple GPU nodes. The experiments were conducted on the Boruvka and Zorn machines. Both of them have 32 CPU cores, 256GB of RAM memory, and 8 NVIDIA GeForce GTX 1080-Ti graphics cards with 12GB of dedicated memory.
 
 \subsection{Neural network models}
 \label{sec:methods:nns}
-Multiple architectures of neural networks were used. As the work on the thesis progressed, the amount grew larger; thus on the advanced stages of the dataset, a wider variety of models can be seen. We stopped using the YOLOv3 model after stage 2, since the YOLOv5 model has superior performance on stages one and two.
+Multiple architectures of neural networks were used. As the work on the thesis progressed, the amount grew larger; thus, a wider variety of models can be seen in the advanced stages of the dataset. We stopped using the YOLOv3 model after stage 2 since the YOLOv5 model has superior performance on stages one and two, see tables \ref{tab:model_results:stage_one} and \ref{tab:model_results:stage_two}.
 
 All the models we used and their respective backbones are listed bellow
 \begin{itemize}
     \item YOLOv3 with Darknet-53 backbone
-    \item YOLOv5 with backbones with the sixth generation of backbones. We used the small, medium, large and extra lasrge vesions of those backbones. In the further text, we will denote them as s6, m6, l6, x6.
-    \item Faster-RCNN with Resnet50 and Resnet101 backbone. R50 and R101 abbreviations will be used for those.
+    \item YOLOv5 with backbones with the sixth generation of backbones. We used the small, medium, large and extra lasrge vesions of those backbones. In the further text, we will denote them as s6, m6, l6, and x6.
+    \item Faster-RCNN with Resnet50 and Resnet101 backbone; R50 and R101 abbreviations will be used.
     \item RetinaNet with Resnet50 and tiny swin transformer (swint) Backbones.
     \item EfficientDet with D0,D1,D2,D3,D4 and D5 backbones
 \end{itemize}
 
 \subsubsection{Batch-size}
-The batch size differed based on the model architecture and selected backone. We always used the biggest batch size that was able to fit into the graphics card memory. An overview of batch sizes for a different combination of architectures and backbones is in table TODO. Note that those batch size values allow for the accumulation of 4 forward passes into the GPU memory.
+The batch size differed based on the model architecture and selected backone. We always used the biggest batch size to fit into the graphics card memory. An overview of batch sizes for a different combination of architectures and backbones is in table \ref{tab:batch_sizes}. Note that those batch size values allow for the accumulation of 4 forward passes into the GPU memory.
 
 \begin{table}
     \centering
@@ -66,38 +67,39 @@ The batch size differed based on the model architecture and selected backone. We
 The Adam optimizer was used during all experiments. The parameters $\beta_1, \beta_2$ were set to 0.9 and 0.999 and weight decay was chosen to be $10^{-6}$. Since we could not fit reasonably big batch sizes into the GPU, the optimization step was performed every four forward passes. This should emulate a bigger batch size and increase the chance of finding global optimization minima.
 
 \subsubsection{Learning rate}
-We initialy experimented with different learinig rates and used the learning rate test to find the initial learning rate. In the end, there was no difference in the final performance of the model, and the number of epochs required to train the model did not differ significantly. In rare cases, the learning rate test's learning rate did not leadd to model convergence. We, therefore, set the initial learning rate to $10^{-4}$ and used a reduced on plateau learning rate scheduler. The monitored value by the scheduler was validation loss, and the learning rate decreased by a factor of 5 when the improvement of the loss stalled for five consecutive epochs.
+We initialy experimented with different learinig rates and used the learning rate test to find the initial learning rate. There was no difference in the final performance of the model, and the number of epochs required to train the model did not differ significantly. In rare cases, the learning rate test's learning rate did not lead to model convergence. We, therefore, set the initial learning rate to $10^{-4}$ and used a reduced on plateau learning rate scheduler. The monitored value by the scheduler was validation loss, and the learning rate decreased by a factor of 5 when the improvement of the loss stalled for five consecutive epochs.
 \subsubsection{Termination condition}
-The training was halted when the $AP@.5$ did not increase throughout 10 epochs, but not earlier than after 50 epochs from the beginning of the training.
+The training was halted when the $AP@.5$ did not increase throughout ten epochs, but not earlier than after 50 epochs from the beginning of the training.
 
 \section{Caries detection - model improvements}
 \subsection{General changes}
 \label{sec:general_changes}
 We replaced the Adam optimizer with AdamW with the same $\beta_1$ and $\beta_2$. Furthermore, a cosine annealing learning rate scheduler was used. The half-period of cosine was set to 70 epochs and the minimal learning rate to $10^{-7}$.
-Multiple models from section \ref{sec:methods:nns} were used and the training was done on stage five dataset.
+Multiple models from section \ref{sec:methods:nns} were used and the training was done on the stage five dataset.
 \subsection{Group normalization}
-
+TODO
 
 \section{Model inspection}
 \label{sec:model_inspection}
-We conducted several experiments to asses model behavior. All experiments were made on dataset made in fifth stage with models, whose results are in tables \ref{tab:improved:precision}, \ref{tab:improved:recall},\ref{tab:imrpoved:prf}.
+We conducted several experiments to asses model behavior. All experiments were made on dataset made in fifth stage with models, whose results are in tables \ref{tab:improved:precision}, \ref{tab:improved:recall} and \ref{tab:imrpoved:prf}.
+
 \subsection{Size of backbone}
-We explored the influence of the backbone choice on the performance of the model. We therefore used YOLOv5 model and trained it multiple times with small, medium and large backbone. The training was done by the approach described in sections this section including improvements mentioned in subsection \ref{sec:general_changes}.
+We explored the influence of the backbone choice on the model's performance. We used the YOLOv5 model and trained it multiple times with small, medium, and large backbones. The training was done by the approach described in section \ref{sec:caries_detection}, including improvements mentioned in subsection \ref{sec:general_changes}.
 
 \subsection{Weight decay}
-We experimented with different values of weight decay. We used Faster-RCNN architecture with ResNet50 backbone and YOLOv5 with medium size backbone and tried the following values of weight decay: $10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}$.
+We experimented with different values of weight decay. We used Faster-RCNN architecture with ResNet50 backbone and YOLOv5 with medium size backbone and tried the following values of weight decay: $10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}$ on both models.
 
 \section{Dental-restorations segmentation segmentation}
 \subsection{Non-deeplearning approach}
-We decided to test the approach that Abdalla-Aslan proposed, and Yeshua \cite{AbdallaAslan2020, Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means that we defined a pipeline of image processing operations, where we:
+We decided to test the approach proposed by Abdalla-Aslan, and Yeshua \cite{AbdallaAslan2020, Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means that we defined a pipeline of image processing operations, where we:
 \begin{itemize}
     \item Threshold the image: We tried Otsu's thresholding method where Gaussian blur with kernel size $K_b$ was applied prior to that, Gaussian and mean adaptive thresholding methods, where we tested different kernel sizes $K_t$ and threshold values $T$.
     \item Removed predicted pixels at the border of X-ray image: Bitewing X-ray images usually do not have a rectangular shape, as can be seen in \ref{fig:bitewing_sample}. Bitewing radiographs are therefore padded with black color to be rectangular-shaped. This is a cause for high contrast at the border of the radiograph, which gets detected by adaptive thresholding methods. We, therefore, detect this padding and morphologically dilate it by the square kernel of size $K_d \times K_d$. Border pixels obtained by dilation are remoed from the thresholded image.
     \item Morphological opening: We apply morphological opening to filter out falsely detected regions; we use a square-shaped kernel with size $K_o$.
 \end{itemize}
 
-The pipeline defined above has four hyper-parameters to be tuned and three thresholding methods. We therefore define a grid-shaped search space as can be seen in table \ref{tab:hyper_param_segmentation}. Note that when we searched for the value of $K_t$ we did not searched for $K_b$ and vice versa.
-The dataset was split into two equally-sized parts, called tune and test. For each set of hyper-parameters, we evaluated the IOU metric on each image of the tune part of the dataset and averaged it. We selected the best hyper-parameters based on the average IOU value and used those to evaluate the test part of the dataset.
+The pipeline defined above has four hyper-parameters to be tuned and three thresholding methods. We therefore define a grid-shaped search space as can be seen in table \ref{tab:hyper_param_segmentation}. Note that when we searched for the value of $K_t$ we did not search for $K_b$ and vice versa.
+The dataset was split into two equally-sized parts, called tune and test. We evaluated the IOU metric on each image of the tune part of the dataset and averaged it for each set of hyper-parameters. We selected the best hyper-parameters based on the average IOU value and used those to evaluate on the test part of the dataset.
 
 as can be seen in table \ref{tab:hyper_param_segmentation}
 \begin{table}
@@ -117,30 +119,31 @@ as can be seen in table \ref{tab:hyper_param_segmentation}
 \subsection{Deep-learning approach}
 \subsubsection{Model training}
 The dataset was split into training, validation, and test parts with a 70:15:15 ratio. We used image augmentations described in TODO for the dataset's training part. We only normalized the image by TODO for the validation and test part of the dataset.
-We used the U-Net architecture model as proposed by author \cite{Ronneberger2015}, only changing the depth to 5 downscaling layers. As a loss function, we used binary cross-entropy. The learning rate value of $10^{-2}$ was used together with reduce on plateau learning rate scheduler. The model was trained for 50 epochs by Adam optimizer and at the end of training, we selected the best model according to IOU on the validation dataset and evaluated its performance on the test dataset.
+We used the U-Net architecture model as proposed by author \cite{Ronneberger2015}, only changing the depth to 5 downscaling layers. As a loss function, we used binary cross-entropy. The learning rate value of $10^{-2}$ was used together with reduce on plateau learning rate scheduler. The model was trained for 50 epochs by the Adam optimizer, and at the end of the training, we selected the best model according to IOU on the validation dataset and evaluated its performance on the test dataset.
 
 \subsubsection{Post-processing}
 We used post-processing methods inspired by the non-deep learning approach on the best-performing model. The image was first morphological opened by a square kernel with a size of $K_O$ and then closed by a kernel size of $K_C$.
 
-Since there were two hyper-parameters involved we performed a grid-search, searching for the kernel of size from 1 to 41 with the step size of 4. Firstly we saved predictions for all images in the validation dataset and applied post-processing with all defined kernel values. The best-performing hyper-parameters were selected and predictions post-processed with them evaluted on tast dataset.
+Since there were two hyper-parameters involved, we performed a grid-search, searching for the kernel of size from 1 to 41 with the step size of 4. Firstly we saved predictions for all images in the validation dataset and applied post-processing with all defined kernel values. The best-performing hyper-parameters were selected and predictions post-processed with them evaluated on the test dataset.
 
 \subsection{Model training improvements}
-We tried the following changed to the model training pipeline:
+We tried the following changes to the model training pipeline:
 \begin{itemize}
     \item AdamW optimizer was used insted of Adam
     \item Cosine annealing learning rate scheduler was used. The half-period of cosine was set to 40 epochs and the minimal learning rate to $10^{-7}$.
-    \item Soft dice loss was tested insted of binary cross-entropy loss as well as combination of Soft dice loss with BCE.
-    \item We removed the maximal amount of epochs and insted used IOU value on validation set as a stoping criterion. Whenever no improvement of IOU was observed for 10 epochs, the training was stopped.
+    \item Soft dice loss was tested instead of binary cross-entropy loss as well as a combination of Soft dice loss with BCE.
+    \item We removed the maximal amount of epochs and instead used the IOU value on the validation set as a stopping criterion. Whenever no improvement of IOU was observed for ten epochs, the training was stopped.
 \end{itemize}
 
-After the training, we performed the same post-processing. We found the best hyper-parameters by optuna optimization library. The search space was set to range from $1$ to $41$ for both kernels.
+After the training, we performed the same post-processing. We found the best hyper-parameters by the Optuna optimization library. The search space was set to range from $1$ to $41$ for both kernels.
 
 
 
 
 \section{Model ensembling}
+\label{sec:model_ensemling}
 
-For every model in the table TODO we loaded weights used to obtain the results in the table and generated predictions on train, test and validation part of the dataset. When predicting, each image was rescaled to size required by corresponding model and normalized. This lead to predictions beeing in the space of the transformed image. Therefore we used inverse transformation to the rescaling, to obtain coordinates in the original image. This allows us to combine predictions regardless the model architecture.
+For every model in the table \ref{tab:model_results:stage_four} we loaded weights used to obtain the results in the table and generated predictions on the train, test, and validation part of the dataset. When predicting, each image was rescaled to the size required by the corresponding model and normalized. This lead to predictions beeing in the space of the transformed image. Therefore we used inverse transformation to the rescaling to obtain coordinates in the original image. This allows us to combine predictions regardless of the model architecture.
 Predictions were saved into file named predictions\_\{model architecture\}\_\{model backbone\}.json.
 
 Confidence values maximizing F1 score differ across models $m$, we therefore normalize them by the following formula:
@@ -148,9 +151,11 @@ Confidence values maximizing F1 score differ across models $m$, we therefore nor
     s_{j,i} = \frac{s_{j,i} \max_l S_l}{  S_j}, \quad j \in \{ 1,...,m\}, i \in {1,...,n_j}
 \end{align}
 
-We perform ensembling by the approach described in section TODO. We firstly tryed to estimate weights for ensembling from resutls of individual models and as threshold value $T$ and $sigma$ selected values proposed by authors of the ensembling method.
+\subsubsection{Manuall tunning}
+We perform ensembling by the approach described in section \ref{sec:model_ensembling}. We first tried to estimate weights for ensembling from results of individual models and as threshold value $T$ and $sigma$ selected values proposed by authors of the ensembling method.
 
-We performed grid search over hyper-paramers in to following manner: Defined parameter search space, which can be seen in talbe \ref{tab:ensembling_search_space}. We evaluated $AP@.5$ on every image of the validation datasaet and averaged those values. The best hyper-parameters were selected and we used them for evaluation on test dataset. The whole worflow is shown in figure \ref{fig:diag:ense_search}.
+\subsubsection{Grid-search}
+We performed grid search over hyper-paramers in the following manner: Defined parameter search space, which can be seen in talbe \ref{tab:ensembling_search_space}. We evaluated $AP@.5$ on every image of the validation datasaet and averaged those values. The best hyper-parameters were selected and we used them for evaluation on test dataset. The whole worflow is shown in figure \ref{fig:diag:ense_search}.
 
 \begin{table}
     \centering
@@ -173,6 +178,7 @@ We performed the grid-search again, but the number of parameters grew significan
 \begin{table}
     \centering
     \begin{tabular}{|c|c|c|}
+        \hline
         Parameter                                         & minimal value & maximal value \\ \hline
         Model weight (small, medium, large)               & 0.01          & 1             \\ \hline
         IOU $T$                                           & 0.05          & 1             \\ \hline
@@ -183,7 +189,7 @@ We performed the grid-search again, but the number of parameters grew significan
 \end{table}
 
 We used results from table TODO and normalized all confidence values o
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{images/ensemble_search_diag.drawio.pdf}
     \caption{Schematics of the search of hyper-parametrs and weights for ensembling}
@@ -210,9 +216,19 @@ We used results from table TODO and normalized all confidence values o
 \subsection{Assesing importance of different models in ensembling}
 To get an insight into what affects the performance of model ensembling we compare the following: Ensemble of multiple models with the same architecture and backbone, ensemble of models with the same architecture and different backbones, and ensemble of different architectures. All models selected for ensembling were trained on stage five dataset included the changes proposed in section \ref{sec:general_changes}.
 
+After selecting models we ensembled them using WBF fusion method. Model weights and IOU threshold $T$ value were optimized on validation dataset as described in section \cite{sec:ensembling}. Optuna optimization software were used to find those, where we set search-space to be in the range from 0 to 1 for all model weights as well as for the IOU threshold $T$. The optimization process was terminated after $3000$ trials.
 
 \subsubsection{The same architecture and backbone}
-We used YOLOv5 architecture with a medium sized backbone, since multiple models were trained for experiments mentioned in section \ref{sec:model_inspection}.
+We used YOLOv5 architecture with a medium sized backbone, since multiple models were trained for experiments mentioned in section \ref{sec:model_inspection}. Summary of used models is available in table \ref{tab:ensemble_models_involved}.
+
+\subsection{The same architecture different backbones}
+We used again YOLOv5 architecture, but included 2 models with small backbone, 3 with medium-sized backbone and 3 with large backbone. When picking those, we tried to match performance of selected models with those select before. This was done to ensure maximal comparibility of those two ensembles.
+
+\subsection{Different architecture}
+Here we used the best model we had at our disposal at the moment. We used the following models: Two YOLOv5-large, two YOLOv5-medium, YOLOv5-small, EfficientDet-D1, EfficientDet-D3, RetinaNet-swint, Faster-RCNN-Resnet50 and Faster-RCNN-Resnet50. Even thought we picked the best available models, the difference in $AP@.5$ against YOLOv5-all was $2\$$, as can be seen in table \ref{tab:ensemble_models_involved}, where we denoted group of models with different architectures as 'All'.
+
+Two YOLOv5 models with large bacbone, Two YOLOv5 with medium-sized backbone, small YOLOv5 model, RetinaNet model with  EfficientDet with D1 and D3 backbones
+
 
 \begin{table}[h]
     \centering
@@ -224,5 +240,5 @@ We used YOLOv5 architecture with a medium sized backbone, since multiple models 
         All        & 10         & 0.707 & 0.014 & 0.676 & 0.725 \\ \hline
     \end{tabular}
     \caption{Comparison of models envolved in ensembling by statics of their $AP@.5$ metrics}
-    \label{tab:ensemlbe_models_envolved}
+    \label{tab:ensemlbe_models_involved}
 \end{table}
