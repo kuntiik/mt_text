@@ -1,9 +1,21 @@
 \chapter{Methods}
+This chapter describes a proposed solution. It is dived into the following blocks
+
+Section \ref{sec:caries_detection} describes the baseline solution. Especially we describe the training protocol used in the remaining parts.
+
+Section \ref{sec:methods:improvements} introduces a couple of changes to training protocol described in section \ref{sec:caries_detection}.
+
+Section \ref{sec:model_inspection} inspects how the behavior of trained models changes if we choose a differently sized backbone or use different weight decay.
+
+Section \ref{sec:model_ensemling} improves detection results by ensemble of multiple models. Furthermore, we assess the importance of models used in the ensembling.
+
+Section \ref{sec:methods:dental_restorations} proposes deep learning and non-deep learning approach to dental restorations segmentation.
 
 \section{Caries detection - baseline model comparison}
 \label{sec:caries_detection}
 
-Firstly, we implemented and tested multiple object-detection architectures, and we compared them against each other on the stage of the dataset that was currently available.
+
+Firstly, we implemented and tested multiple object-detection architectures and compared them against each other on the stage of the currently available dataset. The training protocol used for used during training of all models is described by the following:
 
 \subsection{Dataset}
 We used the first five stages of the dataset mentioned in chapter \ref{chapter:dataset}. The dataset was always split into train, validation, and test parts, each consisting of 70\%, 15\%, and 15\% of the dataset.
@@ -71,13 +83,18 @@ To start with, we experimented with different learning rates and used the learni
 \subsubsection{Termination condition}
 The training was halted when the $AP@.5$ did not increase throughout ten epochs, but not earlier than after 50 epochs from the beginning of the training.
 
-\section{Caries detection - model improvements}
+\section{Caries detection - improvements}
+\label{sec:methods:improvements}
+In this section, we propose improvements to the training protocol as well as a change to models trained with small batch sizes.
 \subsection{General changes}
 \label{sec:general_changes}
 We replaced the Adam optimizer with AdamW with the same $\beta_1$ and $\beta_2$. Furthermore, a Cosine Annealing learning rate scheduler was used. The half-period of cosine was set to 70 epochs and the minimal learning rate to $10^{-7}$.
 Multiple models from section \ref{sec:methods:nns} were used and the training was done on the stage five dataset.
 \subsection{Group normalization}
-TODO
+As mentioned in section \ref{sec:normalization_layers}, batch normalization is superior to group normalization when used with batch sizes greater than eight. Since the size of EfficientDet-D4 and D5  models allowed us to use batch-size of one, we replaced all batch-normalization layers with group normalization. The channels per group parameter, for given instance of group normalization, was set to $16$\footnote{Wu and He \cite{Wu2018} showed this to be the best performing value, when evaluated on ImageNet dataset}, when the number of channels in the layer was divisible by 16, otherwise we selected one of the following values 2,4,8—prioritizing higher of those.
+
+The training was conducted according to the protocol described previously.
+
 
 \section{Model inspection}
 \label{sec:model_inspection}
@@ -87,10 +104,118 @@ We conducted several experiments to asses the model's behavior. All experiments 
 We explored the influence of the backbone choice on the model's performance by using the YOLOv5 model and training it multiple times with small, medium, and large backbones. The training was approached as described in section \ref{sec:caries_detection}, including the improvements mentioned in subsection \ref{sec:general_changes}.
 
 \subsection{Weight decay}
-We experimented with different values of weight decay. Eventually, we used the Faster-RCNN architecture with ResNet50 backbone, and YOLOv5 with medium size backbone, and tried the following values of weight decay: $10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}$ on both models.
+We experimented with different values of weight decay. Eventually, we used the Faster-RCNN architecture with ResNet50 backbone and YOLOv5 with medium size backbone and tried the following values of weight decay: $10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}$ on both models.
+
+
+\section{Model ensembling}
+\label{sec:model_ensemling}
+In this section, we describe our approach to the model ensembling. First, we describe the process of unifying predictions into the same format. We then describe how optimal hyper-parameters of the ensembling process can be obtained. In the end, we assess the importance of diversity of architectures during the ensembling.
+
+\subsection{Data-format}
+For every model in the table \ref{tab:model_results:stage_four} we loaded weights used to obtain the results in the table and generated predictions on the train, test, and validation part of the dataset. When predicting, each image was rescaled to the size required by the corresponding model and normalized. This lead to predictions beeing in the space of the transformed image. Therefore we used inverse transformation to the rescaling to obtain coordinates in the original image. This allows us to combine predictions regardless of the model architecture.
+Predictions were saved into file named predictions\_\{model architecture\}\_\{model backbone\}.json.
+
+Confidence values maximizing F1 score differ across models $m$, we therefore normalize them by the following formula:
+\begin{align}
+    s_{j,i} = \frac{s_{j,i} \max_l S_l}{  S_j}, \quad j \in \{ 1,...,m\}, i \in {1,...,n_j}
+\end{align}
+
+\begin{figure}[h]
+    \centering
+    \begin{lstlisting}[language=json, numbers=none]
+   {"filename" : {
+       "bboxes" : [[x1, y1, x2, y2],...],
+       "labels": [l1, l2,...],
+       "scores": [s1, s2,...],
+       "stage" : "test" / "val" / "train"
+       },
+    "filename2" : {...},
+    ...
+   }
+\end{lstlisting}
+    \caption{Structure of the data in .json file used to store model predictions}
+    \label{fig:predictions_json}
+\end{figure}
+
+\subsubsection{Manuall tunning}
+We perform ensembling by the approach described in section \ref{sec:model_ensembling}. We first tried to estimate weights for ensembling from results of individual models and as threshold value $T$ and $sigma$ selected values proposed by authors of the ensembling method.
+
+\subsubsection{Grid-search}
+We performed grid search over hyper-parameters in the following manner: Defined parameter search space, which can be seen in table \ref{tab:ensembling_search_space}. We evaluated $AP@.5$ on every image of the validation dataset and averaged those values. The best hyper-parameters were selected, and we used them for evaluation on the test dataset. The whole workflow is shown in figure \ref{fig:diag:ense_search}.
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Parameter    & minimal value & maximal value & step \\ \hline
+        Model weight & 0.12          & 1             & 0.22 \\ \hline
+        IOU $T$      & 0.3           & 0.9           & 0.05 \\ \hline
+        Sigma        & 0.3           & 1             & 0.1  \\ \hline
+    \end{tabular}
+    \caption{Hyper parameter search-space for model ensembling}
+    \label{tab:ensembling_search_space}
+\end{table}
+
+We changed the equation TODO to:
+\begin{align}
+    a = foo
+\end{align}
+We performed the grid search again, but the number of parameters grew significantly, making the grid search computationally untractable. We, therefore, used the Optuna optimization library to perform this task. The search space is in table \ref{tab:ensembling_search_space_area}; please note that the search space became continuous in contrast to the previous.
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Parameter                           & minimal value & maximal value \\ \hline
+        Model weight (small, medium, large) & 0.01          & 1             \\ \hline
+        IOU $T$                             & 0.05          & 1             \\ \hline
+    \end{tabular}
+    \caption{Hyper parameter search-space for model ensembling}
+    \label{tab:ensembling_search_space_area}
+\end{table}
+
+We used results from table TODO and normalized all confidence values o
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{images/ensemble_search_diag.drawio.pdf}
+    \caption{Schematics of the search of hyper-parametrs and weights for ensembling}
+    \label{fig:diag:ense_search}
+\end{figure}
+
+
+\subsection{Assessing importance of different models in ensembling}
+To get an insight into what affects the performance of model ensembling, we compare the following: an Ensemble of multiple models with the same architecture and backbone, an ensemble of models with the same architecture and different backbones, and an ensemble of different architectures. All models selected for ensembling were trained on the stage five dataset, including the changes proposed in section \ref{sec:general_changes}.
+
+After selecting models, we ensembled them using the WBF method. Model weights and IOU threshold $T$ value were optimized on the validation dataset as described in section \ref{sec: ensembling}. The Optuna optimization software was used to find those, where we set search-space to be in the range from 0 to 1 for all model weights as well as for the IOU threshold $T$. The optimization process was terminated after $3000$ trials.
+
+\subsubsection{The same architecture and backbone}
+We used YOLOv5 architecture with a medium sized backbone, since multiple models were trained for experiments mentioned in section \ref{sec:model_inspection}. Summary of used models is available in table \ref{tab:ensemble_models_involved}.
+
+\subsection{The same architecture different backbones}
+We used YOLOv5 architecture again but included two models with a small backbone, 3 with a medium-sized backbone, and 3 with a large backbone. When picking those, we tried to match the performance of selected models with those selected before. This was done to ensure the maximal comparability of those two ensembles.
+
+\subsection{Different architecture}
+Here we used the best model we had at our disposal at the moment. We used the following models: Two YOLOv5-large, two YOLOv5-medium, YOLOv5-small, EfficientDet-D1, EfficientDet-D3, RetinaNet-swint, Faster-RCNN-Resnet50, and Faster-RCNN-Resnet50. Even though we picked the best available models, the difference in $AP@.5$ against YOLOv5-all was $2\$$, as can be seen in table \ref{tab:ensemble_models_involved}, where we denoted a group of models with different architectures as 'All'.
+
+Two YOLOv5 models with large backbone, Three YOLOv5 with medium-sized backbones, small YOLOv5 model, RetinaNet model with  EfficientDet with D1 and D3 backbones
+
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        Experiment & num.models & mean  & std   & min   & max   \\ \hline
+        YOLOv5-m   & 8          & 0.696 & 0.014 & 0.668 & 0.719 \\ \hline
+        YOLOv5-all & 8          & 0.693 & 0.017 & 0.659 & 0.719 \\ \hline
+        All        & 10         & 0.707 & 0.014 & 0.676 & 0.725 \\ \hline
+    \end{tabular}
+    \caption{Comparison of models envolved in ensembling by statics of their $AP@.5$ metrics}
+    \label{tab:ensemlbe_models_involved}
+\end{table}
 
 \section{Dental-restorations segmentation segmentation}
-\subsection{Non-deeplearning approach}
+\label{sec:methods:dental_restorations}
+In this section, we propose a non-deep learning method for the segmentation of dental caries; we tune hyper-parameters of this approach to achieve the best possible performance of this approach. After that we switch our approach and train a deep learning model called U-Net.
+\subsection{Non-deep learning approach}
 We decided to test the approach proposed by Abdalla-Aslan, and Yeshua \cite{AbdallaAslan2020, Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means that we defined a pipeline of image processing operations, where we:
 \begin{itemize}
     \item Thresholded the image: We tried Otsu's thresholding method and Gaussian blur with kernel size $K_b$ applied prior to that. Furthermore, Gaussian and mean adaptive thresholding methods were tried, where we tested different kernel sizes $K_t$ and threshold values $T$.
@@ -122,6 +247,7 @@ The dataset was split into training, validation, and test parts with a 70:15:15 
 We used the U-Net architecture model as proposed by author \cite{Ronneberger2015}, only changing the depth to 5 downscaling layers. As a loss function, we used binary cross-entropy. The learning rate value of $10^{-2}$ was used together with reduce on plateau learning rate scheduler. The model was trained for 50 epochs by the Adam optimizer, and at the end of the training, we selected the best model according to IOU on the validation dataset and evaluated its performance on the test dataset.
 
 \subsubsection{Post-processing}
+\label{sec:segmentation_post_processing}
 We used post-processing methods inspired by the non-deep learning approach on the best-performing model. The image was first morphological opened by a square kernel with a size of $K_O$ and then closed by a kernel size of $K_C$.
 
 Since there were two hyper-parameters involved, we performed a grid-search, searching for the kernel of size from 1 to 41 with the step size of 4. Firstly we saved predictions for all images in the validation dataset and applied post-processing with all defined kernel values. The best-performing hyper-parameters were selected and predictions post-processed with them evaluated on the test dataset.
@@ -138,107 +264,3 @@ We tried the following changes to the model training pipeline:
 After the training, we performed the same post-processing. We found the best hyper-parameters by the Optuna optimization library. The search space was set to range from $1$ to $41$ for both kernels.
 
 
-
-
-\section{Model ensembling}
-\label{sec:model_ensemling}
-
-For every model in the table \ref{tab:model_results:stage_four} we loaded weights used to obtain the results in the table and generated predictions on the train, test, and validation part of the dataset. When predicting, each image was rescaled to the size required by the corresponding model and normalized. This lead to predictions beeing in the space of the transformed image. Therefore we used inverse transformation to the rescaling to obtain coordinates in the original image. This allows us to combine predictions regardless of the model architecture.
-Predictions were saved into file named predictions\_\{model architecture\}\_\{model backbone\}.json.
-
-Confidence values maximizing F1 score differ across models $m$, we therefore normalize them by the following formula:
-\begin{align}
-    s_{j,i} = \frac{s_{j,i} \max_l S_l}{  S_j}, \quad j \in \{ 1,...,m\}, i \in {1,...,n_j}
-\end{align}
-
-\subsubsection{Manuall tunning}
-We perform ensembling by the approach described in section \ref{sec:model_ensembling}. We first tried to estimate weights for ensembling from results of individual models and as threshold value $T$ and $sigma$ selected values proposed by authors of the ensembling method.
-
-\subsubsection{Grid-search}
-We performed grid search over hyper-paramers in the following manner: Defined parameter search space, which can be seen in talbe \ref{tab:ensembling_search_space}. We evaluated $AP@.5$ on every image of the validation datasaet and averaged those values. The best hyper-parameters were selected and we used them for evaluation on test dataset. The whole worflow is shown in figure \ref{fig:diag:ense_search}.
-
-\begin{table}
-    \centering
-    \begin{tabular}{|c|c|c|c|}
-        Parameter    & minimal value & maximal value & step \\ \hline
-        Model weight & x             & x             & x    \\ \hline
-        IOU $T$      & x             & x             & x    \\ \hline
-        Sigma        & x             & x             & x    \\ \hline
-    \end{tabular}
-    \caption{Hyper parameter search-space for model ensembling}
-    \label{tab:ensembling_search_space}
-\end{table}
-
-We changed the equation TODO to:
-\begin{align}
-    a = foo
-\end{align}
-We performed the grid-search again, but the number of parameters grew significantly, so that grid-search became commputationaly untractable. We therefore used optuna optimization library to perform this task. The search space is in table \ref{tab:ensembling_search_space_area}, please note, that the search space became continuous in contrast to the previous.
-
-\begin{table}
-    \centering
-    \begin{tabular}{|c|c|c|}
-        \hline
-        Parameter                                         & minimal value & maximal value \\ \hline
-        Model weight (small, medium, large)               & 0.01          & 1             \\ \hline
-        IOU $T$                                           & 0.05          & 1             \\ \hline
-        Sigma\footnote{Soft non-maximal superssion only } & x             & x             \\ \hline
-    \end{tabular}
-    \caption{Hyper parameter search-space for model ensembling}
-    \label{tab:ensembling_search_space_area}
-\end{table}
-
-We used results from table TODO and normalized all confidence values o
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{images/ensemble_search_diag.drawio.pdf}
-    \caption{Schematics of the search of hyper-parametrs and weights for ensembling}
-    \label{fig:diag:ense_search}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{lstlisting}[language=json, numbers=none]
-   {"filename" : {
-       "bboxes" : [[x1, y1, x2, y2],...],
-       "labels": [l1, l2,...],
-       "scores": [s1, s2,...],
-       "stage" : "test" / "val" / "train"
-       },
-    "filename2" : {...},
-    ...
-   }
-\end{lstlisting}
-    \caption{Structure of the data in .json file used to store model predictions}
-    \label{fig:predictions_json}
-\end{figure}
-
-\subsection{Assessing importance of different models in ensembling}
-To get an insight into what affects the performance of model ensembling, we compare the following: an Ensemble of multiple models with the same architecture and backbone, an ensemble of models with the same architecture and different backbones, and an ensemble of different architectures. All models selected for ensembling were trained on the stage five dataset, including the changes proposed in section \ref{sec:general_changes}.
-
-After selecting models, we ensembled them using the WBF method. Model weights and IOU threshold $T$ value were optimized on the validation dataset as described in section \cite{sec: ensembling}. The Optuna optimization software was used to find those, where we set search-space to be in the range from 0 to 1 for all model weights as well as for the IOU threshold $T$. The optimization process was terminated after $3000$ trials.
-
-\subsubsection{The same architecture and backbone}
-We used YOLOv5 architecture with a medium sized backbone, since multiple models were trained for experiments mentioned in section \ref{sec:model_inspection}. Summary of used models is available in table \ref{tab:ensemble_models_involved}.
-
-\subsection{The same architecture different backbones}
-We used YOLOv5 architecture again but included two models with a small backbone, 3 with a medium-sized backbone, and 3 with a large backbone. When picking those, we tried to match the performance of selected models with those selected before. This was done to ensure the maximal comparability of those two ensembles.
-
-\subsection{Different architecture}
-Here we used the best model we had at our disposal at the moment. We used the following models: Two YOLOv5-large, two YOLOv5-medium, YOLOv5-small, EfficientDet-D1, EfficientDet-D3, RetinaNet-swint, Faster-RCNN-Resnet50, and Faster-RCNN-Resnet50. Even though we picked the best available models, the difference in $AP@.5$ against YOLOv5-all was $2\$$, as can be seen in table \ref{tab:ensemble_models_involved}, where we denoted a group of models with different architectures as 'All'.
-
-Two YOLOv5 models with large backbone, Three YOLOv5 with medium-sized backbones, small YOLOv5 model, RetinaNet model with  EfficientDet with D1 and D3 backbones
-
-
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|c|c|c|c|}
-        \hline
-        Experiment & num.models & mean  & std   & min   & max   \\ \hline
-        YOLOv5-m   & 8          & 0.696 & 0.014 & 0.668 & 0.719 \\ \hline
-        YOLOv5-all & 8          & 0.693 & 0.017 & 0.659 & 0.719 \\ \hline
-        All        & 10         & 0.707 & 0.014 & 0.676 & 0.725 \\ \hline
-    \end{tabular}
-    \caption{Comparison of models envolved in ensembling by statics of their $AP@.5$ metrics}
-    \label{tab:ensemlbe_models_involved}
-\end{table}

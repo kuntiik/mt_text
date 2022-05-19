@@ -180,9 +180,11 @@ Nowadays, modifications of convolutional layers are proposed, such as dilated co
 A non-linear activation function usually follows the output of the convolutional layer. Many activation functions are at our disposal, but the most commonly used is ReLU and its derivatives, such as SERLU, SELU, ELU, Swish, and Leaky ReLU. Values of those functions are depicted in figure \ref{fig:activation_functions}.
 
 \subsection{Normalization layers}
+\label{sec:normalization_layers}
 \subsubsection{Batch-normalization}
 TODO
 \subsubsection{Group-normalization}
+\label{sec:group_norm}
 TODO
 
 \begin{figure}
@@ -213,7 +215,7 @@ where $d_k$ is dimension of keys. More details can be seen in figure \ref{fig:nl
 \end{figure}
 
 \subsection{Transformers in computer vision}
-The first transformer-based model was Vision Transformer (ViT) which is capable of image classification only. It is composed of multiple encoder blocks stacked on top of each other; those blocks are the same as those used by the transformer for the NLP task. On the top encoder block is attached a multi-layer perceptron (MLP) head, which outputs values for each class. Those can be converted into corresponding probabilities by a softmax layer. The input into ViT are $16 \times 16$ image patches linearly projected into vectors; the whole architecture is shown in figure
+The first transformer-based model was the Vision Transformer (ViT) which is capable of image classification only. It is composed of multiple encoder blocks stacked on top of each other; those blocks are the same as those used by the transformer for the NLP task. On the top encoder block is attached a multi-layer perceptron (MLP) head, which outputs values for each class. Those can be converted into corresponding probabilities by a softmax layer. The input into ViT are $16 \times 16$ image patches linearly projected into vectors; the whole architecture is shown in figure
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/vision_transformer.png}

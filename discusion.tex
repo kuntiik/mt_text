@@ -31,6 +31,25 @@ Even though the difference in the performance of different backbones differed on
 The value of weight decay seemed to not affect the model's performance. The $AP$ of models with different value weight decay did not even differ during the training. This was surprising since we would expect a decrease in the generalization gap.
 
 \section{Ensembling}
+In tables \ref{tab:precision:grid_search} and \ref{tab:recall:grid_search} we observe, that the best performing method was WBF. The other methods showed smaller but still significant improvement. This corresponds to findings by Solovyev et al. \cite{Solovyev2019}. We were surprised that extending the functionality of WBF by reweighting predictions according to their area did not improve the performance of the ensembled model.
+
+From tables \ref{tab:model_results:stage_four} and \ref{tab:model_ensembling:handpicked} we see, that $AP@.5$ obtained by ensembled models improved over the best performing model by $2.3\%$ when we manually selected hyper-parameters and used WBF method. On the contrary, models ensembled by parameters found by grid search improved by $6.7\%$ in terms of $AP@.5$. This emphasizes the importance of the hyper-parameter search for ensembling methods.
+
+Tables \ref{tab:precision:ensemble_compare} and \ref{tab:recall:ensemble_compare} show the importance of using different architectures and backbones in ensemble.
+We found that the usage of different backbones increases the gain in average precision by circa $1.5\%$. Furthermore, using different architectures increased the performance by an additional $3.2\%$. Please note that models included in ensembling with different architectures had a better average $AP@.5$ by $2\%$ higher than models included in the former two ensembling approaches. If we adjust the results for that, we expect circe $1.2\%$ gain solely from the usage of different architecture models. Figure \ref{fig:ensembling_parameters_importance} we see that the second worst-performing model included in the enabling had the most significant importance for the ensemble.
+
+
+\section{Dental restorations segmentation}
+\subsection{Non-deeplearning approach}
 
 
 
+
+
+\section{Comparision of results with related publications}
+
+Results obtained by this work have beaten those achieved by Srivastava at al. \cite{Srivastava2017} and Kumar and Srivastava \cite{Kumar}. Please note that even though Kumar continued on the work pubulished by Srivastava et al. even extending the dataset used by Srivastava twofolds, all metrics reported by them dropped significantly. We cannot explain what caused this decrease in performance. Kumar does not adress this problem in the published paper.
+
+Bayrakdar2021 at al. \cite{Bayrakdar2021} and Bayraktar2021 et al \cite{Bayraktar2021} reported better results, than we achieved througout our work. We find that surprising since both works had significantly smaller ammount of data (621 and 1000 images). We experimented with the YOLOv3 architecture used by \cite{Bayraktar2021}, but in our experiments, it achieved worse results than other architectures. We, therefore, found their results to be irreproducible.
+
+Cantu et al. achieved a similar F1-Score as we did in our work. The comparability of those results is limited since they solved semantic segmentation tasks contrary to object detection.
