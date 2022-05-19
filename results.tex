@@ -2,22 +2,32 @@
 \label{chapter:results}
 This chapter states the results of the proposed methods.
 
-% In section \ref{}
+In section \ref{sec:model_comparison} we showed results of trained models on different stages of the dataset.
 
-Section
+Section \ref{sec:model_improvements_results} contains results of improvements to training pipeline proposed in section \ref{sec:general_changes}.
+
+In section \ref{sec:model_inspection_results}, we show how different backbones' sizes and weight decay affected the performance of the model.
+
+Section \ref{sec:ensembling_results} reprots the influence of ensemble nerual networks.
+
+Section \ref{sec:dental_restoration_results} contains results of algorithms for segmentation of dental restorations
+
+In the final secton \ref{sec:result_comparision_with_lit} we compare results of our best-performing model with the literature.
+
 \section{Model comparison}
 \label{sec:model_comparison}
+In this section we compare the performance of different model architecures and their backbones. This section is diveded into five subsection corresponging to five stages of the dataset. For each of those we report average precision metric on the test part of the dataset, unles stated otherwise.
 \subsection{Stage one dataset}
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
         \hline
         Model           & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
         FRCNN-R50       & 0.045 & 0.168   & 0.0064   & 0.109     & 0.187     & 0.141     \\ \hline
-        YOLOv3          & 0.083 & 0.238   & -        & -         & -         & -         \\ \hline
-        YOLOv5-l6       & 0.087 & 0.258   & 0.02     & 0.211     & 0.309     & 0.327     \\ \hline
-        YOLOv5-x6       & 0.082 & 0.268   & 0.04     & 0.204     & 0.324     & 0.302     \\ \hline
-        EfficientDet-d4 & 0.091 & 0.242   & 0.007    & 0.198     & 0.234     & 0.287     \\ \hline
+        YOLOv3          & 0.078 & 0.238   & -        & -         & -         & -         \\ \hline
+        YOLOv5-l6       & 0.082 & 0.258   & 0.02     & 0.211     & 0.309     & 0.327     \\ \hline
+        YOLOv5-x6       & 0.087 & 0.268   & 0.04     & 0.204     & 0.324     & 0.302     \\ \hline
+        EfficientDet-d4 & 0.081 & 0.242   & 0.007    & 0.198     & 0.234     & 0.287     \\ \hline
     \end{tabular}
     \caption{Comparision of trained model on the stage one dataset}
     \label{tab:model_results:stage_one}
@@ -25,7 +35,7 @@ Section
 
 \subsection{Stage two dataset}
 
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
         \hline
@@ -159,7 +169,7 @@ Average precision of models trained with incorporated imrpovements can be seen i
 Chart of $AP@.5$ for EfficientDet-D5 models with batach-normalization layers and group normlization layer is in figure \ref{fig:batch_group_dff}. Model using batch normalization achieved $AP@.5$ of 0.634 on the test dataset, beeing outperformed by model using group normalization, with $AP@.5$.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/batch_norm_group_norm.png}
+    \includegraphics[width=0.9\textwidth]{images/batch_norm_group_norm.png}
     \caption{Difference in $AP@.5$ amoqEfficientDet-D5 model with batch normalization and group normalization}
     \label{fig:batch_group_diff}
 \end{figure}
@@ -167,7 +177,7 @@ Chart of $AP@.5$ for EfficientDet-D5 models with batach-normalization layers and
 \section{Model inspection}
 \label{sec:model_inspection_results}
 \subsection{Size of backbone}
-The table \ref{tab:backbone_comparison} was computed by statistics from 29 models, where each for each type of backbone was represented by 8 to 12 models. The columns mean, std, max and min denote statistics of $AP@.5$ obtained by trained models.Furthemore we can inspect the size of given backbone, which is induced by its number of parameters (Par) and floating-point operations FLOPs. The last column of table $\ref{tab:backbone_comparison}$ shows average time required to train the given backbone.
+The table \ref{tab:backbone_comparison} was computed by statistics from 29 models, where each type of backbone was represented by 8 to 12 models. The columns mean, std, max and min denote statistics of $AP@.5$ obtained by trained models. Furthermore, we can inspect the size of a given backbone, which is induced by its number of parameters (Par) and floating-point operations FLOPs. The last column of table $\ref{tab:backbone_comparison}$ shows the average time required to train the given backbone.
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
@@ -176,7 +186,7 @@ The table \ref{tab:backbone_comparison} was computed by statistics from 29 model
         Medium   & 0.696 & 0.0126 & 0.669 & 0.719 & 35     & 63       & 3.5     \\ \hline
         Large    & 0.703 & 0.0136 & 0.681 & 0.725 & 76     & 141      & 5.2     \\ \hline
     \end{tabular}
-    \caption{Comparision of $AP.@5$ metric for different backbones of YOLOv5}
+    \caption{Comparision of $AP.@5$ metric for different backbones of YOLOv5 architecture}
     \label{tab:backbone_comparison}
 \end{table}
 
@@ -194,7 +204,9 @@ In the figures \ref{fig:fasterrcnn_weight_decay} and \ref{fig:yolo_weight_decay}
 
 \section{Ensembling}
 \label{sec:ensembling_results}
-\subsection{Hand-picked parameters}
+In this section, we show the performance of model ensembles with handpicked parameters \ref{subsec:handpicked} as well as ensembles obtained by parameters found by a grid-search. Furthermore, we report how the diversity of models involved in the ensemble affects its results.
+\subsection{Manually-picked parameters}
+\label{subsec:handpicked}
 In the table \ref{tab:model_ensembling:handpicked}, the reader can se results obtained by handpicking circa ten sets of hyper-parameters, based on our qualified quess. Than evaluating those on validation part of the dataset and selecting the best-performing, which was evaluated on test part of the dataset.
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
@@ -207,7 +219,8 @@ In the table \ref{tab:model_ensembling:handpicked}, the reader can se results ob
     \label{tab:model_ensembling:handpicked}
 \end{table}
 \subsection{Grid search results}
-The best hyper-parameters for a given ensemble method found by a grid search are in the table \ref{tab:ensemble_params:grid_search}. We omited from the table parameter $sigma$, used only in snms. Its optimal value, according to the grid search, was $0.8$.
+\label{subsec:gridsearched}
+The best hyper-parameters for a given ensemble method found by a grid search are in the table \ref{tab:ensemble_params:grid_search}. We omitted from the table parameter $\sigma$, used only in S-NMS. Its optimal value, according to the grid search, was $0.8$.
 Average precision of the models ensembled with parameters from table \ref{tab:ensemble_params:grid_search} are available in table \ref{tab:precision:grid_search} and average recall values are in the table \ref{tab:recall:grid_search}. Precison and recall values based on the confidence threshold, that maximizes F-score can be seen in table \ref{tab:ensembling_prf:grid_search}.
 
 \begin{table}[H]
@@ -380,7 +393,7 @@ Figure \ref{fig:segmentation_unet_sample} shows results of segmentation and comp
             U-Net     & 37    & 25    \\ \hline
             U-Net-I   & 33    & 5     \\ \hline
         \end{tabular}
-        \caption{foo}
+        \caption{Optimal parameters for model post-processing found by a grid-search}
         \label{tab:unet_seg_hyperparams}
     \end{minipage}
     \begin{minipage}[t]{0.48\textwidth}
@@ -403,7 +416,7 @@ Figure \ref{fig:segmentation_unet_sample} shows results of segmentation and comp
 \section{Comparision of results with related publications}
 \label{sec:result_comparision_with_lit}
 \subsection{Caries detection}
-In the table \ref{tab:results_comparison}, we see a comparison of the results of this thesis with results achieved by related works. We compared with only those, who selected a similar approach to ensure at least a minimal ammount of comparability.
+In the table \ref{tab:results_comparison}, we see a comparison of the results of this thesis with results achieved by related works. We compared with only those who selected a similar approach to ensure at least a minimal amount of comparability.
 
 \begin{table}
     \centering
@@ -421,6 +434,6 @@ In the table \ref{tab:results_comparison}, we see a comparison of the results of
     \label{tab:results_comparison}
 \end{table}
 
-Note that Cantu et al. \cite{Cantu2020} solved the problem of dental caries localization as a semantic segmentation task, this the recall and F1-score is calculated per pixel, while other works worked with bounding boxes. However, the reader can still estimate how their work compares to others in the table.
+Note that Cantu et al. \cite{Cantu2020} solved the problem of dental caries localization as a semantic segmentation task; the recall and F1-score are calculated per pixel, while other works worked with bounding boxes. However, the reader can still estimate how their work compares to others in the table.
 
 \subsection{Restorations segmentation}

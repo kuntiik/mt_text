@@ -1,10 +1,12 @@
 \chapter{Discusion and further suggestions}
+
 \section{Baseline model comparison}
+In this section, we comment on the model's performance at different stages of the dataset and hypothesize about the impact of incorrect annotation in the dataset.
 \subsection{Stage one dataset}
-In the first stage, non of the trained model's none of the models performed well. Especially Faster-RCNN with ResNet50 backbone achieved low average precision values. We attribute it to inhomogeneity in the dataset and the low amount of data.
+In the first stage, non of the trained model's none of models performed well. Especially Faster-RCNN with ResNet50 backbone achieved low average precision values. We attribute it to inhomogeneity in the dataset and the low amount of data.
 
 \subsection{Stage two dataset}
-Even though the dataset grew by more than 50\% since stage one, there was only mediocre improvement in the average precision of the models. On the other hand, from the table \ref{tab:model_results:stage_two} we could see that the EfficientDet model was able to fit the training part of the dataset well.
+Even though the dataset grew by more than 50\% since stage one, there was only a mediocre improvement in the average precision of the models. On the other hand, from the table \ref{tab:model_results:stage_two} we could see that the EfficientDet model was able to fit the training part of the dataset well.
 
 \subsection{Stage three dataset}
 Revisiting and correcting annotation errors of the stage two dataset improved $AP@.5$ of EfficientDet-D4 by $76\%$, although the amount of data remained the same. This gives us an intuition that mistakes in annotations of the data primarily caused the low average precision achieved on stage one and two datasets.
