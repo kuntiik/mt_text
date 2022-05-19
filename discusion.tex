@@ -1,11 +1,36 @@
 \chapter{Discusion and further suggestions}
-\section{Discusion}
-% From the results in chapter \ref{chapter:results} and figures in appendix \ref{appendix:model_predictions}, we can see that the model is able to localize large portions of dental caries in the image, yet there is still room for improvement. From all the experiments, we observed the following phenomena:
-% \begin{itemize}
-%     \item In figure \ref{fig:yolov5_map_iou_thresholds}, we can see a sharp drop in the MAP values when the IOU threshold greater than 0.4 is chosen. The performance is present in both training and validation MAP curves. This seems to be related to the data rather than to the model. Also, it matches the expectations of Dr.Tichy, who said that in many cases, it is not crystal clear where precisely the tooth decay is located, and there is thus slight ambiguity in the image labeling.
-%     \item From predictions in figures \ref{fig:pred_img1}, \ref{fig:pred_img2}, \ref{fig:pred_img3}, \ref{fig:pred_img4}, we can see that the model is incapable of precise predictions in the vicinity of dental restorations. This is a common pattern across the whole dataset and is probably caused by a wide variety of restorations shapes as well as by the low amount of similar images in the dataset.
-%     \item The best performing YOLOv5 backbone was not the biggest one, but the 5m6 backbone, which is considered to be a medium-sized option. Even though the difference was negligible, it is still an unexpected result that the 5m6 backbone was able to outperform 5x6 backbone, even though it achieved ten percent better results than 5m6 when benchmarked on the MS COCO dataset \cite{glennjocher2020}. The inability to utilize the larger backbone can be caused by a wrong setup of the training pipeline or the low amount of data.
-%     \item There was a drop in the model performance when selecting the image size of 1024 over 896. Even though the difference is subtle, we would expect the opposite. I personally do not know how the bigger image size could harm the performance.
-%     \item Even though in MS COCO benchmark EfficientDet-D4 is a better performing model than YOLOv5-5l6, it has shown to be worse performing on our dataset. This could be caused by extremely low batch size of 1. The model has shown to be memory-intensive, and 48GB GPUs would be required to test bigger backbones with a batch size of 4.
-% \end{itemize}
-\section{Suggestions for further work}
+\section{Baseline model comparison}
+\subsection{Stage one dataset}
+In the first stage, non of the trained model's none of the models performed well. Especially Faster-RCNN with ResNet50 backbone achieved low average precision values. We attribute it to inhomogeneity in the dataset and the low amount of data.
+
+\subsection{Stage two dataset}
+Even though the dataset grew by more than 50\% since stage one, there was only mediocre improvement in the average precision of the models. On the other hand, from the table \ref{tab:model_results:stage_two} we could see that the EfficientDet model was able to fit the training part of the dataset well.
+
+\subsection{Stage three dataset}
+Revisiting and correcting annotation errors of the stage two dataset improved $AP@.5$ of EfficientDet-D4 by $76\%$, although the amount of data remained the same. This gives us an intuition that mistakes in annotations of the data primarily caused the low average precision achieved on stage one and two datasets.
+
+\subsection{Stage four dataset}
+Despite the dataset increasing by another $35\%$ of images available in stage three, the increase in performance was significantly smaller than the one we got by transitioning from stage two dataset to stage three. We hypothesize that by removing the errors in the dataset, the impact of obtaining more data became smaller. It is interesting that all models were almost on-par in terms of average precision, the only difference being the EfficientDet-D4 model, which was by circa $10\%$ worse than the rest. This somehow surprised us since EfficientDet-D4 was the best performing model on the MS COCO benchmark from all models that we used \cite{paperwithcode}. We attribute this to this model's high GPU memory requirements, which allowed us to use batch-size of one only.
+
+\subsection{Stage five dataset}
+
+Stage five dataset brought a steady improvement according to our expectations. The well-performing models in stage four performed well in stage five, the only difference being the YOLOv5-l6 model, which was circa $15\%$ worse than the rest. We think this was due to a bad model fit and not its incapability to perform well.
+
+\section{Model improvements}
+\subsection{General improvements}
+From the table \ref{tab:improved:precision} we see, that the best-performing did not improved when compared to results in table \ref{tab:model_results:stage_five}. On the other hand, all models, on average, converged to better results.
+
+\subsection{Group normalization}
+Even though group normalization significantly improved the results of the EfficientDet-D5 model. It still performed on par with other architectures at best. We, therefore, decided not to use EfficientDet-D5 and D4 models since they were slightly worse than the rest and took a long time to train.
+
+\section{Model inspection}
+\subsection{Size of backbone}
+Even though the difference in the performance of different backbones differed only slightly, we could see a trend where a bigger backbone performs better. This holds in terms of maximal achieved performance as well as mean performance across multiple training instances.
+
+\subsection{Weight decay}
+The value of weight decay seemed to not affect the model's performance. The $AP$ of models with different value weight decay did not even differ during the training. This was surprising since we would expect a decrease in the generalization gap.
+
+\section{Ensembling}
+
+
+

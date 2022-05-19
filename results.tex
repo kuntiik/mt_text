@@ -6,13 +6,12 @@
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
         \hline
-        Model                  & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        FRCNN-R50              & 0.045 & 0.168   & 0.0064   & 0.031     & 0.064     & 0.0058    \\ \hline
-        YOLOv3                 & 0.093 & 0.258   & -        & -         & -         & -         \\ \hline
-        YOLOv5-l6              & 0.097 & 0.318   & 0.03     & 0.211     & 0.309     & 0.0.397   \\ \hline
-        YOLOv5-x6              & 0.105 & 0.337   & 0.05     & 0.204     & 0.324     & 0.413     \\ \hline
-        EfficientDet-d4        & 0.101 & 0.298   & 0.02     & 0.215     & 0.404     & 0354      \\ \hline
-        EfficientDet-d4, train & 0.421 & 0.839   & 0.362    & 0.251     & 0.501     & 0.535     \\ \hline
+        Model           & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        FRCNN-R50       & 0.045 & 0.168   & 0.0064   & 0.109     & 0.187     & 0.141     \\ \hline
+        YOLOv3          & 0.083 & 0.238   & -        & -         & -         & -         \\ \hline
+        YOLOv5-l6       & 0.087 & 0.258   & 0.02     & 0.211     & 0.309     & 0.327     \\ \hline
+        YOLOv5-x6       & 0.082 & 0.268   & 0.04     & 0.204     & 0.324     & 0.302     \\ \hline
+        EfficientDet-d4 & 0.091 & 0.242   & 0.007    & 0.198     & 0.234     & 0.287     \\ \hline
     \end{tabular}
     \caption{Comparision of trained model on the stage one dataset}
     \label{tab:model_results:stage_one}
@@ -26,10 +25,10 @@
         \hline
         Model                  & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
         YOLOv3                 & 0.093 & 0.258   & -        & -         & -         & -         \\ \hline
-        YOLOv5 L               & 0.097 & 0.318   & 0.03     & 0.904     & 0.12      & 0.05      \\ \hline
-        YOLOv5 XL              & 0.105 & 0.337   & 0.05     & 0.986     & 0.133     & 0.11      \\ \hline
-        EfficientDet d4        & 0.31  & 0.699   & 0.2054   & 0.215     & 0.404     & 0.47      \\ \hline
-        EfficientDet d4, train & 0.421 & 0.839   & 0.362    & 0.251     & 0.501     & 0.535     \\ \hline
+        YOLOv5 L               & 0.097 & 0.318   & 0.03     & 0.281     & 0.310     & 0.378     \\ \hline
+        YOLOv5 XL              & 0.105 & 0.337   & 0.05     & 0.278     & 0.323     & 0.392     \\ \hline
+        EfficientDet d4        & 0.089 & 0.296   & 0.01     & 0.272     & 0.291     & 0.342     \\ \hline
+        EfficientDet d4, train & 0.421 & 0.839   & 0.362    & 0.758     & 0.852     & 0.801     \\ \hline
     \end{tabular}
     \caption{Comparision of trained model on the stage two dataset}
     \label{tab:model_results:stage_two}
@@ -119,7 +118,7 @@ Average precision of models trained on this stage of the dataset are in table
         FRCNN-R101      & 0.328 & 0.8     & 0.71    & 0.263    & 0.613     & 0.742     & 0.816     \\ \hline
         FRCNN-R50       & 0.334 & 0.81    & 0.715   & 0.273    & 0.595     & 0.757     & 0.809     \\ \hline
         YOLOv5-m6       & 0.346 & 0.787   & 0.708   & 0.284    & 0.622     & 0.744     & 0.754     \\ \hline
-        yolov5-l6       & 0.295 & 0.706   & 0.625   & 0.232    & 0.533     & 0.691     & 0.489     \\ \hline
+        YOLOv5-l6       & 0.295 & 0.706   & 0.625   & 0.232    & 0.533     & 0.691     & 0.489     \\ \hline
         EfficientDet-d4 & 0.288 & 0.745   & 0.648   & 0.219    & 0.548     & 0.699     & 0.655     \\ \hline
         RetinaNet-swint & 0.328 & 0.805   & 0.72    & 0.241    & 0.565     & 0.776     & 0.775     \\ \hline
     \end{tabular}
@@ -350,19 +349,39 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
     \label{tab:ensembling_prf:grid_search}
 \end{table}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/ensemble_all_importance.pdf}
+    \caption{Importance of different models during ensembling with different architectures}
+\end{figure}
+
 \section{Dental retorations segmentation}
 \subsection{Non-deeplearning approach}
 Hyper-parameters ensuring the best performance on validation part of the datset are in table \ref{tab:nondl_restorations:best_params}. Performance of the pipelie on test dataset given the parameters in table \ref{tab:nondl_restorations:best_params} can be seen in table \ref{tab:nondl_results}.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=1\linewidth]{images/segmentation_nondl_gauss_10.pdf}
+        \caption{Gaussian adaptive thresholding}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=1\linewidth]{images/segmentation_nondl_mean_10.pdf}
+        \caption{Mean adaptive thresholding}
+    \end{subfigure}
+    \caption{From the left: X-ray image, ground-truth pixel mask, thresholded image, removal of border pixels, morphological opening}
+\end{figure}
 
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|}
         \hline
         Hyper-parameter & Adaptive mean & Adaptive Gaussian & Otsu's \\ \hline
-        $K_t$           & 71            & x                 & -      \\ \hline
-        $T$             & 15            & x                 & -      \\ \hline
-        $K_d$           & 41            & x                 & 61     \\ \hline
-        $K_o$           & 31            & x                 & 36     \\ \hline
-        $K_b$           & -             & x                 & 21     \\ \hline
+        $K_t$           & 71            & 83                & -      \\ \hline
+        $T$             & 3             & 3                 & -      \\ \hline
+        $K_d$           & 41            & 41                & 61     \\ \hline
+        $K_o$           & 31            & 36                & 36     \\ \hline
+        $K_b$           & -             & -                 & 21     \\ \hline
     \end{tabular}
     \caption{Best hyper-parameters for non-deeplerning pipeline}
     \label{tab:nondl_restorations:best_params}
@@ -375,7 +394,7 @@ Hyper-parameters ensuring the best performance on validation part of the datset 
         \hline
         Model               & Dice  & IOU   \\ \hline
         Adaptive mean       & 0.364 & 0.314 \\ \hline
-        Adaptive Gaussian   & 0.102 & 0.088 \\ \hline
+        Adaptive Gaussian   & 0.328 & 0.274 \\ \hline
         Otus's thresholding & 0.102 & 0.088 \\ \hline
     \end{tabular}
     \caption{Results of non-deeplerning approach to dental resotrations segmentation given the hyper-parameters in table \ref{tab:nondl_restorations:best_params}}
@@ -429,4 +448,5 @@ Hyper-parameters ensuring the best performance on validation part of the datset 
     \end{tabular}
     \caption{Results of U-Net models}
 \end{table}
+
 
