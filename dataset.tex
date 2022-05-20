@@ -1,6 +1,6 @@
 \chapter{Dataset}
 \label{chapter:dataset}
-In total,  MDDr. Tichy and his team created two datasets. One dataset was used to detect dental caries and the other for semantic segmentation of dental restorations. The majority of work was done on the first-mentioned set of data.
+Altogether,  MDDr. Tichý and his team created two datasets. One dataset was used to detect dental caries and the other for semantic segmentation of dental restorations. The majority of work was done on the first-mentioned set of data.
 
 \begin{figure}
     \centering
@@ -10,16 +10,16 @@ In total,  MDDr. Tichy and his team created two datasets. One dataset was used t
 \end{figure}
 
 \section{Dental caries}
-MDDr. Tichy and his team began to work on the datasets in September of 2021, along with the beginning of work on this thesis. This led to an opportunity to discuss the format of the data. We decided to annotate every dental caries lesion with a minimal bounding box. The annotation process was conducted in the Computer Vision Annotation Tool (CVAT), running on the Faculty of biomedical informatics server. The web address is www.gdiag.fbmi.cvut.cz.
+MDDr. Tichý and his team began to work on the datasets in September of 2021, along with the beginning of work on this thesis. This led to an opportunity to discuss the format of the data. We decided to annotate every dental caries lesion with a minimal bounding box. The annotation process was conducted in the Computer Vision Annotation Tool (CVAT), running on the Faculty of biomedical informatics server. The web address is www.gdiag.fbmi.cvut.cz.
 
 While denoting the position of the carious lesion, the annotator tried to be consistent with the following guidelines:
 
 \begin{itemize}
-    \item Carious lesion is denoted by a rectangle. The rectangle should contain the entire lesion while being as small as possible.
-    \item When the lesion is on the proximal surface, and booth teeth are infected, draw a separate box for each of them.
+    \item Carious lesion is marked by a rectangle. The rectangle should contain the entire lesion while remaining as small as possible at the same time.
+    \item When the lesion is on the proximal surface, and both teeth are infected, draw a separate box for each of them.
 \end{itemize}
 
-Due to constant work on the dataset, we decided to use the same data as long as there was no major update. This ensured that we were able to compare the performance of our models to each other until a significant update was released. In total, six major releases were done. We call these releases the stages of the dataset.
+Due to constant work on the dataset, we decided to use the same data as long as there was no major update leading to a release of an improved dataset. We call these releases the stages of the dataset. In total, six major releases were done. This ensured that we were able to compare the performance of our models to each other on different stages of the dataset. 
 
 \subsubsection{First stage}
 In the very first stage MDDr. Tichý instructed a group of general dentistry students on how to approach the annotation to get as homogenous dataset as possible. They then annotated a couple of images under his supervision before continuing independently.
