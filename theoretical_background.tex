@@ -144,7 +144,12 @@ Dice Loss is computed in the same way, we only threshold values of $\hat{\mathbf
 \section{Optimization}
 In deep learning, a defined loss function that should be minimized usually does not have an analytical solution, or the solution cannot be evaluated for computational reasons. Therefore, the iterative numerical optimization approach is used, where we compute the gradient of the loss function with respect to the parameters of the optimized model. Those are updated by changing their values in the negative direction of the computed gradient.
 \subsection{Optimizers}
-The most simple optimizer is Stochastic Gradient Descent (SGD), which in each step updates the weights by stepping in the opposite direction of the gradient, the length of the step is
+The most simple optimizer is Stochastic Gradient Descent (SGD), which in each step updates the weights by stepping in the opposite direction of the gradient; the learning rate gives the length of the step.
+
+Many advanced optimizers that increase the speed of convergence are available. Commonly used are SGD with moentum, Adam and AdamW.
+
+\subsection{Weight decay}
+We can add the $L_2$ of the model weights to the loss function. This term is called weight decay and should decrease the discrepancy between performance on training and testing part of the dataset.
 
 \subsection{Learning rate schedulers}
 Learning rate is considered to be one of the most, if not the most important parameter, in deep learning. It is usually beneficial to change the learning rate during the course of training. This can be done manually or automated by an algorithm that increases or decreases the learning rate based on the set of predefined rules. This algorithm is called the learning rate scheduler.
