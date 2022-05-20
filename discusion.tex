@@ -1,26 +1,16 @@
 \chapter{Discusion and further suggestions}
 \label{chapter:discusion}
 
-\section{Baseline model comparison}
-We observed, that updating the dataset by either increasing the number of data or correcting annotations mistakes showed significant improvement in monitored metrics.
+\section{Coments on model comparison and their improvements}
+We observed that updating the dataset by either increasing the number of data or correcting annotations mistakes showed significant improvement in monitored metrics.
+
+The results differ only in units of percents if we use models with smaller backbones as can be seen in Table \ref{tab:backbone_comparison}, furthermore parameter-heavy models such as EfficientDet-D4 performed worse than others, see Table \ref{tab:model_results:stage_four}. This was a surprising fact, since EfficentDet-D4 was out-performing all other tested models on the MS COCO benchmark \cite{paperwithcode,Tan2019}.
 
 
-\subsection{Summary}
-We see a steady improvement throughout dataset evolution. The correction of annotation mistakes caused all models' biggest gain in performance.
+The weight decay did not affect the behavior of YOLOv5 and Faster R-CNN. This was surprising since we would expect an increase in performance on the validation and test dataset.
 
-\section{Model improvements}
-\subsection{General improvements}
-From the table \ref{tab:improved:precision} we see, that the best-performing did not improved when compared to results in table \ref{tab:model_results:stage_five}. On the other hand, all models, on average, converged to better results.
+The use of group normalization significantly decreased the performance gap between EfficiendDet and other models (Section \ref{sec:group_nromalization:res }), but the results were still inferior to most of the models.
 
-\subsection{Group normalization}
-Even though group normalization significantly improved the results of the EfficientDet-D5 model. It still performed on par with other architectures at best. We, therefore, decided not to use EfficientDet-D5 and D4 models since they were slightly worse than the rest and took a long time to train.
-
-\section{Model inspection}
-\subsection{Size of backbone}
-Even though the difference in the performance of different backbones differed only slightly, we could see a trend where a bigger backbone performs better. This holds in terms of maximal achieved performance as well as the mean performance across multiple training instances.
-
-\subsection{Weight decay}
-The value of weight decay seemed not to affect the model's performance. The $AP$ of models with different values of weight decay did not differ during the training nor in the final evaluation. This was surprising since we would expect a decrease in the generalization gap.
 
 \section{Ensembling}
 In tables \ref{tab:precision:grid_search} and \ref{tab:recall:grid_search} we observe, that the best performing method was WBF. The other methods showed smaller but still significant improvement. This corresponds to findings by Solovyev et al. \cite{Solovyev2019}. We were surprised that extending the functionality of WBF by reweighting predictions according to their area did not improve the performance of the ensembled model.

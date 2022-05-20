@@ -326,15 +326,15 @@ Swin transformer architecture overcomes the limitations of ViT, which is working
 Faster RCNN (Region-Based Neural Network) architecture is a two-stage detector. In the first stage, Region Proposal Network (RPN) finds regions of interest (ROI)and proposes bounding boxes corresponding to those regions. This is done by sliding a small neural network over the output of the backbone. In the second stage, features corresponding to positions of ROIs are extracted from the backbone and processed by a classification network, which decides if the region corresponds to a background or is one of the target classes. The schema of the architecture is in Figure \ref{fig:faster_rcnn}
 
 \subsection{RetinaNet}
+The biggest contribution of RetinaNet is the introduction of focal loss \cite{Lin2017}, see Figure \ref{fig:focal_loss}. It helps to mitigate to the problem if class imbalance by changing the formula Cross-Entropy loss. The penalization of well-classified samples decreases, increasing the importance of correct classification of hard-to-classify examples.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{images/focal_loss.png}
     \caption{Focal Loss, source \cite{Lin2017}}
+    \label{fig:focal_loss}
 \end{figure}
 
-\subsection{YOLO family}
-TODO
 
 \subsection{EfficientDet}
 EfficientDet tries to achieve a similar goal as EfficientNet: Propose a computationally effective architecture for object detection that would be scalable. Since an efficient backbone architecture was already proposed \cite{Tan2019a}, they focus mainly on feature fusion from multiple layers. Based on the study of FPN, PANet, and NAS-FPN, a Bidirectional feature pyramid network (BiFPN) was proposed as the most computationally effective neck architecture \cite{Tan2019}; it consists of multiple BiFPN blocks stacked on top of each other, see \ref{fig:necks}. The count of those blocks is dependent on the size of the used backbone.

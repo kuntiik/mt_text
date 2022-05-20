@@ -136,6 +136,7 @@ Even though the best performing model in Table \ref{tab:improved:precision} impr
 
 
 \subsection{Group normalization}
+\label{sec:group_nromalization:res}
 Chart of $AP@.5$ for EfficientDet-D4 models with batch-normalization layers and group normalization layers can be found in Figure \ref{fig:batch_group_diff}. Model using batch normalization achieved $AP@.5$ of 0.634 on the test dataset, outperforming the model using group normalization with $AP@.5=0.694$. Despite the performance increase induced by group normalization, the EfficientDet-D4 model performed comparably with the models in Table \ref{tab:improved:precision}. Therefore, we stopped using this model further on, because the training of this model was also more computationally demanding than the rest of the models.
 \begin{figure}[H]
     \centering
