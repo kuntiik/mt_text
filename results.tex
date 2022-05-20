@@ -16,10 +16,10 @@ In the final secton \ref{sec:result_comparision_with_lit} we compare results of 
 
 \section{Model comparison on different datasets}
 \label{sec:model_comparison}
-This section compares the performance of different model architectures and their backbones. This section is divided into five subsections corresponding to five stages of the dataset; for more details about the dataset, see Section \ref{sec:dataset:dental_caries}. For each of the five stages of dataset, we report the average precision metric on the test part of the dataset. The training of all models was conducted according to a training protocol described in Section \ref{chapter:methods}. Tables in this section use abbreviations described in Section \ref{sec:methods:nns}.
+This section compares the performance of different model architectures and their backbones. It is divided into five subsections corresponding to five stages of the dataset; for more details about the dataset, see Section \ref{sec:dataset:dental_caries}. For each of the five stages of the dataset, we report the average precision metric on the test part of the dataset. The training of all models was conducted according to a training protocol described in Section \ref{chapter:methods}. Tables in this section use abbreviations described in Section \ref{sec:methods:nns}.
 
 \subsection{Stage one dataset}
-In Table \ref{tab:model_results:stage_one} the reader can see results obtained on the first stage of the dataset. None of the trained models, especially the Faster R-CNN model, achieved low average precision values. We attribute it to inhomogeneity in the dataset and the low amount of data.
+In Table \ref{tab:model_results:stage_one} the reader can see results obtained on the first stage of the dataset. None of the trained models performed well, especially the Faster R-CNN model, achieved low average precision values. We attribute that to inhomogeneity in the dataset and the low amount of data.
 \begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
@@ -36,7 +36,7 @@ In Table \ref{tab:model_results:stage_one} the reader can see results obtained o
 \end{table}
 
 \subsection{Stage two dataset}
-Even though the dataset grew in size by more than 50\% since stage one, from the Tables \ref{tab:model_results:stage_one} and \ref{tab:model_results:stage_two} we see that the YOLOv3 model improved by less than $10\$$ on the contrary performance of YOLOv5 model improved by circa $25\%$. Due to the low performance of YOLOv3 and its similarity with superior YOLOv5 architecture, we will not experiment with YOLOv3 in further Sections.
+Even though the dataset grew in size by more than 50\% since stage one, from the Tables \ref{tab:model_results:stage_one} and \ref{tab:model_results:stage_two} we see that the YOLOv3 model improved by less than $10\%$ on the contrary performance of YOLOv5 model improved by circa $25\%$. Due to the low performance of YOLOv3 and its similarity with superior YOLOv5 architecture, we will not experiment with YOLOv3 in further Sections.
 In the last two rows of table \ref{tab:model_results:stage_two} we can see the discrapancy of average precision, when evaluated on test and train part of the dataset. This ensures us, that the model is able to fit the data and we only need to eleviate the generalizaiton gap.
 \begin{table}[H]
     \centering
@@ -71,8 +71,8 @@ Performance of EfficentDet and YOLOv5 models evaluated on training part of datas
 \end{table}
 
 \subsection{Stage four dataset}
-The average precision of models trained on this stage of the dataset is in Table \ref{tab:model_results:stage_four}. Furthermore precision-recall values for confidence threshold maximizing F1 score are in table \ref{tab:model_prf:stage_four}, which is located in appendix. Even though we tested multiple new architectures and revisited Faster R-CNN with two different backbones, the performance gain obtained in this stage was not as prominent as the one observed when moving from stage three to stage four.
-In the table \ref{tab:model_results:stage_four} we can observe how different architectures differ in their performance on small, medium-sized, and large boxes. Comparing YOLOv5-m6 and RetinaNet-ResNet50 models shows that their overall performance (measured by $AP@.5$) almost matches, but when comparing their $AP@.5$ metrics, we see a significant difference.
+The average precision of models trained on this stage of the dataset is in Table \ref{tab:model_results:stage_four}. Furthermore precision-recall values for confidence threshold maximizing F1 score are in table \ref{tab:model_prf:stage_four}, which is located in Appendix. Even though we tested multiple new architectures and revisited Faster R-CNN with two different backbones, the performance gain obtained in this stage was not as prominent as the one observed when moving from stage three to stage four.
+In the table \ref{tab:model_results:stage_four} we can observe how different architectures differ in their performance on small, medium-sized, and large boxes. Comparing YOLOv5-m6 and RetinaNet-ResNet50 models shows that their overall performance (measured by $AP@.5$) almost matches, but when comparing their $AP@.5_L$ metrics, we see a $15\%$ difference. We try to exploit this behavior by the approach described in Section \ref{sec:methods_area_aware_ens}.
 
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -86,12 +86,12 @@ In the table \ref{tab:model_results:stage_four} we can observe how different arc
         RetN-swint & 0.266 & 0.66    & 0.175    & 0.497     & 0.721     & 0.786     \\ \hline
         RetN-R50   & 0.263 & 0.643   & 0.174    & 0.547     & 0.696     & 0.663     \\ \hline
     \end{tabular}
-    \caption{performance comparison of multiple models based on mean average precision metrics}
+    \caption{Performance comparison of multiple models trained on the stage four dataset}
     \label{tab:model_results:stage_four}
 \end{table}
 
 \subsection{Stage five}
-The results in Table \ref{tab:model_results:stage_five} show steady improvement over those in Table \ref{tab:model_results:stage_four}. We see that YOLOv5-l achieved worse results than in stage four. We do not emphasize this result since we believe that if trained multiple times, the results of this architecture would improve. On the contrary, we see that the EfficientDet-D4 model lagged behind YOLOv5 in all stages of the dataset. We therefore in Section \ref{sec:methods:group_nrom} experiment with usage of group normalization.
+The results in Table \ref{tab:model_results:stage_five} show steady improvement over those in Table \ref{tab:model_results:stage_four}. We see that YOLOv5-l6 achieved worse results than in stage four. We do not emphasize this result since we believe that if trained multiple times, the results of this architecture would improve. On the contrary, we see that the EfficientDet-D4 model lagged behind YOLOv5 in all stages of the dataset. We therefore in Section \ref{sec:methods:group_nrom} experiment with usage of group normalization.
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
@@ -174,7 +174,7 @@ In the figures \ref{fig:fasterrcnn_weight_decay} and \ref{fig:yolo_weight_decay}
 In this section, we show the performance of model ensembles with handpicked parameters \ref{subsec:handpicked} as well as ensembles obtained by parameters found by a grid-search. Furthermore, we report how the diversity of models involved in the ensemble affects its results.
 \subsection{Manually-picked parameters}
 \label{subsec:handpicked}
-In the table \ref{tab:model_ensembling:handpicked}, the reader can see results obtained by handpicking circa ten sets of hyper-parameters, based on our qualified quess. Than evaluating those on validation part of the dataset and selecting the best-performing, which was evaluated on test part of the dataset. The first group contained the following models trained on stage four dataset: RetinaNet-swint, YOLOv5-m, RetinaNet-ResNet50. The second group was composed of: Faster R-CNN-Resnet101, YOLOv5-m, RetinaNet-swint.
+In the table \ref{tab:model_ensembling:handpicked}, the reader can see results obtained by handpicking circa ten sets of hyper-parameters, based on our qualified guess. Then evaluating those on the validation part of the dataset and selecting the best-performing, which was evaluated on the test part of the dataset. The first group (G1) contained the following models trained on the stage four dataset: RetinaNet-swint, YOLOv5-m, RetinaNet-ResNet50. The second group (G2) was composed of Faster R-CNN-Resnet101, YOLOv5-m, and RetinaNet-swint. From the tables \ref{tab:model_ensembling:handpicked} and \ref{tab:model_results:stage_four} we can infer,  that ensembling of models improved $AP@.5$ by $3\%$ over the best performing model included in the ensemble.
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
@@ -187,8 +187,10 @@ In the table \ref{tab:model_ensembling:handpicked}, the reader can see results o
 \end{table}
 \subsection{Grid search results}
 \label{subsec:gridsearched}
+All models included in the ensemble were trained on the stage-five dataset, tehrefore their results are in Table \ref{tab:model_results:stage_five}.
+
 The best hyper-parameters for a given ensemble method found by a grid search are in the table \ref{tab:ensemble_params:grid_search}. We omitted from the table parameter $\sigma$, used only in S-NMS. Its optimal value, according to the grid search, was $0.8$.
-Average precision of the models ensembled with parameters from table \ref{tab:ensemble_params:grid_search} is available in the table \ref{tab:precision:grid_search} and average recall values are in the table \ref{tab:recall:grid_search}. Precison and recall values based on the confidence threshold, that maximizes F-score can be seen in table \ref{tab:ensembling_prf:grid_search}.
+Average precision of the models ensembled with parameters from table \ref{tab:ensemble_params:grid_search} is available in the table \ref{tab:precision:grid_search} and average recall values are in the table \ref{tab:recall:grid_search}. Precison and recall values based on the confidence threshold, that maximizes F-score can be seen in table \ref{tab:ensembling_prf:grid_search}. In Tables \ref{tab:ensemble_params:grid_search}, \ref{tab:precision:grid_search} we used notation introduced in Section \ref{sec:model_ensembling} and by WBF-A we mean the method proposed in Section \ref{sec:methods_area_aware_ens}, where S,M,L means weights for small, medium-size and large boxes.
 
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -404,8 +406,7 @@ Figure \ref{fig:segmentation_unet_sample} shows results of segmentation and comp
 
 \section{Comparision of results with related publications}
 \label{sec:result_comparision_with_lit}
-% \subsection{Caries detection}
-In the table \ref{tab:results_comparison}, we see a comparison of the results of this thesis with results achieved by related works. We compared with only those who selected a similar approach to ensure at least a minimal amount of comparability.
+In the table \ref{tab:results_comparison}, we see a comparison of caries detection results of this thesis compared against results achieved by related works. We compared with only those who selected a similar approach to ensure at least a minimal amount of comparability.
 
 \begin{table}
     \centering

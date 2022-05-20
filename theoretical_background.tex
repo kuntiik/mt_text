@@ -365,7 +365,7 @@ In non-maximal suppression, we first sort all boxes $\mathcal{B}$ by their confi
     \label{alg:nms}
 \end{figure}
 
-\subsubsection{Soft non-maximal suppression {Soft-NMS}}
+\subsubsection{Soft non-maximal suppression {S-NMS}}
 Soft non-maximal supression extends the NMS algorithm by a possibility to keep overlapping the predictions if their confidences are high. Instead of removing boxes with an overlap, we decrease their confidence value by the follwing Gaussian penalty function:
 \begin{align}
     s_i = s_i e^{-\frac{\text{iou}\left( \mathcal{M}, b_i \right)^2}{\sigma}}, \forall b_i \notin \mathcal{D}
