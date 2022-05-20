@@ -203,7 +203,9 @@ We tried to perform a grid search with the equation \ref{eq:ensemble_weighting_a
 
 
 \subsection{Assessing importance of different models in ensembling}
-To get an insight into what affects the performance of model ensembling, we compare the following: an Ensemble of multiple models with the same architecture and backbone, an ensemble of models with the same architecture and different backbones, and an ensemble of different architectures. All models selected for ensembling were trained on the stage five dataset, including the changes proposed in section \ref{sec:general_changes}.
+\label{sec:methods:assesing_importance}
+To get an insight into what affects the performance of model ensembling, we compare the following: an Ensemble of multiple models with the same architecture and backbone, an ensemble of models with the same architecture and different backbones, and an ensemble of different architectures. All models selected for ensembling were trained on the stage five dataset, including the changes proposed in section \ref{sec:general_changes}. The results of a subset of those models are in Table \ref{tab:improved:precision}.
+
 
 After selecting models, we ensembled them using the WBF method. Model weights and IOU threshold $T$ value were optimized on the validation dataset as described in section \ref{sec:ens_grid_search}. The Optuna optimization software was used to find those, where we set search-space to be in the range from 0 to 1 for all model weights as well as for the IOU threshold $T$. The optimization process was terminated after $3000$ trials.
 

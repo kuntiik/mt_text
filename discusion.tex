@@ -2,22 +2,7 @@
 \label{chapter:discusion}
 
 \section{Baseline model comparison}
-In this section, we comment on the model's performance at different stages of the dataset and hypothesize about the impact of incorrect annotation in the dataset.
-\subsection{Stage one dataset}
-In the first stage, non of the trained model's none of models performed well. Especially Faster-RCNN with ResNet50 backbone achieved low average precision values. We attribute it to inhomogeneity in the dataset and the low amount of data.
 
-\subsection{Stage two dataset}
-Even though the dataset grew by more than 50\% since stage one, there was only a mediocre improvement in the average precision of the models. On the other hand, from the table \ref{tab:model_results:stage_two} we could see that the EfficientDet model was able to fit the training part of the dataset well.
-
-\subsection{Stage three dataset}
-Revisiting and correcting annotation errors of the stage two dataset improved $AP@.5$ of EfficientDet-D4 by $76\%$, although the amount of data remained the same. This gives us an intuition that mistakes in annotations of the data primarily caused the low average precision achieved on stage one and two datasets.
-
-\subsection{Stage four dataset}
-Despite the dataset increasing by another $35\%$ of images available in stage three, the increase in performance was significantly smaller than the one we got by transitioning from stage two dataset to stage three. We hypothesize that by removing the errors in the dataset, the impact of obtaining more data became smaller. It is interesting that all models were almost on-par in terms of average precision, the only difference being the EfficientDet-D4 model, which was by circa $10\%$ worse than the rest. This somehow surprised us since EfficientDet-D4 was the best performing model on the MS COCO benchmark from all models that we used \cite{paperwithcode}. We attribute this to this model's high GPU memory requirements, which allowed us to use batch-size of one only.
-
-\subsection{Stage five dataset}
-
-Stage five dataset brought a steady improvement according to our expectations. The well-performing models in stage four performed well in stage five, the only difference being the YOLOv5-l6 model, which was circa $15\%$ worse than the rest. We think this was due to a bad model fit and not its incapability to perform well.
 
 \subsection{Summary}
 We see a steady improvement throughout dataset evolution. The correction of annotation mistakes caused all models' biggest gain in performance.
@@ -47,7 +32,7 @@ In figure \ref{fig:ensembling_parameters_importance} we see that the second wors
 
 \section{Dental restorations segmentation}
 \subsection{Non-deep learning approach}
-The grid search did not found a hyper-parameter, ensuring that adaptive thresholding methods would detect only dental restoration. From the figure \ref{fig:segmentation_sample_nondl} we see that adaptive thresholding methods include a great amount of false-positive predictions. A significant amount of those is removed by morphological operations, but the IOU 0.314 is still relatively low compared to U-Net models. This corresponds to the results of Abdalla-Aslan et al. \cite{AbdallaAslan2020}, who achieved a precision of 0.33 when segmenting dental restorations from panoramic images.
+The grid search did not find a hyper-parameter, ensuring that adaptive thresholding methods would detect only dental restoration. From the figure \ref{fig:segmentation_sample_nondl} we see that adaptive thresholding methods include a great amount of false-positive predictions. A significant amount of those is removed by morphological operations, but the IOU 0.314 is still relatively low compared to U-Net models. This corresponds to the results of Abdalla-Aslan et al. \cite{AbdallaAslan2020}, who achieved a precision of 0.33 when segmenting dental restorations from panoramic images.
 \subsection{U-Net}
 The baseline U-Net model already showed significant performance gain over the non-deep learning segmentation pipeline. It was by more than $10\%$ by using postprocessing by morphological operations.
 

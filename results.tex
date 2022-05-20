@@ -187,7 +187,7 @@ In the table \ref{tab:model_ensembling:handpicked}, the reader can see results o
 \end{table}
 \subsection{Grid search results}
 \label{subsec:gridsearched}
-All models included in the ensemble were trained on the stage-five dataset, tehrefore their results are in Table \ref{tab:model_results:stage_five}.
+All models included in the ensemble were trained on the stage-five dataset; therefore, their results are in Table \ref{tab:model_results:stage_five}.
 
 The best hyper-parameters for a given ensemble method found by a grid search are in the table \ref{tab:ensemble_params:grid_search}. We omitted from the table parameter $\sigma$, used only in S-NMS. Its optimal value, according to the grid search, was $0.8$.
 Average precision of the models ensembled with parameters from table \ref{tab:ensemble_params:grid_search} is available in the table \ref{tab:precision:grid_search} and average recall values are in the table \ref{tab:recall:grid_search}. Precison and recall values based on the confidence threshold, that maximizes F-score can be seen in table \ref{tab:ensembling_prf:grid_search}. In Tables \ref{tab:ensemble_params:grid_search}, \ref{tab:precision:grid_search} we used notation introduced in Section \ref{sec:model_ensembling} and by WBF-A we mean the method proposed in Section \ref{sec:methods_area_aware_ens}, where S,M,L means weights for small, medium-size and large boxes.
@@ -227,7 +227,14 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
 
 
 \subsection{Assesing importance of different models}
-In tables \ref{tab:precision:ensemble_compare}, \ref{tab:recall:ensemble_compare} and \ref{tab:ensembling_prf:ensemble compare} we se results of ensebmles composed of different models. Note, that ensembling of varying architectures achieved the best results out of all models evaluated in this thesis. The importance of individual models in the ensemble is in figure \ref{fig:ensembling_parameters_importance} for all architectures and in figures \ref{fig:ensembling_hparams_imprtance_yolo_m}, \ref{fig:ensembling_hparams_imprtance_yolo_mix} located in appendix for the remaining two groups of models.
+\label{sec:results:improtance_of_models}
+In this Section, we present ensembling results based on the approach from Section \ref{sec:methods:assesing_importance}. In tables \ref{tab:precision:ensemble_compare}, \ref{tab:recall:ensemble_compare} and \ref{tab:ensembling_prf:ensemble compare} we se results of ensebmles composed of different models. Note that the ensembling of varying architectures (All) achieved the best results out of all models evaluated in this thesis and we will use this model to compare our results with related publications.
+
+From the Table \ref{tab:precision:ensemble_compare} we can see that the usage of varying backbones increases the gain in average precision by circa $1.5\%$. Furthermore, using different architectures increased the performance by an additional $3.2\%$. Please note that models included in ensembling with different architectures had a better average $AP@.5$ by $2\%$ (see Table \ref{tab:ensemble_models_involved}) higher than models included in the former two ensembling approaches. If we adjust the results for that, we expect a $1.2\%$ gain solely from using models with varying architecture.
+
+
+The importance of individual models in the ensemble is in figure \ref{fig:ensembling_parameters_importance} for All architectures and in figures \ref{fig:ensembling_hparams_imprtance_yolo_m}, \ref{fig:ensembling_hparams_imprtance_yolo_mix} located in appendix for the remaining two groups of models.
+
 
 \begin{table}[h]
     \centering
@@ -276,16 +283,6 @@ In tables \ref{tab:precision:ensemble_compare}, \ref{tab:recall:ensemble_compare
     \label{fig:ensembling_parameters_importance}
 \end{figure}
 
-
-\begin{figure}[H]
-    \begin{floatrow}[2]
-        \ffigbox[\FBwidth]{
-            \caption{Number of false positives per image for given value of recall \label{fig:recall_fiperimg}}
-        }{\includegraphics[width=\linewidth]{images/fp_recall.pdf}}
-        \ffigbox[\FBwidth]{\caption{Percentage of nondetected dental caries based on the precision of the model}}
-        { \includegraphics[width=\linewidth]{images/nondet_precision.pdf} }
-    \end{floatrow}
-\end{figure}
 
 \section{Dental retorations segmentation}
 In the following section we report results obtained by non-deep learning pipeline for dental restorations segmentation proposed in Section \ref{sec:methods:seg_nondl} as well as deep learning model U-Net trained according to descrition in Section \ref{sec:methods:seg_unet}.
@@ -339,7 +336,7 @@ Hyper-parameters ensuring the best performance on validation part of the datset 
 
 
 \subsection{U-Net}
-Two U-Net models were trained; we will call them U-Net-baseline (U-Net-B) and U-Net-improved (U-Net-I). With the letters PP, we denote that output of the model was post-processed by the approach described in section \ref{sec:segmentation_post_processing}.
+Two U-Net models were trained with the settings proposed in Section \ref{sec:methods:seg_unet}; we will call them U-Net-baseline (U-Net-B) and U-Net-improved (U-Net-I). With the letters PP, we denote that output of the model was post-processed by the approach described in section \ref{sec:segmentation_post_processing}.
 
 The best hyper-parameters for post-processing for both models are in table \ref{tab:unet_seg_hyperparams}. In figure \ref{fig:heatmap_postprocess} is visible, how choice of different hyper-parameters for post-procssing pipeline affected the performance of U-Net-B model.
 
@@ -425,3 +422,39 @@ In the table \ref{tab:results_comparison}, we see a comparison of caries detecti
 \end{table}
 
 Note that Cantu et al. \cite{Cantu2020} solved the problem of dental caries localization as a semantic segmentation task; the recall and F1-score are calculated per pixel, while other works worked with bounding boxes. However, the reader can still estimate how their work compares to others in the table.
+
+
+\section{Visuzalization of models}
+\label{sec:visualization}
+All Figures in this section were generated by the best performing model for object detection, which was introduced in section \ref{tab:precision:ensemble_compare} and the with the U-Net-I model (without post-processing).
+
+Figure \ref{fig:recall_fpperimg} shows the relation between number of false positives per image and recall of the model. The graph was truncated and did not include points for $recall > 0.91$ since it would decrease the readability of the chart.
+
+Figure \ref{fig:fig:both_models_1} overlays the bitewing image with predictions of both caries detection and restorations segmentation models. For more similar figures, see Appendix TODO
+
+
+\label{tab:precision:ensemble_compare}
+
+\begin{figure}[h]
+    \begin{floatrow}[2]
+        \ffigbox[\FBwidth]{
+            \caption{Number of false positives per image for given value of recall \label{fig:recall_fpperimg}}
+        }{\includegraphics[width=\linewidth]{images/fp_recall.pdf}}
+        \ffigbox[\FBwidth]{\caption{Percentage of nondetected dental caries based on the precision of the model \label{fig:precision_nondetected}}}
+        { \includegraphics[width=\linewidth]{images/nondet_precision.pdf} }
+    \end{floatrow}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.8\textwidth}
+        \includegraphics[width=1\linewidth]{images/det2orig.png}
+        \caption{Original image}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.8\textwidth}
+        \includegraphics[width=1\linewidth]{images/det2pred.png}
+        \caption{Output of our models}
+    \end{subfigure}
+    \caption{ Segmented dental restorations in yellow, predicted dental caries are pink and ground truth of dental caries in green. We see a single false pasitive detection on the top right of the image. The author of the dataset acknowledges it to be a missing ground truth label}
+    \label{fig:both_models_1}
+\end{figure}
