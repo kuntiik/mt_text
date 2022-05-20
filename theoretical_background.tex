@@ -13,7 +13,7 @@ Let's say we have an image $\mathbf{x}$. In a classification task, our goal is t
 \begin{align}
     \hat{y} = f_\theta\left(\mathbf{x} \right),
 \end{align}
-where $f$ is a mapping, sometimes called a model, and $\theta$  represents model parameters. If it holds that $\hat{y}=y$, where $y$ is a true class of the image $\mathbf{x}$, the classification is considered to be correct.
+where $f$ is a mapping, sometimes called a model, and $\theta$  represents model parameters if it holds that $\hat{y}=y$, where $y$ is a true class of the image $\mathbf{x}$, the classification is considered to be correct.
 It is possible to output $\mathbf{p} \in \mathbb{R}^n$ instead of $\hat{y}$, where $p_i \in \mathbf{p}$ is probability of $i = y$, modeled by $f_\theta$.
 
 \subsection{Semantic segmentation}
@@ -80,6 +80,7 @@ where $\gamma$ is the confidence threshold, meaning we discard all predictions w
 If there is a ground truth bounding box for which there are no given detection values of $\gamma$ and $\tau$, we say it is a false negative (FN). If we consider a dataset with G ground-truths and N predictions of which S is correct, where $(S \leq G)$, the recall is expressed as:
 \begin{align}
     Recall(\tau, \gamma) = \frac{TP(\tau, \gamma)}{ TP(\tau, \gamma) + FN(\tau, \gamma)}.
+    \label{eq:recall}
 \end{align}
 Since the value of $FN(\gamma)$ increases with the growing value of $\gamma$, we see that recall is the decreasing function of $\gamma$.
 
@@ -110,14 +111,14 @@ where $R$ is a real value contained in interval [0,1] \cite{Padilla2021}.
 The interpolated precision-recall is pictured in figure \ref{fig:pr_curve} in red color. Now, we can compute the average precision (AP) as the area under the interpolated PR curve.
 In practice, there are two different ways to approach the Reimann integral. They differ in the number of samples used to compute the integral and are called N-point and all-point interpolation. The N-point, specifically 101 point interpolation, is used in the MS COCO competition. On the other hand, the all-point interpolation is nowadays used in PASCAL VOC challenges \cite{Padilla2020, Padilla2020}.
 
-Since the AP is calculated per class, the mean average precision is defined as the average  in all categories.
+Since the AP is calculated per class, the mean average precision is defined as the average in all categories.
 
 In subsections \ref{subsec:precision} and \ref{subsec:recall}, we stated that precision and recall depend on a predefined IOU threshold $\tau$ to consider prediction as true positive. This dependency makes the value of MAP vary over different values of $\tau$. The threshold value used for computation of the mAP is usually denoted in the metrics name, such as $AP@.5$ in the case of MS COCO. \footnote{Note that even though the mean average precision is computed, the $AP$ shortcut, which stands for average precision, is used.} The standalone $AP$ without any numerical values attached to it usually refers to the official COCO metric. The official COCO metric is in its explicit form written as $AP@[.5:0.05:0.95]$ and is computed as the average of MAP values for ten different $\tau$ values, ranging from 0.5 to 0.95.
 
 The letters S, M,  and L in the subscript, such as $AP_S$ denote that the metrics are calculated for a subset of ground truth predictions only. Taking into the consideration only bounding boxes with area $\leq 32^2$ pixels, $32^2 \le $ area $ \leq 96^2$ pixels and area $> 96^2$ pixels
 
 \subsection{Mean average recall in MS-COCO (mAR)}
-PyCOCOtools - official metrics for MS-COCO benchmark \cite{}
+PyCOCOtools - official metrics for MS-COCO benchmark \cite{pycocotools} compute the average recall (AR) by the following approach: Predictions are sorted according to their confidence in decreasing order. We take $n$ boxes with the highest confidence values and evaluate their recall by Equation \ref{eq:recall} for a predefined IOU threshold $\theta$. We use similar notation as in the case of AP, where $AR@.X_{na}$ denotes average recall computed for IOU threhsold $X$, where we consider $n$ most confident predictions and by $a \in \{ S, M, L, \text{all} \}$ we denote size of rectangles, for which AR is computed. If we omit some of those, the following default values are used $a=\text{all}, n = 100, X = [.5:0.05:0.95]$.
 
 \begin{figure}
     \includegraphics[width = 0.78\linewidth]{images/PR-curve.png}
@@ -140,14 +141,10 @@ Let's consider $\mathbf{y}$ and $\hat{\mathbf{y}}$ as in section \ref{sec:cross_
 \end{align}
 Dice Loss is computed in the same way, we only threshold values of $\hat{\mathbf{y}}$ prior to computation of the loss \cite{Softdiceloss,Jadon2020}.
 
-
-
 \section{Optimization}
+In deep learning, a defined loss function that should be minimized usually does not have an analytical solution, or the solution cannot be evaluated for computational reasons. Therefore, the iterative numerical optimization approach is used, where we compute the gradient of the loss function with respect to the parameters of the optimized model. Those are updated by changing their values in the negative direction of the computed gradient.
 \subsection{Optimizers}
-\subsubsection{Adam}
-TODO
-\subsubsection{AdamW}
-TODO
+The most simple optimizer is Stochastic Gradient Descent (SGD), which in each step updates the weights by stepping in the opposite direction of the gradient, the length of the step is
 
 \subsection{Learning rate schedulers}
 Learning rate is considered to be one of the most, if not the most important parameter, in deep learning. It is usually beneficial to change the learning rate during the course of training. This can be done manually or automated by an algorithm that increases or decreases the learning rate based on the set of predefined rules. This algorithm is called the learning rate scheduler.
@@ -260,7 +257,7 @@ Even though there is a wide variety of architectures for object detection, the c
 The purpose of backbones is to transform the input image into feature maps. For this purpose, we use classification models with the classification head removed. Most parameters of object detection models are usually part of the backbone. The extraction of useful feature maps is vital for other blocks to perform well. The most common backbones are models from the ResNet family.
 
 \subsubsection{Neck}
-The neck is responsible for the merging of features from the backbone. This is not a straightforward task since we usually use features from different backbone layers. This allows us to get semantically strong features from deeper layers and more detailed information from earlier ones. Common neck architectures are feature pyramid network or PANet.
+The neck is responsible for the merging of features from the backbone. This is not a straightforward task since we usually use features from different backbone layers. This allows us to get semantically strong features from deeper layers and more detailed information from earlier ones. Common neck architectures are feature pyramid network or PANet \cite{Lin_2017_CVPR}.
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/necks_architecture.png}
@@ -269,7 +266,8 @@ The neck is responsible for the merging of features from the backbone. This is n
 \end{figure}
 
 \subsubsection{Head}
-TODO
+The Head is responsible for predicting the position of boxes and classifying them. It uses the features extracted by the backbone and merged by the neck. Based on the approach to box prediction, we differ them into Dense prediction heads (YOLO, RetinaNet) or Sparse prediction heads(Faster R-CNN) \cite{Bochkovskiy2020}.
+
 
 \begin{figure}
     \begin{floatrow}[2]
@@ -320,10 +318,15 @@ Swin transformer architecture overcomes the limitations of ViT, which is working
 \label{sec:deteciton_models}
 
 \subsection{Faster R-CNN}
-Faster RCNN (Region-Based Neural Network) architecture is a two-stage detector. In the first stage, Region Proposal Network (RPN) finds regions of interest (ROI)and proposes bounding boxes corresponding to those regions. This is done by sliding a small neural network over the output of the backbone. In the second stage, features corresponding to positions of ROIs are extracted from the backbone and processed by a classification network, which decides if the region corresponds to a background or is one of the target classes. The schema of the architecture is in the figure \ref{fig:faser_rcnn}
+Faster RCNN (Region-Based Neural Network) architecture is a two-stage detector. In the first stage, Region Proposal Network (RPN) finds regions of interest (ROI)and proposes bounding boxes corresponding to those regions. This is done by sliding a small neural network over the output of the backbone. In the second stage, features corresponding to positions of ROIs are extracted from the backbone and processed by a classification network, which decides if the region corresponds to a background or is one of the target classes. The schema of the architecture is in the figure \ref{fig:faster_rcnn}
 
 \subsection{RetinaNet}
-TODO
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/focal_loss.png}
+    \caption{Focal Loss, source \cite{Lin2017}}
+\end{figure}
 
 \subsection{YOLO family}
 TODO
