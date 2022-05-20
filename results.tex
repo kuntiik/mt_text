@@ -4,20 +4,22 @@ This chapter states the results of the proposed methods.
 
 In section \ref{sec:model_comparison} we showed results of trained models on different stages of the dataset.
 
-Section \ref{sec:model_improvements_results} contains results of improvements to training pipeline proposed in section \ref{sec:general_changes}.
+Section \ref{sec:model_improvements_results} contains results of improvements to training pipeline proposed in Section \ref{sec:general_changes}.
 
 In section \ref{sec:model_inspection_results}, we show how different backbones' sizes and weight decay affected the performance of the model.
 
-Section \ref{sec:ensembling_results} reprots the influence of ensemble nerual networks.
+Section \ref{sec:ensembling_results} reports the influence of ensemble neural networks. Note that in this section, we obtain the best best-performing model.
 
 Section \ref{sec:dental_restoration_results} contains results of algorithms for segmentation of dental restorations
 
 In the final secton \ref{sec:result_comparision_with_lit} we compare results of our best-performing model with the literature.
 
-\section{Model comparison}
+\section{Model comparison on different datasets}
 \label{sec:model_comparison}
-In this section we compare the performance of different model architecures and their backbones. This section is diveded into five subsection corresponging to five stages of the dataset. For each of those we report average precision metric on the test part of the dataset, unles stated otherwise.
+This section compares the performance of different model architectures and their backbones. This section is divided into five subsections corresponding to five stages of the dataset. For each of those, we report the average precision metric on the test part of the dataset. The training of all models was conducted according to a training protocol described in Section \ref{chapter:methods}. Tables in this section use abbreviations described in Section \ref{sec:methods:nns}.
+
 \subsection{Stage one dataset}
+In Table \ref{tab:model_results:stage_one} the reader can see results obtained on the first stage of the dataset. None of the trained models, especially the Faster R-CNN model, achieved low average precision values. We attribute it to inhomogeneity in the dataset and the low amount of data.
 \begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
@@ -29,12 +31,12 @@ In this section we compare the performance of different model architecures and t
         YOLOv5-x6       & 0.087 & 0.268   & 0.04     & 0.204     & 0.324     & 0.302     \\ \hline
         EfficientDet-d4 & 0.081 & 0.242   & 0.007    & 0.198     & 0.234     & 0.287     \\ \hline
     \end{tabular}
-    \caption{Comparision of trained model on the stage one dataset}
+    \caption{Comparision of trained models on the stage one dataset}
     \label{tab:model_results:stage_one}
 \end{table}
 
 \subsection{Stage two dataset}
-
+Even thought the dataset grew in size by more than 50\%
 \begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
