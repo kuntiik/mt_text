@@ -47,7 +47,7 @@ In figure \ref{fig:ensembling_parameters_importance} we see that the second wors
 
 \section{Dental restorations segmentation}
 \subsection{Non-deep learning approach}
-It seems, that
+The grid search did not found a hyper-parameter, ensuring that adaptive thresholding methods would detect only dental restoration. From the figure \ref{fig:segmentation_sample_nondl} we see that adaptive thresholding methods include a great amount of false-positive predictions. A significant amount of those is removed by morphological operations, but the IOU 0.314 is still relatively low compared to U-Net models. This corresponds to the results of Abdalla-Aslan et al. \cite{AbdallaAslan2020}, who achieved a precision of 0.33 when segmenting dental restorations from panoramic images.
 \subsection{U-Net}
 The baseline U-Net model already showed significant performance gain over the non-deep learning segmentation pipeline. It was by more than $10\%$ by using postprocessing by morphological operations.
 

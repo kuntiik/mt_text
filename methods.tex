@@ -205,6 +205,7 @@ To get an insight into what affects the performance of model ensembling, we comp
 
 After selecting models, we ensembled them using the WBF method. Model weights and IOU threshold $T$ value were optimized on the validation dataset as described in section \ref{sec:ens_grid_search}. The Optuna optimization software was used to find those, where we set search-space to be in the range from 0 to 1 for all model weights as well as for the IOU threshold $T$. The optimization process was terminated after $3000$ trials.
 
+After obtaining the ensembles, we assess the importance of each model included in the ensemble by a method based on functional analysis of variance (FANOVA) \cite{Hutter2014}. We used an already implemented solution that is part of the Optuna library \cite{Akiba2019}.
 \subsubsection{The same architecture and backbone}
 We used YOLOv5 architecture with a medium sized backbone, since multiple models were trained for experiments mentioned in section \ref{sec:model_inspection}. Summary of used models is available in table \ref{tab:ensemble_models_involved}.
 

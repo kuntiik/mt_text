@@ -101,6 +101,38 @@
     \label{tab:ensembling_prf:grid_search}
 \end{table}
 
+\section{Detection of detnal caries and segmentation of dental restorations}
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.9\textwidth}
+        \includegraphics[width=1\linewidth]{images/det1orig.png}
+        % \caption{}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{0.9\textwidth}
+        \includegraphics[width=1\linewidth]{images/det1pred.png}
+        % \caption{}
+    \end{subfigure}
+    % \caption{}
+    % \label{}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.9\textwidth}
+        \includegraphics[width=1\linewidth]{images/det2orig.png}
+        \caption{Original image}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{0.9\textwidth}
+        \includegraphics[width=1\linewidth]{images/det2pred.png}
+        \caption{Output of our models}
+    \end{subfigure}
+    \caption{ Segmented dental restorations in yellow, predicted dental caries are pink and ground truth of dental caries in green. We see a single false pasitive detection on the top right of the image}
+    \label{}
+\end{figure}
+
 \chapter{Images}
 \label{appendix:model_predictions}
 \section{Predictions of the model}
@@ -174,3 +206,19 @@ The following figures are X-ray images from the test part of dataset. Ground tru
     \includegraphics[width =0.8\linewidth]{images/all_transf.jpg}
     \caption{The whole augmentation pipeline applied}
 \end{figure}
+
+
+% \begin{figure}[h]
+%     \centering
+%     \begin{subfigure}[b]{\textwidth}
+%         \includegraphics[width=1\linewidth]{}
+%         \caption{}
+%     \end{subfigure}
+
+%     \begin{subfigure}[b]{\textwidth}
+%         \includegraphics[width=1\linewidth]{}
+%         \caption{}
+%     \end{subfigure}
+%     \caption{}
+%     \label{}
+% \end{figure}

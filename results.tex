@@ -191,7 +191,7 @@ In the figures \ref{fig:fasterrcnn_weight_decay} and \ref{fig:yolo_weight_decay}
 In this section, we show the performance of model ensembles with handpicked parameters \ref{subsec:handpicked} as well as ensembles obtained by parameters found by a grid-search. Furthermore, we report how the diversity of models involved in the ensemble affects its results.
 \subsection{Manually-picked parameters}
 \label{subsec:handpicked}
-In the table \ref{tab:model_ensembling:handpicked}, the reader can se results obtained by handpicking circa ten sets of hyper-parameters, based on our qualified quess. Than evaluating those on validation part of the dataset and selecting the best-performing, which was evaluated on test part of the dataset. The first group contained the following models trained on stage four dataset: RetinaNet-swint, YOLOv5-m, RetinaNet-ResNet50. The second group was composed of: Faster R-CNN-Resnet101, YOLOv5-m, RetinaNet-swint.
+In the table \ref{tab:model_ensembling:handpicked}, the reader can see results obtained by handpicking circa ten sets of hyper-parameters, based on our qualified quess. Than evaluating those on validation part of the dataset and selecting the best-performing, which was evaluated on test part of the dataset. The first group contained the following models trained on stage four dataset: RetinaNet-swint, YOLOv5-m, RetinaNet-ResNet50. The second group was composed of: Faster R-CNN-Resnet101, YOLOv5-m, RetinaNet-swint.
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
@@ -210,12 +210,15 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
-        Method & FRCNN-R50      & YOLOv5-m6      & RetN-swint     & FRCNN-R101     & $T$  \\ \hline
-        nms    & 1              & 0.4            & 0.4            & 0.85           & 0.6  \\ \hline
-        snms   & 1              & 0.12           & 0.12           & 0.12           & 0.7  \\ \hline
-        nwm    & 0.85           & 0.25           & 0.70           & 0.85           & 0.45 \\ \hline
-        wbf    & 1              & 0.4            & 0.85           & 0.85           & 0.65 \\ \hline
-        wbf-A  & 0.94/0.77/0.84 & 0.31/0.47/0.31 & 0.98/0.85/0.88 & 0.72/0.69/0.91 & 0.64 \\ \hline
+        Method  & FRCNN & YOLOv5 & RetN  & FRCNN & $T$  \\
+                & R50   & m6     & swint & R101  &      \\ \hline
+        NMS     & 1     & 0.4    & 0.4   & 0.85  & 0.6  \\ \hline
+        SNMS    & 1     & 0.12   & 0.12  & 0.12  & 0.7  \\ \hline
+        NMW     & 0.85  & 0.25   & 0.70  & 0.85  & 0.45 \\ \hline
+        WBF     & 1     & 0.4    & 0.85  & 0.85  & 0.65 \\ \hline
+        WBF-A S & 0.94  & 0.31   & 0.98  & 0.72  & 0.64 \\ \hline
+        WBF-A M & 0.77  & 0.47   & 0.85  & 0.69  & 0.64 \\ \hline
+        WBF-A L & 0.84  & 0.31   & 0.88  & 0.91  & 0.64 \\ \hline
     \end{tabular}
     \caption{Hyper-parameter values of ensemble methods found by a grid-seach}
     \label{tab:ensemble_params:grid_search}
@@ -226,12 +229,12 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        method & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        nms    & 0.346 & 0.818   & 0.735   & 0.28     & 0.618     & 0.775     & 0.829     \\ \hline
-        snms   & 0.348 & 0.807   & 0.722   & 0.295    & 0.609     & 0.758     & 0.819     \\ \hline
-        nwm    & 0.364 & 0.829   & 0.759   & 0.302    & 0.641     & 0.802     & 0.854     \\ \hline
-        wbf    & 0.378 & 0.832   & 0.77    & 0.323    & 0.663     & 0.807     & 0.875     \\ \hline
-        wbf-A  & 0.376 & 0.832   & 0.768   & 0.318    & 0.651     & 0.806     & 0.875     \\ \hline
+        Method & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        NMS    & 0.346 & 0.818   & 0.735   & 0.28     & 0.618     & 0.775     & 0.829     \\ \hline
+        SNMS   & 0.348 & 0.807   & 0.722   & 0.295    & 0.609     & 0.758     & 0.819     \\ \hline
+        NWM    & 0.364 & 0.829   & 0.759   & 0.302    & 0.641     & 0.802     & 0.854     \\ \hline
+        WBF    & 0.378 & 0.832   & 0.77    & 0.323    & 0.663     & 0.807     & 0.875     \\ \hline
+        WBF-A  & 0.376 & 0.832   & 0.768   & 0.318    & 0.651     & 0.806     & 0.875     \\ \hline
     \end{tabular}
     \caption{Average precision of models ensembled by parameters from table \ref{tab:ensemble_params:grid_search}}
     \label{tab:precision:grid_search}
