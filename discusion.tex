@@ -1,36 +1,37 @@
-\chapter{Discusion and further suggestions}
+\chapter{Discussion and further suggestions}
 \label{chapter:discusion}
 
-\section{Coments on model comparison and their improvements}
-We observed that updating the dataset by either increasing the number of data or correcting annotations mistakes showed significant improvement in monitored metrics.
+\section{Comments on model comparison and their improvements}
+We observed that updating the dataset by either increasing the number of data or correcting annotations mistakes showed a significant improvement in the monitored metrics.
 
-The results differ only in units of percents if we use models with smaller backbones as can be seen in Table \ref{tab:backbone_comparison}; furthermore, parameter-heavy models such as EfficientDet-D4 performed worse than others, see Table \ref{tab:model_results:stage_four}. This was a surprising fact since EfficentDet-D4 was out-performing all other tested models on the MS COCO benchmark \cite{paperwithcode,Tan2019}.
+The results differ only in units of percent if we use models with smaller backbones, as shown in Table \ref{tab:backbone_comparison}. Furthermore, parameter-heavy models such as EfficientDet-D4 performed worse than others, see Table \ref{tab:model_results:stage_four}. This was surprising since EfficentDet-D4 was out-performing all other tested models on the MS COCO benchmark \cite{paperwithcode,Tan2019}.
 
 
-The weight decay did not affect the behavior of YOLOv5 and Faster R-CNN. This was surprising since we would expect an increase in performance on the validation and test dataset.
+The weight decay did not affect the behavior of YOLOv5 and Faster R-CNN. This was unexpected since we would anticipate an increase in performance on the validation and test dataset.
 
 The use of group normalization significantly decreased the performance gap between EfficiendDet and other models (Section \ref{sec:group_nromalization:res }), but the results were still inferior to most of the models.
 
 
 \section{Ensembling}
-Model ensembling improved the results more than we anticipated. We assess that this was caused by the wide variety of object detection models used for the ensemble. The results in Section strengthen this introduction \ref{sec:sec:results:improtance_of_models}. We were surprised that our proposed aware ensembling solution (see section \ref{sec:methods_area_aware_ens}) did not improve the results.
+Model ensembling improved the results more than we anticipated. We assess that this was caused by the array of object detection models used for the ensemble. The results in Section strengthen this introduction\ref{sec:sec:results:improtance_of_models}. We were surprised that our proposed aware ensembling solution (see Section \ref{sec:methods_area_aware_ens}) did not improve the results.
 
 \section{Dental restorations segmentation}
 \subsection{Non-deep learning approach}
-The grid search did not find a hyper-parameter, ensuring that adaptive thresholding methods would detect only dental restoration. From the figure \ref{fig:segmentation_sample_nondl} we see that adaptive thresholding methods include a great amount of false-positive predictions. A significant amount of those is removed by morphological operations, but the IOU 0.314 is still relatively low compared to U-Net models. This corresponds to the results of Abdalla-Aslan et al. \cite{AbdallaAslan2020}, who achieved a precision of 0.33 when segmenting dental restorations from panoramic images.
+The grid search did not find a hyper-parameter, ensuring that adaptive thresholding methods would detect only dental restoration. From  Figure \ref{fig:segmentation_sample_nondl} we see that adaptive thresholding methods include many false-positive predictions. A significant amount of those is removed by morphological operations, but the IOU 0.314 is still relatively low compared to U-Net models. This corresponds to the results of Abdalla-Aslan et al. \cite{AbdallaAslan2020}, who achieved a precision of 0.33 when segmenting dental restorations from panoramic images.
 \subsection{U-Net}
-The baseline U-Net model already showed significant performance gain over the non-deep learning segmentation pipeline. It was by more than $10\%$ by using postprocessing by morphological operations.
+The baseline U-Net model already showed significant performance gain over the non-deep learning segmentation pipeline. It was improved by more than $10\%$ using morphological operations post-processing.
 
 Improvements in the training process increased the performance of U-Net significantly; on the contrary, post-processing the improved U-Net model improved all tracked metrics negligibly.
 
-In the figure \ref{fig:segmentation_unet_sample} we see a comparison of the predicted pixel mask with the ground truth. In the border areas of dental restorations, the model seems to estimate its position better than the ground truth labels. This happens due to the unease of labeling data for segmentation tasks, where the annotator needs to include many points in the bounding rectangle to correspond to the real position of the restoration. We believe that this hurts the reported performance of the model.
+In the figure \ref{fig:segmentation_unet_sample, we compare the predicted pixel mask with the ground truth. In the border areas of dental restorations, the model seems to estimate its position better than the ground truth labels. This happens due to the unease of labeling data for segmentation tasks. The annotator needs to include many points in the bounding rectangle to correspond to the absolute position of the restoration. We believe that this hurts the reported performance of the model.
 
 
 
-\section{Comparision of results with related publications}
+\section{Comparison of results with related publications}
 
-Results obtained by this work have beaten those achieved by Srivastava at al. \cite{Srivastava2017} and Kumar and Srivastava \cite{Kumar}. Please note that even though Kumar continued on the work pubulished by Srivastava et al., even extending the dataset used by Srivastava twofold, all metrics reported by them dropped significantly. We cannot explain what caused this decrease in performance. Kumar does not adress this problem in the published paper.
+Results obtained by this work have beaten those achieved by Srivastava at al. \cite{Srivastava2017} and Kumar and Srivastava \cite{Kumar}. Please note that even though Kumar continued on the work published by Srivastava et al., even extending the dataset used by Srivastava twofold, all metrics reported by them dropped significantly. We cannot explain what caused this decrease in performance. Kumar does not address this problem in the published paper.
 
-Bayrakdar2021 at al. \cite{Bayrakdar2021} and Bayraktar2021 et al \cite{Bayraktar2021} reported better results, than we achieved througout our work. We find that surprising since both works had significantly smaller ammount of data (621 and 1000 images). We experimented with the YOLOv3 architecture used by \cite{Bayraktar2021}, but in our experiments, it achieved worse results than other architectures. We, therefore, found their results to be irreproducible.
+Bayrakdar2021 et al. \cite{Bayrakdar2021} and Bayraktar2021 et al \cite{Bayraktar2021} reported better results than we achieved throughout our work. We find that surprising since both works had a significantly smaller amount of data (621 and 1000 images). We experimented with the YOLOv3 architecture used by Bayraktar202  \cite{Bayraktar2021, but in our experiments, it achieved worse results than other architectures. We, therefore, found their results to be irreproducible.
 
 Cantu et al. achieved a similar F1-Score as we did in our work. The comparability of those results is limited since they solved semantic segmentation tasks contrary to object detection.
+F
