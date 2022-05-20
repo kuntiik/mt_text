@@ -16,7 +16,7 @@ In the final secton \ref{sec:result_comparision_with_lit} we compare results of 
 
 \section{Model comparison on different datasets}
 \label{sec:model_comparison}
-This section compares the performance of different model architectures and their backbones. This section is divided into five subsections corresponding to five stages of the dataset. For each of those, we report the average precision metric on the test part of the dataset. The training of all models was conducted according to a training protocol described in Section \ref{chapter:methods}. Tables in this section use abbreviations described in Section \ref{sec:methods:nns}.
+This section compares the performance of different model architectures and their backbones. This section is divided into five subsections corresponding to five stages of the dataset; for more details about the dataset, see Section \ref{sec:dataset:dental_caries}. For each of the five stages of dataset, we report the average precision metric on the test part of the dataset. The training of all models was conducted according to a training protocol described in Section \ref{chapter:methods}. Tables in this section use abbreviations described in Section \ref{sec:methods:nns}.
 
 \subsection{Stage one dataset}
 In Table \ref{tab:model_results:stage_one} the reader can see results obtained on the first stage of the dataset. None of the trained models, especially the Faster R-CNN model, achieved low average precision values. We attribute it to inhomogeneity in the dataset and the low amount of data.
@@ -29,71 +29,50 @@ In Table \ref{tab:model_results:stage_one} the reader can see results obtained o
         YOLOv3          & 0.078 & 0.238   & -        & -         & -         & -         \\ \hline
         YOLOv5-l6       & 0.082 & 0.258   & 0.02     & 0.211     & 0.309     & 0.327     \\ \hline
         YOLOv5-x6       & 0.087 & 0.268   & 0.04     & 0.204     & 0.324     & 0.302     \\ \hline
-        EfficientDet-d4 & 0.081 & 0.242   & 0.007    & 0.198     & 0.234     & 0.287     \\ \hline
+        EfficientDet-D4 & 0.081 & 0.242   & 0.007    & 0.198     & 0.234     & 0.287     \\ \hline
     \end{tabular}
     \caption{Comparision of trained models on the stage one dataset}
     \label{tab:model_results:stage_one}
 \end{table}
 
 \subsection{Stage two dataset}
-Even thought the dataset grew in size by more than 50\%
+Even though the dataset grew in size by more than 50\% since stage one, from the Tables \ref{tab:model_results:stage_one} and \ref{tab:model_results:stage_two} we see that the YOLOv3 model improved by less than $10\$$ on the contrary performance of YOLOv5 model improved by circa $25\%$. Due to the low performance of YOLOv3 and its similarity with superior YOLOv5 architecture, we will not experiment with YOLOv3 in further Sections.
+In the last two rows of table \ref{tab:model_results:stage_two} we can see the discrapancy of average precision, when evaluated on test and train part of the dataset. This ensures us, that the model is able to fit the data and we only need to eleviate the generalizaiton gap.
 \begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
         \hline
         Model            & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
         YOLOv3           & 0.093 & 0.258   & -        & -         & -         & -         \\ \hline
-        YOLOv5 L         & 0.097 & 0.318   & 0.03     & 0.281     & 0.310     & 0.378     \\ \hline
-        YOLOv5 XL        & 0.105 & 0.337   & 0.05     & 0.278     & 0.323     & 0.392     \\ \hline
-        EffDet d4        & 0.089 & 0.296   & 0.01     & 0.272     & 0.291     & 0.342     \\ \hline
-        EffDet d4, train & 0.421 & 0.839   & 0.362    & 0.758     & 0.852     & 0.801     \\ \hline
+        YOLOv5-l6        & 0.097 & 0.318   & 0.03     & 0.281     & 0.310     & 0.378     \\ \hline
+        YOLOv5-x6        & 0.105 & 0.337   & 0.05     & 0.278     & 0.323     & 0.392     \\ \hline
+        EffDet-D4        & 0.089 & 0.296   & 0.01     & 0.272     & 0.291     & 0.342     \\ \hline
+        EffDet-D4, train & 0.421 & 0.839   & 0.362    & 0.758     & 0.852     & 0.801     \\ \hline
     \end{tabular}
     \caption{Comparision of trained model on the stage two dataset}
     \label{tab:model_results:stage_two}
 \end{table}
 
 \subsection{Stage three dataset}
-Results of trained models evaluated on the training part and the test part of the dataset are available in tables \ref{tab:model_results:stage_three:train} and \ref{tab:model_results:stage_three:test}.
+As mentioned in Section \ref{sec:dataset:third_stage}, there were no additional data added in this stage, but a review of the dataset was made, and erroneous annotations were corrected. A dataset review increased the $AP@.5$ of the EfficiendDet-D4 model by $76\%$, as can be seen from Tables \ref{tab:model_results:stage_three:test} and \ref{tab:model_results:stage_two}. This significant performance gain suggests that the low performance of models in Tables \ref{tab:model_results:stage_one} and \ref{tab:model_results:stage_two} was caused by errors in the dataset.
+
+Performance of EfficentDet and YOLOv5 models evaluated on training part of dataset is in Table \ref{tab:model_results:stage_three:train}.
 
 \begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|c|}
         \hline
         Model     & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        YOLOv5-l6 & 0.463 & 0.869   & 0.841   & 0.442    & 0.697     & 0.887     & 0.974     \\ \hline
-        EffDet-D4 & 0.297 & 0.82    & 0.735   & 0.164    & 0.552     & 0.838     & 0.815     \\ \hline
-    \end{tabular}
-    \caption{Comparision of trained models on the train part of stage three dataset}
-    \label{tab:model_results:stage_three:train}
-\end{table}
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{|l|c|c|c|c|c|c|c|}
-        \hline
-        Model  & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        YOLOv5 & 0.249 & 0.734   & 0.631   & 0.132    & 0.598     & 0.671     & 0.607     \\ \hline
-        EffDet & 0.168 & 0.666   & 0.525   & 0.041    & 0.435     & 0.606     & 0.527     \\ \hline
+        YOLOv5    & 0.249 & 0.734   & 0.631   & 0.132    & 0.598     & 0.671     & 0.607     \\ \hline
+        EffDet-D4 & 0.168 & 0.666   & 0.525   & 0.041    & 0.435     & 0.606     & 0.527     \\ \hline
     \end{tabular}
     \caption{Comparision of trained models on the test part of stage three dataset}
     \label{tab:model_results:stage_three:test}
 \end{table}
 
-% \begin{table}[H]
-%     \begin{tabular}{|c|c|c|c|c|c|}
-%         \hline
-%         Backbone & $AP@.5$ & $AP$  & Parameters[M] & Flops[G] & Time[h] \\ \hline
-%         5s6      & 0.593   & 0.231 & 12            & 21       & 2.1     \\ \hline
-%         5m6      & 0.621   & 0.242 & 35            & 63       & 3.5     \\ \hline
-%         5l6      & 0.611   & 0.241 & 76            & 141      & 5.2     \\ \hline
-%         5x6      & 0.601   & 0.238 & 140           & 267      & 8.5     \\ \hline
-%     \end{tabular}
-%     \caption{Results of the YOLOv5 architecture with different backbones}
-%     \label{tab:stage_three:yolov5_backbones}
-% \end{table}
-
 \subsection{Stage four dataset}
-The average precision of models trained on this stage of the dataset is in table \ref{tab:model_results:stage_four}. Furthermore precision-recall values for confidence threshold maximizing F1 score are in table \ref{tab:model_prf:stage_four}, which is located in appendix.
+The average precision of models trained on this stage of the dataset is in Table \ref{tab:model_results:stage_four}. Furthermore precision-recall values for confidence threshold maximizing F1 score are in table \ref{tab:model_prf:stage_four}, which is located in appendix. Even though we tested multiple new architectures and revisited Faster R-CNN with two different backbones, the performance gain obtained in this stage was not as prominent as the one observed when moving from stage three to stage four.
+In the table \ref{tab:model_results:stage_four} we can observe how different architectures differ in their performance on small, medium-sized, and large boxes. Comparing YOLOv5-m6 and RetinaNet-ResNet50 models shows that their overall performance (measured by $AP@.5$) almost matches, but when comparing their $AP@.5$ metrics, we see a significant difference.
 
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -112,7 +91,7 @@ The average precision of models trained on this stage of the dataset is in table
 \end{table}
 
 \subsection{Stage five}
-
+The results in Table \ref{tab:model_results:stage_five} show steady improvement over those in Table \ref{tab:model_results:stage_four}. We see that YOLOv5-l achieved worse results than in stage four. We do not emphasize this result since we believe that if trained multiple times, the results of this architecture would improve. On the contrary, we see that the EfficientDet-D4 model lagged behind YOLOv5 in all stages of the dataset. We therefore in Section \ref{sec:methods:group_nrom} experiment with usage of group normalization.
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
@@ -128,10 +107,12 @@ The average precision of models trained on this stage of the dataset is in table
     \label{tab:model_results:stage_five}
 \end{table}
 
-\section{Model improvements}
+\section{Improvements}
 \label{sec:model_improvements_results}
-\subsection{General improvements}
-Average precision of models trained with incorporated imrpovements can be seen in table \ref{tab:improved:precision}, furthermore average recall values can be seen in table \ref{tab:improved:recall}, which is located in appednix together with table of precsion-recall values for given confidence threshold \ref{tab:imrpoved:prf}.
+\subsection{Training protocol improvemets}
+The average precision of models trained with incorporated improvements can be seen in table \ref{tab:improved:precision}. Furthermore, average recall values can be seen in table \ref{tab:improved:recall}, which is located in the appendix together with a table of precision-recall values for given confidence threshold \ref{tab:imrpoved:prf}.
+
+Even though the best performing model in Table \ref{tab:improved:precision} improved negligibly over the best performing one in table \ref{tab:model_results:stage_five}. We see, that models achieved better results in average and we have observed more stable training of those models. In this stage we newly used YOLOv5-s and EfficienDet-D1, sespite both of them beiing low-parameter newtorks, they performed almost on par with others
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
@@ -145,25 +126,25 @@ Average precision of models trained with incorporated imrpovements can be seen i
         FRCNN-R101 & 0.316 & 0.792   & 0.688   & 0.239    & 0.563     & 0.732     & 0.793     \\ \hline
         RetN-swint & 0.325 & 0.803   & 0.723   & 0.249    & 0.579     & 0.78      & 0.758     \\ \hline
     \end{tabular}
-    \caption{Comparision of AP values between different models}
+    \caption{Comparision of AP values between different models trained by improved training protocol}
     \label{tab:improved:precision}
 \end{table}
 
 
 
 \subsection{Group normalization}
-Chart of $AP@.5$ for EfficientDet-D5 models with batach-normalization layers and group normlization layer is in figure \ref{fig:batch_group_diff}. Model using batch normalization achieved $AP@.5$ of 0.634 on the test dataset, beeing outperformed by model using group normalization, with $AP@.5$.
+Chart of $AP@.5$ for EfficientDet-D4 models with batach-normalization layers and group normlization layer is in figure \ref{fig:batch_group_diff}. Model using batch normalization achieved $AP@.5$ of 0.634 on the test dataset, beeing outperformed by model using group normalization, with $AP@.5=0.694$. Despite the performance increase induced by group normalization, the EfficientDet-D4 model performed comparably with the models in Table \ref{tab:imrpoved:precision}. We therefore stopped using this model further on.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{images/group_norm_batch_norm.png}
-    \caption{Difference in $AP@.5$ amoqEfficientDet-D5 model with batch normalization and group normalization}
+    \caption{Difference in $AP@.5$ amoqEfficientDet-D4 model with batch normalization and group normalization}
     \label{fig:batch_group_diff}
 \end{figure}
 
 \section{Model inspection}
 \label{sec:model_inspection_results}
 \subsection{Size of backbone}
-The table \ref{tab:backbone_comparison} was computed by statistics from 29 models, where each type of backbone was represented by 8 to 12 models. The columns mean, std, max and min denote statistics of $AP@.5$ obtained by trained models. Furthermore, we can inspect the size of a given backbone, which is induced by its number of parameters (Par) and floating-point operations FLOPs. The last column of table $\ref{tab:backbone_comparison}$ shows the average time required to train the given backbone.
+The table \ref{tab:backbone_comparison} was computed by statistics from 29 models, where each type of backbone was represented by 8 to 12 models. The columns mean, std, max and min denote statistics of $AP@.5$ obtained by trained models on the test set. Furthermore, we can inspect the size of a given backbone, which is induced by its number of parameters (Par) and floating-point operations FLOPs. The last column of table $\ref{tab:backbone_comparison}$ shows the average time required to train the given backbone for $60$ epochs.
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
@@ -305,6 +286,7 @@ In tables \ref{tab:precision:ensemble_compare}, \ref{tab:recall:ensemble_compare
 \end{figure}
 
 \section{Dental retorations segmentation}
+In the following section we report results obtained by non-deep learning pipeline for dental restorations segmentation proposed in Section \ref{sec:methods:seg_nondl} as well as deep learning model U-Net trained according to descrition in Section \ref{sec:methods:seg_unet}.
 \label{sec:dental_restoration_results}
 \subsection{Non-deeplearning approach}
 Hyper-parameters ensuring the best performance on validation part of the datset are in table \ref{tab:nondl_restorations:best_params}. Performance of the pipelie on test dataset given the parameters in the table \ref{tab:nondl_restorations:best_params} can be seen in table \ref{tab:nondl_results}. Segmentation of an image together with output after each auxilary stage is in figure \ref{fig:segmentation_sample_nondl}.
@@ -442,48 +424,3 @@ In the table \ref{tab:results_comparison}, we see a comparison of the results of
 \end{table}
 
 Note that Cantu et al. \cite{Cantu2020} solved the problem of dental caries localization as a semantic segmentation task; the recall and F1-score are calculated per pixel, while other works worked with bounding boxes. However, the reader can still estimate how their work compares to others in the table.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% \begin{table}[H]
-%     \begin{tabular}{|c|c|c|c|c|c|c|c|}
-%         \hline
-%         Model      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-%         FRCNN-R101 & 0.285 & 0.763   & 0.675   & 0.198    & 0.568     & 0.717     & 0.772     \\ \hline
-%         FRCNN-R50  & 0.284 & 0.76    & 0.658   & 0.204    & 0.557     & 0.695     & 0.77      \\ \hline
-%         YOLOv5-m6  & 0.288 & 0.748   & 0.644   & 0.209    & 0.593     & 0.667     & 0.766     \\ \hline
-%         YOLOv5-l6  & 0.284 & 0.74    & 0.644   & 0.203    & 0.551     & 0.701     & 0.612     \\ \hline
-%         EffDet-D4  & 0.251 & 0.716   & 0.605   & 0.15     & 0.49      & 0.677     & 0.545     \\ \hline
-%         RetN-swint & 0.266 & 0.766   & 0.66    & 0.175    & 0.497     & 0.721     & 0.786     \\ \hline
-%         RetN-R50   & 0.263 & 0.734   & 0.643   & 0.174    & 0.547     & 0.696     & 0.663     \\ \hline
-%     \end{tabular}
-%     \caption{performance comparison of multiple models based on mean average precision metrics}
-%     \label{tab:model_results:stage_four}
-% \end{table}
-
-
-% \begin{table}[H]
-%     \begin{tabular}{|c|c|c|c|c|c|c|c|}
-%         \hline
-%         Model      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-%         FRCNN-R101 & 0.328 & 0.8     & 0.71    & 0.263    & 0.613     & 0.742     & 0.816     \\ \hline
-%         FRCNN-R50  & 0.334 & 0.81    & 0.715   & 0.273    & 0.595     & 0.757     & 0.809     \\ \hline
-%         YOLOv5-m6  & 0.346 & 0.787   & 0.708   & 0.284    & 0.622     & 0.744     & 0.754     \\ \hline
-%         YOLOv5-l6  & 0.295 & 0.706   & 0.625   & 0.232    & 0.533     & 0.691     & 0.489     \\ \hline
-%         EffDet-d4  & 0.288 & 0.745   & 0.648   & 0.219    & 0.548     & 0.699     & 0.655     \\ \hline
-%         RetN-swint & 0.328 & 0.805   & 0.72    & 0.241    & 0.565     & 0.776     & 0.775     \\ \hline
-%     \end{tabular}
-%     \caption{Performance comparison of multiple models based on mean average precision metrics}
-%     \label{tab:model_results:stage_five}
-% \end{table}

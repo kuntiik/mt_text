@@ -84,16 +84,17 @@ First, we experimented with different learning rates and used the learning rate 
 \subsubsection{Termination condition}
 The training was halted when the $AP@.5$ did not increase throughout ten epochs, but not earlier than after 50 epochs from the beginning of the training.
 
-\section{Caries detection - improvements}
+\section{Imrpovements}
 \label{sec:methods:improvements}
 In this section, we propose improvements to the training protocol as well as a change to models trained with small batch sizes.
-\subsection{General changes}
+\subsection{Training protocol changes}
 \label{sec:general_changes}
 We replaced the Adam optimizer with AdamW with the same $\beta_1$ and $\beta_2$. Furthermore, a Cosine Annealing learning rate scheduler was used. The half-period of cosine was set to 70 epochs and the minimal learning rate to $10^{-7}$.
 
 With this setting, we trained multiple models from section \ref{sec:methods:nns} on the stage five dataset.
 
 \subsection{Group normalization}
+\label{sec:methods:group_norm}
 As mentioned in section \ref{sec:normalization_layers}, batch normalization is superior to group normalization when used with batch sizes greater than eight. Since the size of EfficientDet-D4 and D5  models allowed us to use batch-size of one, we replaced all batch-normalization layers with group normalization. The channels per group parameter, for a given instance of group normalization, was set to $16$\footnote{Wu and He \cite{Wu2018} showed this to be the best performing value when evaluated on ImageNet dataset}, when the number of channels in the layer was divisible by 16, otherwise, we selected one of the following values 2,4,8—prioritizing higher of those.
 
 The training was conducted according to the protocol described previously.
@@ -213,7 +214,7 @@ We used YOLOv5 architecture with a medium sized backbone, since multiple models 
 We used YOLOv5 architecture again but included two models with a small backbone, three with a medium-sized backbone, and three with the large backbone. When picking those, we tried to match the performance of selected models with those selected before. This was done to ensure the maximal comparability of those two ensembles.
 
 \subsection{Different architecture}
-Here we used the best model we had at our disposal. The ensemble consisted of the following models: Two YOLOv5-large, two YOLOv5-medium, YOLOv5-small, EfficientDet-D1, EfficientDet-D3, RetinaNet-swint, and Faster-RCNN-Resnet50. Even though we picked the best available models, the difference in $AP@.5$ against YOLOv5-all was $2\$$, as can be seen in table \ref{tab:ensemble_models_involved}, where we denoted a group of models with different architectures as 'All'.
+Here we used the best model we had at our disposal. The ensemble consisted of the following models: Two YOLOv5-large, two YOLOv5-medium, YOLOv5-small, EfficientDet-D1, EfficientDet-D3, RetinaNet-swint, and Faster-RCNN-Resnet50. Even though we picked the best available models, the difference in $AP@.5$ against YOLOv5-all was $2\$$, as can be seen in table \ref{tab:ensemble_models_involved}, where we denoted a group of models with different architectures as All.
 
 \begin{table}[h]
     \centering
@@ -232,6 +233,7 @@ Here we used the best model we had at our disposal. The ensemble consisted of th
 \label{sec:methods:dental_restorations}
 In this section, we propose a non-deep learning method for the segmentation of dental caries; we tune hyper-parameters of this approach to achieve the best possible performance of this approach. After that, we switched our approach and trained a deep learning model called U-Net.
 \subsection{Non-deep learning approach}
+\label{sec:methods:seg_nondl}
 We decided to test the approach proposed by Abdalla-Aslan, and Yeshua \cite{AbdallaAslan2020, Yeshua2019} as described in section \ref{sec:related_works:dental_restorations}. This means that we defined a pipeline of image processing operations, where we:
 \begin{itemize}
     \item Thresholded the image: We tried Otsu's thresholding method and Gaussian blur with kernel size $K_b$ applied prior to that. Furthermore, Gaussian and mean adaptive thresholding methods were tried, where we tested different kernel sizes $K_t$ and threshold values $T$.
@@ -257,6 +259,7 @@ The dataset was split into two equally-sized parts, called tune and test. We eva
 \end{table}
 
 \subsection{Deep-learning approach}
+\label{sec:methods:seg_unet}
 \subsubsection{Model training}
 The dataset was split into training, validation, and test parts with a 70:15:15 ratio. For the dataset's training part we used augmentations described in section \ref{sec:image_augmentations}. Resizing of images was removed from the augmentation pipeline, and we, therefore, worked with full-sized radiographs. Images in the validation and test part of the dataset were only normalized.
 We used the U-Net architecture model as proposed by author \cite{Ronneberger2015}, only changing the depth to 5 downscaling layers. As a loss function, we used Soft-dice loss. The learning rate value of $10^{-2}$ was used together with reduce on plateau learning rate scheduler. The model was trained for 50 epochs by the Adam optimizer, and at the end of the training, we selected the best model according to IOU on the validation dataset and evaluated its performance on the test dataset.
