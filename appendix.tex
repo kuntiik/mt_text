@@ -30,7 +30,7 @@
         RetinaNet-swint & 0.661     & 0.63   & 0.645   & 0.24     \\ \hline
         RetinaNet-R50   & 0.674     & 0.6    & 0.635   & 0.41     \\ \hline
     \end{tabular}
-    \caption{Precision, recall, and F-score based on the confidence threshold $\gamma$}
+    \caption{Precision, recall, and F-score based on the confidence threshold $\gamma$ for the models trained on stage four datset}
     \label{tab:model_prf:stage_four}
 \end{table}
 
@@ -64,7 +64,7 @@
         FRCNN-R101 & 0.478 & 0.864        & 0.89    & 0.458    & 0.815     & 0.917     & 0.917     \\ \hline
         RetN-swint & 0.508 & 0.89         & 0.946   & 0.468    & 0.902     & 0.967     & 0.967     \\ \hline
     \end{tabular}
-    \caption{Average racall of improved models}
+    \caption{Average recall of models trained by improved training protocol}
     \label{tab:improved:recall}
 \end{table}
 
@@ -81,7 +81,7 @@
         FRCNN-R101 & 0.704     & 0.63   & 0.665   & 0.684                \\ \hline
         RetN-swint & 0.681     & 0.69   & 0.685   & 0.367                \\ \hline
     \end{tabular}
-    \caption{Precision, recall, and F-score based on the confidence threshold for different models}
+    \caption{Precision, recall, and F-score based on the confidence threshold for different models, trained by the imporved training protocol}
     \label{tab:imrpoved:prf}
 \end{table}
 
@@ -96,7 +96,7 @@
         WBF    & 0.573 & 0.918        & 0.975   & 0.569    & 0.956     & 0.981     & 0.981     \\ \hline
         WBF-A  & 0.572 & 0.92         & 0.974   & 0.566    & 0.956     & 0.98      & 0.98      \\ \hline
     \end{tabular}
-    \caption{Average recall of models ensembled by parameters from table \ref{tab:ensemble_params:grid_search}}
+    \caption{Average recall of models ensembled by parameters from Table \ref{tab:ensemble_params:grid_search}}
     \label{tab:recall:grid_search}
 \end{table}
 
@@ -128,7 +128,7 @@
         \includegraphics[width=1\linewidth]{images/det1pred.png}
         \caption{Predictions of the model}
     \end{subfigure}
-    \caption{Correct detection of dental caries}
+    \caption{Four correct detection of dental caries and one falsely-positive}
     % \label{}
 \end{figure}
 
@@ -136,16 +136,17 @@
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.9\textwidth}
-        \includegraphics[width=1\linewidth]{images/det2orig.png}
+        \includegraphics[width=1\linewidth]{images/det3orig.png}
         \caption{Original image}
     \end{subfigure}
     \begin{subfigure}[b]{0.9\textwidth}
-        \includegraphics[width=1\linewidth]{images/det2pred.png}
+        \includegraphics[width=1\linewidth]{images/det3pred.png}
         \caption{Output of our models}
     \end{subfigure}
-    \caption{ Segmented dental restorations in yellow, predicted dental caries are pink and ground truth of dental caries in green. We see a single false pasitive detection on the top right of the image}
+    \caption{ Segmented dental restorations in yellow, predicted dental caries are pink. We see a successful segmentation of dental restorations and a single falsely positive prediction of dental caries}
     \label{}
 \end{figure}
+
 
 
 \chapter{Images}
