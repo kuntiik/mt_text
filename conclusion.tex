@@ -9,12 +9,12 @@ We contributed to the creation of a dataset containing 3989 bitewing images with
 During the dataset's creation, the model already proved to detect dental caries overlooked by a dentist. Since then, the model has improved significantly. We, therefore, believe that the model in its current state would be helpful during teeth diagnosis. It could serve as a second opinion for the dentists that he can compare his beliefs against.
 
 \section*{Further work}
-The primary focus should be on finishing the stage six dataset in the future. We believe that there are still overlooked dental caries in the dataset, despite their number decreasing in stage three.
+The primary focus should be on finishing the sixth stage of the dataset in the future. We believe that there are still overlooked dental caries, despite their number decreasing in stage three.
 \medskip
-We believe that including an additional model with different architecture could further increase the performance. For example, parameter-heavy models such as EfficientDet could be trained and added to the ensemble. However, this would require a GPU with at least 24GB of dedicated memory.
+We believe that including additional models with different architectures could further increase the performance. For example, parameter-heavy models such as EfficientDet with D4+ backbones could be trained and added to the ensemble. However, this would require a GPU with a higher amount of dedicated memory. According to our experience, a 40GB GPU would be required to fit EfficientDet-D4 with batch size four into the GPU.
 
 \medskip
-It could be worth exploring the option of backbone sharing across multiple tasks. The model for segmentation of dental restorations could benefit from the backbone shared with the model for object detection, which was trained on a significantly larger amount of data. Therefore, we believe that the backbone would be able to extract better features from the image.
+It could be worth exploring the option of backbone sharing across multiple tasks. The model for segmentation of dental restorations could benefit from the backbone shared with the model for object detection, which was trained on a significantly larger amount of data. Therefore, we believe that the backbone would be able to extract better features from the image and thus improve the performance of segmentation.
 
 
 

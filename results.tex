@@ -12,14 +12,16 @@ Section \ref{sec:ensembling_results} reports the influence of ensemble neural ne
 
 Section \ref{sec:dental_restoration_results} contains results of algorithms for segmentation of dental restorations
 
-In the final secton \ref{sec:result_comparision_with_lit} we compare results of our best-performing model with the literature.
+In secton \ref{sec:result_comparision_with_lit} we compare results of our best-performing model with the literature.
+
+In the final Section \ref{sec:visualization} of this chapter, we show a Figures to showcase the performance of our models.
 
 \section{Model comparison on different datasets}
 \label{sec:model_comparison}
 This section compares the performance of different model architectures and their backbones. It is divided into five subsections corresponding to five stages of the dataset; for more details about the dataset, see Section \ref{sec:dataset:dental_caries}. For each of the five stages of the dataset, we report the average precision metric on the test part of the dataset. The training of all models was conducted according to a training protocol described in Section \ref{chapter:methods}. Tables in this section use abbreviations described in Section \ref{sec:methods:nns}.
 
 \subsection{Stage one dataset}
-In Table \ref{tab:model_results:stage_one} the reader can see results obtained on the first stage of the dataset. None of the trained models performed well, especially the Faster R-CNN model, achieved low average precision values. We attribute that to inhomogeneity in the dataset and the low amount of data.
+In Table \ref{tab:model_results:stage_one} the reader can see results obtained on the first stage of the dataset. None of the trained models performed well, especially the Faster R-CNN model, which achieved low average precision values. We attribute that to inhomogeneity in the dataset (as described in Section \ref{sec:dataset:second_stage}) and the low amount of data.
 \begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
@@ -36,8 +38,8 @@ In Table \ref{tab:model_results:stage_one} the reader can see results obtained o
 \end{table}
 
 \subsection{Stage two dataset}
-Even though the dataset grew in size by more than 50\% since stage one, from the Tables \ref{tab:model_results:stage_one} and \ref{tab:model_results:stage_two} we see that the YOLOv3 model improved by less than $10\%$ on the contrary performance of YOLOv5 model improved by circa $25\%$. Due to the low performance of YOLOv3 and its similarity with superior YOLOv5 architecture, we will not experiment with YOLOv3 in further Sections.
-In the last two rows of table \ref{tab:model_results:stage_two} we can see the discrapancy of average precision, when evaluated on test and train part of the dataset. This ensures us, that the model is able to fit the data and we only need to eleviate the generalizaiton gap.
+Even though the dataset grew in size by more than 50\% since stage one, from the Tables \ref{tab:model_results:stage_one} and \ref{tab:model_results:stage_two} we see that the YOLOv3 model improved by less than $10\%$ on the contrary performance of YOLOv5 model improved by circa $25\%$. Due to the low performance of YOLOv3 and its similarity with superior YOLOv5 architecture, we will not experiment with YOLOv3 in further sections.
+In the last two rows of table \ref{tab:model_results:stage_two} we can see the discrapancy of average precision, when evaluated on test and train part of the dataset. This ensures us, that the model is able to fit the data well and we only need to eleviate the generalizaiton gap.
 \begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
@@ -63,7 +65,7 @@ Performance of EfficentDet and YOLOv5 models evaluated on training part of datas
     \begin{tabular}{|l|c|c|c|c|c|c|c|}
         \hline
         Model     & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        YOLOv5    & 0.249 & 0.734   & 0.631   & 0.132    & 0.598     & 0.671     & 0.607     \\ \hline
+        YOLOv5-l  & 0.249 & 0.734   & 0.631   & 0.132    & 0.598     & 0.671     & 0.607     \\ \hline
         EffDet-D4 & 0.168 & 0.666   & 0.525   & 0.041    & 0.435     & 0.606     & 0.527     \\ \hline
     \end{tabular}
     \caption{Comparision of trained models on the test part of stage three dataset}
@@ -71,7 +73,8 @@ Performance of EfficentDet and YOLOv5 models evaluated on training part of datas
 \end{table}
 
 \subsection{Stage four dataset}
-The average precision of models trained on this stage of the dataset is in Table \ref{tab:model_results:stage_four}. Furthermore precision-recall values for confidence threshold maximizing F1 score are in table \ref{tab:model_prf:stage_four}, which is located in Appendix. Even though we tested multiple new architectures and revisited Faster R-CNN with two different backbones, the performance gain obtained in this stage was not as prominent as the one observed when moving from stage three to stage four.
+The average precision of models trained on this stage of the dataset is in Table \ref{tab:model_results:stage_four}. Furthermore precision-recall values for confidence threshold maximizing F1 score are in table \ref{tab:model_prf:stage_four}, which is located in Appendix. Even though we introduced multiple new architectures and revisited Faster R-CNN with two different backbones, the performance gain obtained in this stage was not as prominent as the one observed when moving from stage three to stage four.
+
 In the table \ref{tab:model_results:stage_four} we can observe how different architectures differ in their performance on small, medium-sized, and large boxes. Comparing YOLOv5-m6 and RetinaNet-ResNet50 models shows that their overall performance (measured by $AP@.5$) almost matches, but when comparing their $AP@.5_L$ metrics, we see a $15\%$ difference. We try to exploit this behavior by the approach described in Section \ref{sec:methods_area_aware_ens}.
 
 \begin{table}[H]
@@ -110,9 +113,9 @@ The results in Table \ref{tab:model_results:stage_five} show steady improvement 
 \section{Improvements}
 \label{sec:model_improvements_results}
 \subsection{Training protocol improvemets}
-The average precision of models trained with incorporated improvements can be seen in table \ref{tab:improved:precision}. Furthermore, average recall values can be seen in table \ref{tab:improved:recall}, which is located in the appendix together with a table of precision-recall values for given confidence threshold \ref{tab:imrpoved:prf}.
+The average precision of models trained with incorporated improvements proposed in Section \ref{sec:general_changes}, can be seen in table \ref{tab:improved:precision}. Furthermore, average recall values can be seen in table \ref{tab:improved:recall}, which is located in the appendix together with a table of precision-recall values for given confidence threshold \ref{tab:imrpoved:prf}.
 
-Even though the best performing model in Table \ref{tab:improved:precision} improved negligibly over the best performing one in table \ref{tab:model_results:stage_five}. We see, that models achieved better results in average and we have observed more stable training of those models. In this stage we newly used YOLOv5-s and EfficienDet-D1, sespite both of them beiing low-parameter newtorks, they performed almost on par with others
+Even though the best performing model in Table \ref{tab:improved:precision} improved negligibly over the best performing one in table \ref{tab:model_results:stage_five}. We see that models achieved better results on average, and we have observed more stable training of those models. In this stage, we newly used YOLOv5-s and EfficienDet-D1; despite both of them being low-parameter networks, they performed almost on par with others.
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
@@ -133,11 +136,11 @@ Even though the best performing model in Table \ref{tab:improved:precision} impr
 
 
 \subsection{Group normalization}
-Chart of $AP@.5$ for EfficientDet-D4 models with batach-normalization layers and group normlization layer is in figure \ref{fig:batch_group_diff}. Model using batch normalization achieved $AP@.5$ of 0.634 on the test dataset, beeing outperformed by model using group normalization, with $AP@.5=0.694$. Despite the performance increase induced by group normalization, the EfficientDet-D4 model performed comparably with the models in Table \ref{tab:imrpoved:precision}. We therefore stopped using this model further on.
+Chart of $AP@.5$ for EfficientDet-D4 models with batch-normalization layers and group normalization layer is in Figure \ref{fig:batch_group_diff}. Model using batch normalization achieved $AP@.5$ of 0.634 on the test dataset, outperforming the model using group normalization, with $AP@.5=0.694$. Despite the performance increase induced by group normalization, the EfficientDet-D4 model performed comparably with the models in Table \ref{tab:improved:precision}. Therefore, we stopped using this model further since the training of this model was more computationally demanding than the rest of the models.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{images/group_norm_batch_norm.png}
-    \caption{Difference in $AP@.5$ amoqEfficientDet-D4 model with batch normalization and group normalization}
+    \caption{Difference in $AP@.5$ amog EfficientDet-D4 model with batch normalization and group normalization}
     \label{fig:batch_group_diff}
 \end{figure}
 
@@ -148,7 +151,7 @@ The table \ref{tab:backbone_comparison} was computed by statistics from 29 model
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Backbone & Mean  & Std    & Max   & Min   & Par[M] & FLOPs[G] & Time[h] \\ \hline
+        Backbone & Mean  & Std.   & Max   & Min   & Par[M] & FLOPs[G] & Time[h] \\ \hline
         Small    & 0.68  & 0.0197 & 0.651 & 0.697 & 12     & 21       & 2.1     \\ \hline
         Medium   & 0.696 & 0.0126 & 0.669 & 0.719 & 35     & 63       & 3.5     \\ \hline
         Large    & 0.703 & 0.0136 & 0.681 & 0.725 & 76     & 141      & 5.2     \\ \hline
@@ -174,7 +177,7 @@ In the figures \ref{fig:fasterrcnn_weight_decay} and \ref{fig:yolo_weight_decay}
 In this section, we show the performance of model ensembles with handpicked parameters \ref{subsec:handpicked} as well as ensembles obtained by parameters found by a grid-search. Furthermore, we report how the diversity of models involved in the ensemble affects its results.
 \subsection{Manually-picked parameters}
 \label{subsec:handpicked}
-In the table \ref{tab:model_ensembling:handpicked}, the reader can see results obtained by handpicking circa ten sets of hyper-parameters, based on our qualified guess. Then evaluating those on the validation part of the dataset and selecting the best-performing, which was evaluated on the test part of the dataset. The first group (G1) contained the following models trained on the stage four dataset: RetinaNet-swint, YOLOv5-m, RetinaNet-ResNet50. The second group (G2) was composed of Faster R-CNN-Resnet101, YOLOv5-m, and RetinaNet-swint. From the tables \ref{tab:model_ensembling:handpicked} and \ref{tab:model_results:stage_four} we can infer,  that ensembling of models improved $AP@.5$ by $3\%$ over the best performing model included in the ensemble.
+In the table \ref{tab:model_ensembling:handpicked}, the reader can see results obtained by handpicking circa ten sets of hyper-parameters, based on our qualified guess. Then evaluating those on the validation part of the dataset and selecting the best-performing, which was evaluated on the test part of the dataset. The first group (G1) contained the following models trained on the stage four dataset: RetinaNet-swint, YOLOv5-m, and RetinaNet-ResNet50. The second group (G2) was composed of Faster R-CNN-Resnet101, YOLOv5-m, and RetinaNet-swint. All of those models were trained on stage four of the dataset. From the tables \ref{tab:model_ensembling:handpicked} and \ref{tab:model_results:stage_four} we can infer that ensembling of models improved $AP@.5$ by $3\%$ over the best performing model included in the ensemble.
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
@@ -182,7 +185,7 @@ In the table \ref{tab:model_ensembling:handpicked}, the reader can see results o
         G1     & 0.303 & 0.776   & 0.694   & 0.216    & 0.605     & 0.729     & 0.803     \\ \hline
         G2     & 0.305 & 0.783   & 0.695   & 0.218    & 0.598     & 0.733     & 0.807     \\ \hline
     \end{tabular}
-    \caption{WBF ensemble of multiple models, wehre we handpicked the parameters of the ensemble process. The models were trained on stage four dataset.}
+    \caption{WBF ensemble of multiple models, where we handpicked the parameters of the ensemble process. The models were trained on stage four dataset.}
     \label{tab:model_ensembling:handpicked}
 \end{table}
 \subsection{Grid search results}
@@ -228,22 +231,22 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
 
 \subsection{Assesing importance of different models}
 \label{sec:results:improtance_of_models}
-In this Section, we present ensembling results based on the approach from Section \ref{sec:methods:assesing_importance}. In tables \ref{tab:precision:ensemble_compare}, \ref{tab:recall:ensemble_compare} and \ref{tab:ensembling_prf:ensemble compare} we se results of ensebmles composed of different models. Note that the ensembling of varying architectures (All) achieved the best results out of all models evaluated in this thesis and we will use this model to compare our results with related publications.
+In this Section, we present ensembling results based on the approach from Section \ref{sec:methods:assesing_importance}. In tables \ref{tab:precision:ensemble_compare}, \ref{tab:recall:ensemble_compare} and \ref{tab:ensembling_prf:ensemble compare} we see results of ensembles composed of different models. Note that the ensembling of varying architectures (All) achieved the best results out of all models evaluated in this thesis, and we will use this model to compare our results with related publications.
 
-From the Table \ref{tab:precision:ensemble_compare} we can see that the usage of varying backbones increases the gain in average precision by circa $1.5\%$. Furthermore, using different architectures increased the performance by an additional $3.2\%$. Please note that models included in ensembling with different architectures had a better average $AP@.5$ by $2\%$ (see Table \ref{tab:ensemble_models_involved}) higher than models included in the former two ensembling approaches. If we adjust the results for that, we expect a $1.2\%$ gain solely from using models with varying architecture.
+From Table \ref{tab:precision:ensemble_compare} we can see that the usage of varying backbones increases the gain in average precision by circa $1.5\%$, when compared to the ensemble with the same backbones. Furthermore, using different architectures increased the performance by an additional $3.2\%$. Please note that models included in ensembling with different architectures had an average $AP@.5$ by $2\%$  higher than models included in the former two ensembling approaches, see Table \ref{tab:ensemble_models_involved}. If we adjust the results for that, we expect a $1.2\%$ gain solely from using models with varying architecture.
 
 
-The importance of individual models in the ensemble is in figure \ref{fig:ensembling_parameters_importance} for All architectures and in figures \ref{fig:ensembling_hparams_imprtance_yolo_m}, \ref{fig:ensembling_hparams_imprtance_yolo_mix} located in appendix for the remaining two groups of models.
+The importance of individual models in the ensemble is in figure \ref{fig:ensembling_parameters_importance} for Mixture architectures and in figures \ref{fig:ensembling_hparams_imprtance_yolo_m}, \ref{fig:ensembling_hparams_imprtance_yolo_mix} located in appendix for the remaining two groups of models.
 
 
 \begin{table}[h]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Models & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        All    & 0.389 & 0.838   & 0.774   & 0.338    & 0.665     & 0.811     & 0.876     \\ \hline
-        Y5-mix & 0.379 & 0.819   & 0.75    & 0.34     & 0.636     & 0.79      & 0.84      \\ \hline
-        Y5-m   & 0.368 & 0.812   & 0.741   & 0.329    & 0.648     & 0.775     & 0.844     \\ \hline
+        Models  & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        Mixture & 0.389 & 0.838   & 0.774   & 0.338    & 0.665     & 0.811     & 0.876     \\ \hline
+        Y5-mix  & 0.379 & 0.819   & 0.75    & 0.34     & 0.636     & 0.79      & 0.84      \\ \hline
+        Y5-m    & 0.368 & 0.812   & 0.741   & 0.329    & 0.648     & 0.775     & 0.844     \\ \hline
     \end{tabular}
     \caption{Average precision of ensembled models}
     \label{tab:precision:ensemble_compare}
@@ -254,10 +257,10 @@ The importance of individual models in the ensemble is in figure \ref{fig:ensemb
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Models & $AR$  & $AR@.5_{10}$ & $AR@.5$ & $AR@.75$ & $AR@.5_S$ & $AR@.5_M$ & $AR@.5_L$ \\ \hline
-        All    & 0.586 & 0.917        & 0.978   & 0.582    & 0.946     & 0.991     & 0.991     \\ \hline
-        Y5-mix & 0.579 & 0.911        & 0.959   & 0.599    & 0.929     & 0.972     & 0.972     \\ \hline
-        Y5-m   & 0.562 & 0.906        & 0.949   & 0.572    & 0.909     & 0.964     & 0.964     \\ \hline
+        Models  & $AR$  & $AR@.5_{10}$ & $AR@.5$ & $AR@.75$ & $AR@.5_S$ & $AR@.5_M$ & $AR@.5_L$ \\ \hline
+        Mixture & 0.586 & 0.917        & 0.978   & 0.582    & 0.946     & 0.991     & 0.991     \\ \hline
+        Y5-mix  & 0.579 & 0.911        & 0.959   & 0.599    & 0.929     & 0.972     & 0.972     \\ \hline
+        Y5-m    & 0.562 & 0.906        & 0.949   & 0.572    & 0.909     & 0.964     & 0.964     \\ \hline
     \end{tabular}
     \caption{Average recall of models ensembled by parameters from table \ref{tab:ensemble_params:grid_search}}
     \label{tab:recall:ensemble_compare}
@@ -268,7 +271,7 @@ The importance of individual models in the ensemble is in figure \ref{fig:ensemb
     \begin{tabular}{|c|c|c|c|c|}
         \hline
         Models     & Precision & Recall & F-score & Confidence threshold \\ \hline
-        All        & 0.751     & 0.7    & 0.725   & 0.294                \\ \hline
+        Mixture    & 0.751     & 0.7    & 0.725   & 0.294                \\ \hline
         YOLOv5-mix & 0.728     & 0.69   & 0.708   & 0.241                \\ \hline
         YOLOv5-m   & 0.726     & 0.67   & 0.697   & 0.272                \\ \hline
     \end{tabular}
@@ -337,6 +340,7 @@ Hyper-parameters ensuring the best performance on validation part of the datset 
 
 \subsection{U-Net}
 Two U-Net models were trained with the settings proposed in Section \ref{sec:methods:seg_unet}; we will call them U-Net-baseline (U-Net-B) and U-Net-improved (U-Net-I). With the letters PP, we denote that output of the model was post-processed by the approach described in section \ref{sec:segmentation_post_processing}.
+In Figure \ref{fig:segmentation_losses} we see IOU evaluated on the validation dataset throughout the model training, where each line corresponds to a different loss function. We see that a combination of BCE and soft-Dice loss achieved the highest IOU results, while soft-Dice loss after a promising performance at the beginning of the training diverged.
 
 The best hyper-parameters for post-processing for both models are in table \ref{tab:unet_seg_hyperparams}. In figure \ref{fig:heatmap_postprocess} is visible, how choice of different hyper-parameters for post-procssing pipeline affected the performance of U-Net-B model.
 
@@ -426,14 +430,13 @@ Note that Cantu et al. \cite{Cantu2020} solved the problem of dental caries loca
 
 \section{Visuzalization of models}
 \label{sec:visualization}
-All Figures in this section were generated by the best performing model for object detection, which was introduced in section \ref{tab:precision:ensemble_compare} and the with the U-Net-I model (without post-processing).
+All Figures in this section were generated by the best performing enseble model for caries detection, which was introduced in Section \ref{tab:precision:ensemble_compare} and the with the U-Net-I model (without post-processing).
 
 Figure \ref{fig:recall_fpperimg} shows the relation between number of false positives per image and recall of the model. The graph was truncated and did not include points for $recall > 0.91$ since it would decrease the readability of the chart.
 
-Figure \ref{fig:fig:both_models_1} overlays the bitewing image with predictions of both caries detection and restorations segmentation models. For more similar figures, see Appendix TODO
+Figure \ref{fig:both_models_1} overlays the bitewing image with predictions of both caries detection and restorations segmentation models. For more similar figures, see Appendix
 
 
-\label{tab:precision:ensemble_compare}
 
 \begin{figure}[h]
     \begin{floatrow}[2]

@@ -116,11 +116,8 @@ In subsections \ref{subsec:precision} and \ref{subsec:recall}, we stated that pr
 
 The letters S, M,  and L in the subscript, such as $AP_S$ denote that the metrics are calculated for a subset of ground truth predictions only. Taking into the consideration only bounding boxes with area $\leq 32^2$ pixels, $32^2 \le $ area $ \leq 96^2$ pixels and area $> 96^2$ pixels
 
-\subsection{Mean average recall (mAR)}
-MS COCO uses a slightly different definition of recall than the one described in the section \ref{subsec:recall}. In this case, they sort predictions in descending order by their confidence score and take only the top $n$ of those. After that, they calculate how many ground TODO finish this
-
-TODO
-
+\subsection{Mean average recall in MS-COCO (mAR)}
+PyCOCOtools - official metrics for MS-COCO benchmark \cite{}
 
 \begin{figure}
     \includegraphics[width = 0.78\linewidth]{images/PR-curve.png}
