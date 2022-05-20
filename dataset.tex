@@ -10,7 +10,7 @@ In total,  MDDr. Tichy and his team created two datasets. One dataset was used t
 \end{figure}
 
 \section{Dental caries}
-MDDr. Tichy and his team began to work on the datasets in September of 2021, along with the beginning of work on this thesis. This led  to an opportunity to discuss the format of the data. We decided to annotate every dental caries lesion with a minimal bounding box. The annotation process was conducted in the Computer Vision Annotation Tool (CVAT), running on the Faculty of biomedical informatics server. The web address is www.gdiag.fbmi.cvut.cz.
+MDDr. Tichy and his team began to work on the datasets in September of 2021, along with the beginning of work on this thesis. This led to an opportunity to discuss the format of the data. We decided to annotate every dental caries lesion with a minimal bounding box. The annotation process was conducted in the Computer Vision Annotation Tool (CVAT), running on the Faculty of biomedical informatics server. The web address is www.gdiag.fbmi.cvut.cz.
 
 While denoting the position of the carious lesion, the annotator tried to be consistent with the following guidelines:
 
@@ -23,7 +23,7 @@ Due to constant work on the dataset, we decided to use the same data as long as 
 
 \subsubsection{First stage}
 In the very first stage MDDr. Tichý instructed a group of general dentistry students on how to approach the annotation to get as homogenous dataset as possible. They then annotated a couple of images under his supervision before continuing independently.
-Dental X-ray images were uploaded into CVAT and divided into multiple projects, where each project contained between 400-800 images. This was essential due to technical limitations regarding exporting and uploading X-ray images from a dental database. We further split each project into jobs consisting of 100 images each and  assigned them to a particular student. We had 1695 X-ray images at our disposal with 2416 dental caries annotated when the first stage was done.
+Dental X-ray images were uploaded into CVAT and divided into multiple projects, where each project contained between 400-800 images. This was essential due to technical limitations regarding exporting and uploading X-ray images from a dental database. We further split each project into jobs consisting of 100 images each and assigned them to a particular student. We had 1695 X-ray images at our disposal with 2416 dental caries annotated when the first stage was done.
 CVAT does not allow exporting and merging multiple tasks, so we exported each task separately in COCO format. We uploaded all images and files with annotations  to the CMP server. The server contains annotations combined in one annotation.json file, which carries the information about the dataset in COCO format, and one folder with all the images. We checked the task for duplicates and non-reviewed radiographs and removed those, which resulted in 1626 images with 2399 decay annotations. Out of those, 946 images contained at least one cavity.
 
 
@@ -35,7 +35,7 @@ MDDr. Tichý reviewed all images annotated in the first stage, removing as well 
 
 \subsubsection{Fourth stage}
 We uploaded another 1400 images onto the CVAT server. All the images were downloaded and uploaded to the CMP server. We used a  YOLOv5 model\footnote{For further information about the performance of the model, see table \ref{tab:model_results:stage_three:test}} trained on the third stage dataset to generate predictions for each image. Confidence threshold maximizing F1 score on the validation dataset was used to filter out low confidence predictions of the model. We used Voxel Fiftyone tool to upload all 1400 images and their respective predictions to CVAT, where those images were split into two separate tasks.
-MDDr. Tichý reviewed all predictions and conducted adjustments of bounding boxes as well as their removal and addition.  According to his personal statistics, there were roughly 200 predictions per 100 images. Around 20 predictions had to be added and removed to get the same quality annotations as in stage three. The upside of using model prediction as a starting point for the annotation process was the speed. The annotation  was done in approximately half the time required to do the annotation without model predictions. In total, 3500 images were available after this stage. After removing corrupted images, we got 3489 X-rays with 6087 annotations.
+MDDr. Tichý reviewed all predictions and conducted adjustments of bounding boxes as well as their removal and addition.  According to his personal statistics, there were roughly 200 predictions per 100 images. Around 20 predictions had to be added and removed to get the same quality annotations as in stage three. The upside of using model prediction as a starting point for the annotation process was the speed. The annotation was done in approximately half the time required to do the annotation without model predictions. In total, 3500 images were available after this stage. After removing corrupted images, we got 3489 X-rays with 6087 annotations.
 
 \begin{figure}
     \includegraphics[width = \linewidth]{images/dataset_histogram.pdf}
@@ -51,7 +51,7 @@ MDDr. Tichý reviewed all predictions and conducted adjustments of bounding boxe
 \subsubsection{Image augmentations}
 
 \subsubsection{Fifth stage}
-In this stage, we finished the annotation of all 1400 images uploaded in stage four, resulting in 3989 X-rays with 7257 annotations. We plotted a histogram representing the distribution of the number of carries among images; it can be  noticed in figure \ref{fig:hist_caries_per_img}.
+In this stage, we finished the annotation of all 1400 images uploaded in stage four, resulting in 3989 X-rays with 7257 annotations. We plotted a histogram representing the distribution of the number of carries among images; it can be noticed in figure \ref{fig:hist_caries_per_img}.
 
 
 \begin{table}

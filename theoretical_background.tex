@@ -1,4 +1,5 @@
 \chapter{Theoretical background}
+\label{chapter:theoretical_bg}
 \section{Computer vision tasks}
 \begin{figure}
     \centering
@@ -16,7 +17,7 @@ where $f$ is a mapping, sometimes called a model, and $\theta$  represents model
 It is possible to output $\mathbf{p} \in \mathbb{R}^n$ instead of $\hat{y}$, where $p_i \in \mathbf{p}$ is probability of $i = y$, modeled by $f_\theta$.
 
 \subsection{Semantic segmentation}
-For an input image $x \in \mathbb{R}^{n \times m}$, the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $y{_i,j}$ is predicted class of pixel $i,j$ in the image $\mathbf{x}$. Similarly to the classification problem, we can output matrix $\mathbf{P} \in \mathbb{R}^{n \times m \times c}$, where $p_{i,j,c}$ is the probability of $pixel_{i,j}$ belonging to class $c$. A sample of semantic segmentation output can be seen in figure \ref{fig:computer_vision_tasks}.
+For an input image $x \in \mathbb{R}^{n \times m}$, the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $\hat{y_{i,j}}$ is predicted class of pixel $i,j$ in the image $\mathbf{x}$. Similarly to the classification problem, we can output matrix $\mathbf{P} \in \mathbb{R}^{n \times m \times c}$, where $p_{i,j,c}$ is the probability of $pixel_{i,j}$ belonging to class $c$. A sample of semantic segmentation output can be seen in figure \ref{fig:computer_vision_tasks}.
 
 \subsection{Object detection}
 \label{subsec:object_detection}
@@ -58,7 +59,7 @@ where $y_{i,j} \in \mathbf{Y} \in \mathbb{R} ^ {m \ times n}$ is the ground trut
 
 
 \begin{figure}
-    \includegraphics[width = \linewidth]{images/IOU.jpg}
+    \includegraphics[width = 0.9\linewidth]{images/IOU.jpg}
     \caption{Examples of IOUs for different overlaps between GT and predicted box, source. \cite{Cowton2019}}
     \label{fig:iou}
 \end{figure}
@@ -122,17 +123,26 @@ TODO
 
 
 \begin{figure}
-    \includegraphics[width = \linewidth]{images/PR-curve.png}
+    \includegraphics[width = 0.78\linewidth]{images/PR-curve.png}
     \caption{Standard and interpolated precision-recall curve, source \cite{Padilla2020}}
     \label{fig:pr_curve}
 \end{figure}
 
 
-\subsubsection{Dice Loss}
-TODO
-
 \subsubsection{Cross-Entropy loss}
-TODO
+\label{sec:cross_entropy}
+Let $\mathbf{y} \in \mathbb{R}^n, y_i \in \{ 0, 1 \}$ be a vector of ground truth classes and $\hat{\mathbf{y}} \in \mathbb{R}^n$ be a vector of model preditions, where $\hat{y_i} \in [0, 1]$ is the predicted probability, that $i_{th}$ element belongs to class $1$. The cross-entropy loss is computed as follows \cite{Jadon2020}:
+\begin{align}
+    L_{CE}(\mathbf{y}, \hat{\mathbf{y}}) = - \frac{1}{N} \sum_{i=1}^N y_i \log (p(\hat{y_i})) + (1 - y_i) \log (1 - \hat{y_i})
+\end{align}
+
+\subsubsection{Soft Dice Loss}
+Let's consider $\mathbf{y}$ and $\hat{\mathbf{y}}$ as in section \ref{sec:cross_entropy}, Soft Dice Loss is then computed as:
+\begin{align}
+    SDL(\mathbf{y}, \hat{\mathbf{y}}) = 1 - \frac{\sum_{i=1}^N 2y_i \hat{y_i}}{\sum_{i=1}^N y_i + \sum_{i=1}^N \hat{y_i}}
+\end{align}
+Dice Loss is computed in the same way, we only threshold values of $\hat{\mathbf{y}}$ prior to computation of the loss \cite{Softdiceloss,Jadon2020}.
+
 
 
 \section{Optimization}
@@ -144,16 +154,24 @@ TODO
 
 \subsection{Learning rate schedulers}
 TODO rewrite Learning rate is considered to be one of the most, if not the most important parameter, in deep learning. It is usually beneficial to change the learning rate during the course of training. This can be done manually or automated by an algorithm that increases or decreases the learning rate based on the set of predefined rules. This algorithm is called the learning rate scheduler.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/schedulers.png}
+    \caption{Learning rate schedulers: Cosine annealing is red, Reduce learning rate on plateau has purple color}
+    \label{fig:schedulers}
+\end{figure}
 
 \subsubsection{Reduce learning rate on plateau}
-TODO rewrite We couple the scheduler with a model metric, and when the improvement of the metric stalls for a predefined period of time, the learning rate decreases.
-The scheduler is not heavily reliant on the setting of its hyperparameters, making it a go-to choice to start from for most developers.
+We couple the scheduler with a model metric, and when the improvement of the metric stalls for a predefined period, the learning rate decreases.
+The scheduler is not heavily reliant on the setting of its hyperparameters, making it a go-to starting choice for most developers.
+
 \subsubsection{Cosine annealing}
-TODO
-
-\subsection{Image augmentations}
-TODO
-
+Cosine annealing changes the value of learning rate according to the equation \ref{eq:cosine_annealing}, where $T$ is half-period of the cosine.
+\begin{align}
+    lr(t) = lr_{min} + \frac{1}{2} \left( lr_{max} - lr_{min} \right) \left( 1 + \cos \left( \frac{t}{T}\pi \right) \right)
+    \label{eq:cosine_annealing}
+\end{align}
+It is commonly used with two different settings. Either we set $T$ to estimated length of the training. The learning rate than decreases throghout the training, as can be seen in figure \ref{fig:schedulers}, or we select small value of $T$ and the learning rate oscilates in predefined boundaries multiple times throughout the training. This should help the optimizer to overcome saddle points.
 
 \section{Artificial neural network (ANN)}
 The mechanisms of the human brain inspire artificial neural networks. Human neuron cells are in ANN replaced by artificial neurons, which are defined as:
@@ -181,18 +199,30 @@ A non-linear activation function usually follows the output of the convolutional
 
 \subsection{Normalization layers}
 \label{sec:normalization_layers}
+Normalization layers make the training of ANNs faster and more stable. It has been shown, that normalization-layers decrease the generalization gap ,while increasing the convergence speed \cite{Ioffe2015,Wu2018}. The normalization layers differ in spatial axis, across which, the normalization statistics is computed, this is illustrated in figure
 \subsubsection{Batch-normalization}
-TODO
+The most normalization layer is batch normalization, which computes the output of the layer $y_i$ as:
+\begin{align}
+    \hat{x_i} \leftarrow \frac{x_i - \mu_{\mathcal{B}}}{\sqrt{ \sigma _{\mathcal{B}^2} + \epsilon}}; \qquad y_i \leftarrow \gamma \hat{x_i} + \beta
+\end{align}
+where $\gamma$ and $\beta$ are learnable parameters, $\mathcal{B}$ denotes, that this value is computed over a mini-batch.
+
+
 \subsubsection{Group-normalization}
 \label{sec:group_norm}
-TODO
+Wu et al. \cite{Wu2018} proposed a normalization method, where the statistics are computed over groups of channels. We et al. showed that group normalization outperforms batch normalization when both layers are used with batch sizes smaller than eight.
+
+The disadvantage of group normalization is the introduction of a new group size $G$ hyper-parameter, which needs to be tuned to obtain the results claimed by the authors \cite{Wu2018}.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=0.6\linewidth]{images/activation_functions.png}
-    \caption{Graphs of ReLU based activation functions, source \cite{Zhang2018}}
-    \label{fig:activation_functions}
+    \begin{floatrow}[2]
+        \ffigbox[0.9\FBwidth]{\caption{Graphs of ReLU based activation functions, source \cite{Zhang2018}}\label{fig:activation_functions}}%
+        {\includegraphics[width=\linewidth]{images/activation_functions.png}}\quad
+        \ffigbox[1.1\FBwidth]{\caption{Batch and group normalization layers with denoted axes, across, which the normalization statistics is computed}\label{fig:normalization_layers}}%
+        {\includegraphics[width=\linewidth]{images/group_batch_norm.png}}
+    \end{floatrow}
 \end{figure}
+
 
 
 \section{Transformer architecture}
@@ -209,7 +239,7 @@ where $d_k$ is dimension of keys. More details can be seen in figure \ref{fig:nl
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{images/two_layer_transformer.png}
+    \includegraphics[width=0.5\linewidth]{images/two_layer_transformer.png}
     \caption{Architecture of transformer with two encoders and two decoders, source \cite{Yin2020}}
     \label{fig:nlp_transformer}
 \end{figure}
@@ -228,12 +258,6 @@ The first transformer-based model was the Vision Transformer (ViT) which is capa
 Even though there is a wide variety of architectures for object detection, the core principles remain the same. The model is composed of three main parts: backbone, neck, and head, as depicted in figure \ref{fig:object_detection_architecture}. Each of those blocks can usually be swapped for a different one, fulfilling the same purpose. This gives us great flexibility and allows us to try different combinations of those blocks.
 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.6\linewidth]{images/object_detection_architecture.png}
-    \caption{General architecture for object detection, source \cite{Chen2019}}
-    \label{fig:object_detection_architecture}
-\end{figure}
 
 \subsubsection{Backbone}
 The purpose of backbones is to transform the input image into feature maps. For this purpose, we use classification models with the classification head removed. Most parameters of object detection models are usually part of the backbone. The extraction of useful feature maps is vital for other blocks to perform well. The most common backbones are models from the ResNet family.
@@ -248,6 +272,16 @@ The neck is responsible for the merging of features from the backbone. This is n
 \end{figure}
 
 \subsubsection{Head}
+TODO
+
+\begin{figure}
+    \begin{floatrow}[2]
+        \ffigbox[\FBwidth]{\caption{The schema of two-stage detection process of Faster R-CNN }\label{fig:faster_rcnn}}%
+        {\includegraphics[width=\linewidth]{images/FasterRcnn.png}}\qquad
+        \ffigbox[\FBwidth]{\caption{General architecture for object detection, source \cite{Chen2019}}\label{fig:object_detection_architecture}}%
+        {\includegraphics[width=\linewidth]{images/object_detection_architecture.png}}
+    \end{floatrow}
+\end{figure}
 
 \section{Backbone models}
 This section will introduce multiple architectures of neural networks, which were used as a backbone throughout our work.
@@ -288,8 +322,8 @@ Swin transformer architecture overcomes the limitations of ViT, which is working
 \section{Detection models}
 \label{sec:deteciton_models}
 
-\subsection{Faster-RCNN}
-TODO
+\subsection{Faster R-CNN}
+Faster RCNN (Region-Based Neural Network) architecture is a two-stage detector. In the first stage, Region Proposal Network (RPN) finds regions of interest (ROI)and proposes bounding boxes corresponding to those regions. This is done by sliding a small neural network over the output of the backbone. In the second stage, features corresponding to positions of ROIs are extracted from the backbone and processed by a classification network, which decides if the region corresponds to a background or is one of the target classes. The schema of the architecture is in the figure \ref{fig:faser_rcnn}
 
 \subsection{RetinaNet}
 TODO
@@ -317,7 +351,8 @@ The decoder proposed by Rennenberger et al. \cite{Ronneberger2015} can be replac
 
 Let say we have $M$ different models, each of them predicting $\mathcal{B}_i = \left\{b_1,...,b_N \right\} $ bounding boxes and $\mathcal{S}_i = \left\{ s_1,...,s_N \right\} $ confidence values for a given image corresponding to a single class. We merge predictions of all models together. It is possible to use weights $\mathit{W} = \{w_1,...,w_M \}$ to express our prior belief in the given model. Set of all boxes $\mathcal{B}$ and confidence scores $\mathcal{S}$ is thus obtained by:
 \begin{align}
-    \mathcal{B} = \bigcup_{i=1}^{M} B_i \quad, \mathcal{S} = \bigcup_{i=1}^{M} S_i * w_i / F,
+    \mathcal{B} = \bigcup_{i=1}^{M} B_i \quad, \mathcal{S} = \bigcup_{i=1}^{M} \frac{S_i  w_i}{ F},
+    \label{eq:ensembling_weighting}
 \end{align}
 where F is an optional normalization constant. It's only purpose is to ensure that confidence score will be less than 1 after the ensembling. Commonly used value for F is $\frac{1}{M} \sum_{i=1}^M w_i$. After obtaining sets $\mathcal{B}$ and $\mathcal{S}$ we post-process them by one of the following algorithms: Non-maximal suppression, soft non-maximal suppression, non-maximum weighted suppression or weighted boxes fusion.
 
@@ -325,7 +360,7 @@ where F is an optional normalization constant. It's only purpose is to ensure th
 In non-maximal suppression, we first sort all boxes $\mathcal{B}$ by their confidence $\mathcal{S}$ in descending order. We go thru the sorted set $\mathcal{B}$ and check if any other box b in $\mathcal{B}$ has an overlap greater than the predefined threshold $N_t$.  In that case, we remove box $b$ from $\mathcal{B}$. More details regarding the NMS algorithm are in the pseudocode, which is in figure \ref{alg:nms}.
 \begin{figure}
     \centering
-    \includegraphics{images/nms_algo.png}
+    \includegraphics[width=0.5\linewidth]{images/nms_algo.png}
     \caption{Pseud code of NMS and soft-NMS, source \cite{Bodla2017}}
     \label{alg:nms}
 \end{figure}

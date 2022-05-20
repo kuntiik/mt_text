@@ -39,12 +39,12 @@ In this section we compare the performance of different model architecures and t
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|}
         \hline
-        Model                  & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        YOLOv3                 & 0.093 & 0.258   & -        & -         & -         & -         \\ \hline
-        YOLOv5 L               & 0.097 & 0.318   & 0.03     & 0.281     & 0.310     & 0.378     \\ \hline
-        YOLOv5 XL              & 0.105 & 0.337   & 0.05     & 0.278     & 0.323     & 0.392     \\ \hline
-        EfficientDet d4        & 0.089 & 0.296   & 0.01     & 0.272     & 0.291     & 0.342     \\ \hline
-        EfficientDet d4, train & 0.421 & 0.839   & 0.362    & 0.758     & 0.852     & 0.801     \\ \hline
+        Model            & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        YOLOv3           & 0.093 & 0.258   & -        & -         & -         & -         \\ \hline
+        YOLOv5 L         & 0.097 & 0.318   & 0.03     & 0.281     & 0.310     & 0.378     \\ \hline
+        YOLOv5 XL        & 0.105 & 0.337   & 0.05     & 0.278     & 0.323     & 0.392     \\ \hline
+        EffDet d4        & 0.089 & 0.296   & 0.01     & 0.272     & 0.291     & 0.342     \\ \hline
+        EffDet d4, train & 0.421 & 0.839   & 0.362    & 0.758     & 0.852     & 0.801     \\ \hline
     \end{tabular}
     \caption{Comparision of trained model on the stage two dataset}
     \label{tab:model_results:stage_two}
@@ -57,9 +57,9 @@ Results of trained models evaluated on the training part and the test part of th
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|c|}
         \hline
-        Model-backbone  & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        YOLOv5-l6       & 0.463 & 0.869   & 0.841   & 0.442    & 0.697     & 0.887     & 0.974     \\ \hline
-        EfficientDet-D4 & 0.297 & 0.82    & 0.735   & 0.164    & 0.552     & 0.838     & 0.815     \\ \hline
+        Model     & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        YOLOv5-l6 & 0.463 & 0.869   & 0.841   & 0.442    & 0.697     & 0.887     & 0.974     \\ \hline
+        EffDet-D4 & 0.297 & 0.82    & 0.735   & 0.164    & 0.552     & 0.838     & 0.815     \\ \hline
     \end{tabular}
     \caption{Comparision of trained models on the train part of stage three dataset}
     \label{tab:model_results:stage_three:train}
@@ -69,9 +69,9 @@ Results of trained models evaluated on the training part and the test part of th
     \centering
     \begin{tabular}{|l|c|c|c|c|c|c|c|}
         \hline
-        Model        & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        YOLOv5       & 0.249 & 0.734   & 0.631   & 0.132    & 0.598     & 0.671     & 0.607     \\ \hline
-        EfficientDet & 0.168 & 0.666   & 0.525   & 0.041    & 0.435     & 0.606     & 0.527     \\ \hline
+        Model  & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        YOLOv5 & 0.249 & 0.734   & 0.631   & 0.132    & 0.598     & 0.671     & 0.607     \\ \hline
+        EffDet & 0.168 & 0.666   & 0.525   & 0.041    & 0.435     & 0.606     & 0.527     \\ \hline
     \end{tabular}
     \caption{Comparision of trained models on the test part of stage three dataset}
     \label{tab:model_results:stage_three:test}
@@ -91,38 +91,22 @@ Results of trained models evaluated on the training part and the test part of th
 % \end{table}
 
 \subsection{Stage four dataset}
-The average precision of models trained on this stage of the dataset is in table \ref{tab:model_results:stage_four}.
+The average precision of models trained on this stage of the dataset is in table \ref{tab:model_results:stage_four}. Furthermore precision-recall values for confidence threshold maximizing F1 score are in table \ref{tab:model_prf:stage_four}, which is located in appendix.
 
 \begin{table}[H]
-    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
-        Model-backbone  & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        FRCNN-R101      & 0.285 & 0.763   & 0.675   & 0.198    & 0.568     & 0.717     & 0.772     \\ \hline
-        FRCNN-R50       & 0.284 & 0.76    & 0.658   & 0.204    & 0.557     & 0.695     & 0.77      \\ \hline
-        YOLOv5-m6       & 0.288 & 0.748   & 0.644   & 0.209    & 0.593     & 0.667     & 0.766     \\ \hline
-        YOLOv5-l6       & 0.284 & 0.74    & 0.644   & 0.203    & 0.551     & 0.701     & 0.612     \\ \hline
-        Efficientdet-d4 & 0.251 & 0.716   & 0.605   & 0.15     & 0.49      & 0.677     & 0.545     \\ \hline
-        RetinaNet-swint & 0.266 & 0.766   & 0.66    & 0.175    & 0.497     & 0.721     & 0.786     \\ \hline
-        RetinaNet-R50   & 0.263 & 0.734   & 0.643   & 0.174    & 0.547     & 0.696     & 0.663     \\ \hline
+        Model      & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        FRCNN-R101 & 0.285 & 0.675   & 0.198    & 0.568     & 0.717     & 0.772     \\ \hline
+        FRCNN-R50  & 0.284 & 0.658   & 0.204    & 0.557     & 0.695     & 0.77      \\ \hline
+        YOLOv5-m6  & 0.288 & 0.644   & 0.209    & 0.593     & 0.667     & 0.766     \\ \hline
+        YOLOv5-l6  & 0.284 & 0.644   & 0.203    & 0.551     & 0.701     & 0.612     \\ \hline
+        EffDet-D4  & 0.251 & 0.605   & 0.15     & 0.49      & 0.677     & 0.545     \\ \hline
+        RetN-swint & 0.266 & 0.66    & 0.175    & 0.497     & 0.721     & 0.786     \\ \hline
+        RetN-R50   & 0.263 & 0.643   & 0.174    & 0.547     & 0.696     & 0.663     \\ \hline
     \end{tabular}
     \caption{performance comparison of multiple models based on mean average precision metrics}
     \label{tab:model_results:stage_four}
-\end{table}
-
-\begin{table}[H]
-    \begin{tabular}{|c||c|c|c|c|}
-        \hline
-        Model-backbone  & Precision & Recall & F-score & $\gamma$ \\ \hline
-        FRCNN-R101      & 0.69      & 0.64   & 0.664   & 0.662    \\ \hline
-        FRCNN-R50       & 0.623     & 0.68   & 0.65    & 0.489    \\ \hline
-        YOLOv5-m6       & 0.671     & 0.6    & 0.634   & 0.273    \\ \hline
-        YOLOv5-l6       & 0.621     & 0.64   & 0.63    & 0.219    \\ \hline
-        EfficientDet-d4 & 0.621     & 0.59   & 0.605   & 0.216    \\ \hline
-        RetinaNet-swint & 0.661     & 0.63   & 0.645   & 0.24     \\ \hline
-        RetinaNet-R50   & 0.674     & 0.6    & 0.635   & 0.41     \\ \hline
-    \end{tabular}
-    \caption{Precision, recall, and F-score based on the confidence threshold}
-    \label{tab:model_prf:stage_four}
 \end{table}
 
 \subsection{Stage five}
@@ -130,13 +114,13 @@ The average precision of models trained on this stage of the dataset is in table
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Model      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        FRCNN-R101 & 0.328 & 0.8     & 0.71    & 0.263    & 0.613     & 0.742     & 0.816     \\ \hline
-        FRCNN-R50  & 0.334 & 0.81    & 0.715   & 0.273    & 0.595     & 0.757     & 0.809     \\ \hline
-        YOLOv5-m6  & 0.346 & 0.787   & 0.708   & 0.284    & 0.622     & 0.744     & 0.754     \\ \hline
-        YOLOv5-l6  & 0.295 & 0.706   & 0.625   & 0.232    & 0.533     & 0.691     & 0.489     \\ \hline
-        EffDet-d4  & 0.288 & 0.745   & 0.648   & 0.219    & 0.548     & 0.699     & 0.655     \\ \hline
-        RetN-swint & 0.328 & 0.805   & 0.72    & 0.241    & 0.565     & 0.776     & 0.775     \\ \hline
+        Model      & $AP$  & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        FRCNN-R101 & 0.328 & 0.71    & 0.263    & 0.613     & 0.742     & 0.816     \\ \hline
+        FRCNN-R50  & 0.334 & 0.715   & 0.273    & 0.595     & 0.757     & 0.809     \\ \hline
+        YOLOv5-m6  & 0.346 & 0.708   & 0.284    & 0.622     & 0.744     & 0.754     \\ \hline
+        YOLOv5-l6  & 0.295 & 0.625   & 0.232    & 0.533     & 0.691     & 0.489     \\ \hline
+        EffDet-D4  & 0.288 & 0.648   & 0.219    & 0.548     & 0.699     & 0.655     \\ \hline
+        RetN-swint & 0.328 & 0.72    & 0.241    & 0.565     & 0.776     & 0.775     \\ \hline
     \end{tabular}
     \caption{Performance comparison of multiple models based on mean average precision metrics}
     \label{tab:model_results:stage_five}
@@ -166,10 +150,10 @@ Average precision of models trained with incorporated imrpovements can be seen i
 
 
 \subsection{Group normalization}
-Chart of $AP@.5$ for EfficientDet-D5 models with batach-normalization layers and group normlization layer is in figure \ref{fig:batch_group_dff}. Model using batch normalization achieved $AP@.5$ of 0.634 on the test dataset, beeing outperformed by model using group normalization, with $AP@.5$.
+Chart of $AP@.5$ for EfficientDet-D5 models with batach-normalization layers and group normlization layer is in figure \ref{fig:batch_group_diff}. Model using batch normalization achieved $AP@.5$ of 0.634 on the test dataset, beeing outperformed by model using group normalization, with $AP@.5$.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/batch_norm_group_norm.png}
+    \includegraphics[width=0.9\textwidth]{images/group_norm_batch_norm.png}
     \caption{Difference in $AP@.5$ amoqEfficientDet-D5 model with batch normalization and group normalization}
     \label{fig:batch_group_diff}
 \end{figure}
@@ -207,13 +191,13 @@ In the figures \ref{fig:fasterrcnn_weight_decay} and \ref{fig:yolo_weight_decay}
 In this section, we show the performance of model ensembles with handpicked parameters \ref{subsec:handpicked} as well as ensembles obtained by parameters found by a grid-search. Furthermore, we report how the diversity of models involved in the ensemble affects its results.
 \subsection{Manually-picked parameters}
 \label{subsec:handpicked}
-In the table \ref{tab:model_ensembling:handpicked}, the reader can se results obtained by handpicking circa ten sets of hyper-parameters, based on our qualified quess. Than evaluating those on validation part of the dataset and selecting the best-performing, which was evaluated on test part of the dataset.
+In the table \ref{tab:model_ensembling:handpicked}, the reader can se results obtained by handpicking circa ten sets of hyper-parameters, based on our qualified quess. Than evaluating those on validation part of the dataset and selecting the best-performing, which was evaluated on test part of the dataset. The first group contained the following models trained on stage four dataset: RetinaNet-swint, YOLOv5-m, RetinaNet-ResNet50. The second group was composed of: Faster R-CNN-Resnet101, YOLOv5-m, RetinaNet-swint.
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Ensembled models      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        RN-sw, YOLO-m, RN-res & 0.303 & 0.776   & 0.694   & 0.216    & 0.605     & 0.729     & 0.803     \\ \hline
-        FR-R101, Y5-m, RN-sw  & 0.305 & 0.783   & 0.695   & 0.218    & 0.598     & 0.733     & 0.807     \\ \hline
+        Models & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        G1     & 0.303 & 0.776   & 0.694   & 0.216    & 0.605     & 0.729     & 0.803     \\ \hline
+        G2     & 0.305 & 0.783   & 0.695   & 0.218    & 0.598     & 0.733     & 0.807     \\ \hline
     \end{tabular}
     \caption{WBF ensemble of multiple models, wehre we handpicked the parameters of the ensemble process. The models were trained on stage four dataset.}
     \label{tab:model_ensembling:handpicked}
@@ -221,7 +205,7 @@ In the table \ref{tab:model_ensembling:handpicked}, the reader can se results ob
 \subsection{Grid search results}
 \label{subsec:gridsearched}
 The best hyper-parameters for a given ensemble method found by a grid search are in the table \ref{tab:ensemble_params:grid_search}. We omitted from the table parameter $\sigma$, used only in S-NMS. Its optimal value, according to the grid search, was $0.8$.
-Average precision of the models ensembled with parameters from table \ref{tab:ensemble_params:grid_search} are available in table \ref{tab:precision:grid_search} and average recall values are in the table \ref{tab:recall:grid_search}. Precison and recall values based on the confidence threshold, that maximizes F-score can be seen in table \ref{tab:ensembling_prf:grid_search}.
+Average precision of the models ensembled with parameters from table \ref{tab:ensemble_params:grid_search} is available in the table \ref{tab:precision:grid_search} and average recall values are in the table \ref{tab:recall:grid_search}. Precison and recall values based on the confidence threshold, that maximizes F-score can be seen in table \ref{tab:ensembling_prf:grid_search}.
 
 \begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -255,17 +239,18 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
 
 
 \subsection{Assesing importance of different models}
+In tables \ref{tab:precision:ensemble_compare}, \ref{tab:recall:ensemble_compare} and \ref{tab:ensembling_prf:ensemble compare} we se results of ensebmles composed of different models. Note, that ensembling of varying architectures achieved the best results out of all models evaluated in this thesis. The importance of individual models in the ensemble is in figure \ref{fig:ensembling_parameters_importance} for all architectures and in figures \ref{fig:ensembling_hparams_imprtance_yolo_m}, \ref{fig:ensembling_hparams_imprtance_yolo_mix} located in appendix for the remaining two groups of models.
 
 \begin{table}[h]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Models     & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
-        All        & 0.389 & 0.838   & 0.774   & 0.338    & 0.665     & 0.811     & 0.876     \\ \hline
-        YOLOv5-mix & 0.379 & 0.819   & 0.75    & 0.34     & 0.636     & 0.79      & 0.84      \\ \hline
-        YOLOv5-m   & 0.368 & 0.812   & 0.741   & 0.329    & 0.648     & 0.775     & 0.844     \\ \hline
+        Models & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+        All    & 0.389 & 0.838   & 0.774   & 0.338    & 0.665     & 0.811     & 0.876     \\ \hline
+        Y5-mix & 0.379 & 0.819   & 0.75    & 0.34     & 0.636     & 0.79      & 0.84      \\ \hline
+        Y5-m   & 0.368 & 0.812   & 0.741   & 0.329    & 0.648     & 0.775     & 0.844     \\ \hline
     \end{tabular}
-    \caption{Average precision of models ensembled by parameters from table \ref{tab:ensemble_params:grid_search}}
+    \caption{Average precision of ensembled models}
     \label{tab:precision:ensemble_compare}
 \end{table}
 
@@ -274,10 +259,10 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
         \hline
-        Models     & $AR$  & $AR@.5_{10}$ & $AR@.5$ & $AR@.75$ & $AR@.5_S$ & $AR@.5_M$ & $AR@.5_L$ \\ \hline
-        All        & 0.586 & 0.917        & 0.978   & 0.582    & 0.946     & 0.991     & 0.991     \\ \hline
-        YOLOv5-mix & 0.579 & 0.911        & 0.959   & 0.599    & 0.929     & 0.972     & 0.972     \\ \hline
-        YOLOv5-m   & 0.562 & 0.906        & 0.949   & 0.572    & 0.909     & 0.964     & 0.964     \\ \hline
+        Models & $AR$  & $AR@.5_{10}$ & $AR@.5$ & $AR@.75$ & $AR@.5_S$ & $AR@.5_M$ & $AR@.5_L$ \\ \hline
+        All    & 0.586 & 0.917        & 0.978   & 0.582    & 0.946     & 0.991     & 0.991     \\ \hline
+        Y5-mix & 0.579 & 0.911        & 0.959   & 0.599    & 0.929     & 0.972     & 0.972     \\ \hline
+        Y5-m   & 0.562 & 0.906        & 0.949   & 0.572    & 0.909     & 0.964     & 0.964     \\ \hline
     \end{tabular}
     \caption{Average recall of models ensembled by parameters from table \ref{tab:ensemble_params:grid_search}}
     \label{tab:recall:ensemble_compare}
@@ -303,10 +288,21 @@ Average precision of the models ensembled with parameters from table \ref{tab:en
     \label{fig:ensembling_parameters_importance}
 \end{figure}
 
+
+\begin{figure}[H]
+    \begin{floatrow}[2]
+        \ffigbox[\FBwidth]{
+            \caption{Number of false positives per image for given value of recall \label{fig:recall_fiperimg}}
+        }{\includegraphics[width=\linewidth]{images/fp_recall.pdf}}
+        \ffigbox[\FBwidth]{\caption{Percentage of nondetected dental caries based on the precision of the model}}
+        { \includegraphics[width=\linewidth]{images/nondet_precision.pdf} }
+    \end{floatrow}
+\end{figure}
+
 \section{Dental retorations segmentation}
 \label{sec:dental_restoration_results}
 \subsection{Non-deeplearning approach}
-Hyper-parameters ensuring the best performance on validation part of the datset are in table \ref{tab:nondl_restorations:best_params}. Performance of the pipelie on test dataset given the parameters in table \ref{tab:nondl_restorations:best_params} can be seen in table \ref{tab:nondl_results}. Segmentation of an image together with output after each auxilary stage is in figure \ref{fig:segmentation_sample_nondl}.
+Hyper-parameters ensuring the best performance on validation part of the datset are in table \ref{tab:nondl_restorations:best_params}. Performance of the pipelie on test dataset given the parameters in the table \ref{tab:nondl_restorations:best_params} can be seen in table \ref{tab:nondl_results}. Segmentation of an image together with output after each auxilary stage is in figure \ref{fig:segmentation_sample_nondl}.
 
 \begin{figure}[h]
     \centering
@@ -374,6 +370,12 @@ Figure \ref{fig:segmentation_unet_sample} shows results of segmentation and comp
     \caption{From the left: X-ray image, ground-truth pixel mask, output of the model, output processed by morphological opening, output post-processed by morphological opening and closing.}
     \label{fig:segmentation_unet_sample}
 \end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/segmentation_losses.png}
+    \caption{IOU throughout the training of U-Net model for different losse functions}
+    \label{fig:segmentation_losses}
+\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -415,7 +417,7 @@ Figure \ref{fig:segmentation_unet_sample} shows results of segmentation and comp
 
 \section{Comparision of results with related publications}
 \label{sec:result_comparision_with_lit}
-\subsection{Caries detection}
+% \subsection{Caries detection}
 In the table \ref{tab:results_comparison}, we see a comparison of the results of this thesis with results achieved by related works. We compared with only those who selected a similar approach to ensure at least a minimal amount of comparability.
 
 \begin{table}
@@ -423,7 +425,7 @@ In the table \ref{tab:results_comparison}, we see a comparison of the results of
     \begin{tabular}{|c|c|c|c|c|c|}
         \hline
         Author                                                                 & Precision & Recall & F1-Score & Accuracy & $AP@.5$ \\ \hline
-        This thesis                                                            & 0.751     & 0.7    & 0.725    & -        & 0.774   \\ \hline
+        This thesis                                                            & 0.751     & 0.7    & 0.725    & 0.726    & 0.774   \\ \hline
         Srivastava et al. \cite{Srivastava2017}                                & 0.615     & 0.805  & 0.7      & -        & -       \\ \hline
         Kumar                                   \& Srivastava \cite{Kumar2018} & 0.7       & 0.53   & 0.614    & -        & -       \\ \hline
         Bayrakdar et al. \cite{Bayrakdar2021}                                  & 0.78      & 0.77   & 0.78     & -        & -       \\ \hline
@@ -436,4 +438,47 @@ In the table \ref{tab:results_comparison}, we see a comparison of the results of
 
 Note that Cantu et al. \cite{Cantu2020} solved the problem of dental caries localization as a semantic segmentation task; the recall and F1-score are calculated per pixel, while other works worked with bounding boxes. However, the reader can still estimate how their work compares to others in the table.
 
-\subsection{Restorations segmentation}
+
+
+
+
+
+
+
+
+
+
+
+
+
+% \begin{table}[H]
+%     \begin{tabular}{|c|c|c|c|c|c|c|c|}
+%         \hline
+%         Model      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+%         FRCNN-R101 & 0.285 & 0.763   & 0.675   & 0.198    & 0.568     & 0.717     & 0.772     \\ \hline
+%         FRCNN-R50  & 0.284 & 0.76    & 0.658   & 0.204    & 0.557     & 0.695     & 0.77      \\ \hline
+%         YOLOv5-m6  & 0.288 & 0.748   & 0.644   & 0.209    & 0.593     & 0.667     & 0.766     \\ \hline
+%         YOLOv5-l6  & 0.284 & 0.74    & 0.644   & 0.203    & 0.551     & 0.701     & 0.612     \\ \hline
+%         EffDet-D4  & 0.251 & 0.716   & 0.605   & 0.15     & 0.49      & 0.677     & 0.545     \\ \hline
+%         RetN-swint & 0.266 & 0.766   & 0.66    & 0.175    & 0.497     & 0.721     & 0.786     \\ \hline
+%         RetN-R50   & 0.263 & 0.734   & 0.643   & 0.174    & 0.547     & 0.696     & 0.663     \\ \hline
+%     \end{tabular}
+%     \caption{performance comparison of multiple models based on mean average precision metrics}
+%     \label{tab:model_results:stage_four}
+% \end{table}
+
+
+% \begin{table}[H]
+%     \begin{tabular}{|c|c|c|c|c|c|c|c|}
+%         \hline
+%         Model      & $AP$  & $AP@.3$ & $AP@.5$ & $AP@.75$ & $AP@.5_S$ & $AP@.5_M$ & $AP@.5_L$ \\ \hline
+%         FRCNN-R101 & 0.328 & 0.8     & 0.71    & 0.263    & 0.613     & 0.742     & 0.816     \\ \hline
+%         FRCNN-R50  & 0.334 & 0.81    & 0.715   & 0.273    & 0.595     & 0.757     & 0.809     \\ \hline
+%         YOLOv5-m6  & 0.346 & 0.787   & 0.708   & 0.284    & 0.622     & 0.744     & 0.754     \\ \hline
+%         YOLOv5-l6  & 0.295 & 0.706   & 0.625   & 0.232    & 0.533     & 0.691     & 0.489     \\ \hline
+%         EffDet-d4  & 0.288 & 0.745   & 0.648   & 0.219    & 0.548     & 0.699     & 0.655     \\ \hline
+%         RetN-swint & 0.328 & 0.805   & 0.72    & 0.241    & 0.565     & 0.776     & 0.775     \\ \hline
+%     \end{tabular}
+%     \caption{Performance comparison of multiple models based on mean average precision metrics}
+%     \label{tab:model_results:stage_five}
+% \end{table}

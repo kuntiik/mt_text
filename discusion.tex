@@ -1,4 +1,5 @@
 \chapter{Discusion and further suggestions}
+\label{chapter:discusion}
 
 \section{Baseline model comparison}
 In this section, we comment on the model's performance at different stages of the dataset and hypothesize about the impact of incorrect annotation in the dataset.
@@ -18,6 +19,9 @@ Despite the dataset increasing by another $35\%$ of images available in stage th
 
 Stage five dataset brought a steady improvement according to our expectations. The well-performing models in stage four performed well in stage five, the only difference being the YOLOv5-l6 model, which was circa $15\%$ worse than the rest. We think this was due to a bad model fit and not its incapability to perform well.
 
+\subsection{Summary}
+We see a steady improvement throughout dataset evolution. The correction of annotation mistakes caused all models' biggest gain in performance.
+
 \section{Model improvements}
 \subsection{General improvements}
 From the table \ref{tab:improved:precision} we see, that the best-performing did not improved when compared to results in table \ref{tab:model_results:stage_five}. On the other hand, all models, on average, converged to better results.
@@ -27,30 +31,35 @@ Even though group normalization significantly improved the results of the Effici
 
 \section{Model inspection}
 \subsection{Size of backbone}
-Even though the difference in the performance of different backbones differed only slightly, we could see a trend where a bigger backbone performs better. This holds in terms of maximal achieved performance as well as mean performance across multiple training instances.
+Even though the difference in the performance of different backbones differed only slightly, we could see a trend where a bigger backbone performs better. This holds in terms of maximal achieved performance as well as the mean performance across multiple training instances.
 
 \subsection{Weight decay}
-The value of weight decay seemed to not affect the model's performance. The $AP$ of models with different value weight decay did not even differ during the training. This was surprising since we would expect a decrease in the generalization gap.
+The value of weight decay seemed not to affect the model's performance. The $AP$ of models with different values of weight decay did not differ during the training nor in the final evaluation. This was surprising since we would expect a decrease in the generalization gap.
 
 \section{Ensembling}
 In tables \ref{tab:precision:grid_search} and \ref{tab:recall:grid_search} we observe, that the best performing method was WBF. The other methods showed smaller but still significant improvement. This corresponds to findings by Solovyev et al. \cite{Solovyev2019}. We were surprised that extending the functionality of WBF by reweighting predictions according to their area did not improve the performance of the ensembled model.
 
 From tables \ref{tab:model_results:stage_four} and \ref{tab:model_ensembling:handpicked} we see, that $AP@.5$ obtained by ensembled models improved over the best performing model by $2.3\%$ when we manually selected hyper-parameters and used WBF method. On the contrary, models ensembled by parameters found by grid search improved by $6.7\%$ in terms of $AP@.5$. This emphasizes the importance of the hyper-parameter search for ensembling methods.
 
-Tables \ref{tab:precision:ensemble_compare} and \ref{tab:recall:ensemble_compare} show the importance of using different architectures and backbones in ensemble.
-We found that the usage of different backbones increases the gain in average precision by circa $1.5\%$. Furthermore, using different architectures increased the performance by an additional $3.2\%$. Please note that models included in ensembling with different architectures had a better average $AP@.5$ by $2\%$ higher than models included in the former two ensembling approaches. If we adjust the results for that, we expect circe $1.2\%$ gain solely from the usage of different architecture models. Figure \ref{fig:ensembling_parameters_importance} we see that the second worst-performing model included in the enabling had the most significant importance for the ensemble.
+Tables \ref{tab:precision:ensemble_compare} and \ref{tab:recall:ensemble_compare} show the importance of using different architectures and backbones in ensembling. We found that the usage of varying backbones increases the gain in average precision by circa $1.5\%$. Furthermore, using different architectures increased the performance by an additional $3.2\%$. Please note that models included in ensembling with different architectures had a better average $AP@.5$ by $2\%$ higher than models included in the former two ensembling approaches. If we adjust the results, we expect a $1.2\%$ gain solely from using models with varying architecture.
 
+In figure \ref{fig:ensembling_parameters_importance} we see that the second worst-performing model included in the enabling had the most significant importance for the ensemble. This is a surprising fact, but it underlines the previous findings that varying models contribute more to performance gains of ensembling.
 
 \section{Dental restorations segmentation}
-\subsection{Non-deeplearning approach}
+\subsection{Non-deep learning approach}
+It seems, that
+\subsection{U-Net}
+The baseline U-Net model already showed significant performance gain over the non-deep learning segmentation pipeline. It was by more than $10\%$ by using postprocessing by morphological operations.
 
+Improvements in the training process increased the performance of U-Net significantly; on the contrary, post-processing the improved U-Net model improved all tracked metrics negligibly.
 
+In the figure \ref{fig:segmentation_unet_sample} we see a comparison of the predicted pixel mask with the ground truth. In the border areas of dental restorations, the model seems to estimate its position better than the ground truth labels. This happens due to the unease of labeling data for segmentation tasks, where the annotator needs to include many points in the bounding rectangle to correspond to the real position of the restoration. We believe that this hurts the reported performance of the model.
 
 
 
 \section{Comparision of results with related publications}
 
-Results obtained by this work have beaten those achieved by Srivastava at al. \cite{Srivastava2017} and Kumar and Srivastava \cite{Kumar}. Please note that even though Kumar continued on the work pubulished by Srivastava et al. even extending the dataset used by Srivastava twofolds, all metrics reported by them dropped significantly. We cannot explain what caused this decrease in performance. Kumar does not adress this problem in the published paper.
+Results obtained by this work have beaten those achieved by Srivastava at al. \cite{Srivastava2017} and Kumar and Srivastava \cite{Kumar}. Please note that even though Kumar continued on the work pubulished by Srivastava et al., even extending the dataset used by Srivastava twofold, all metrics reported by them dropped significantly. We cannot explain what caused this decrease in performance. Kumar does not adress this problem in the published paper.
 
 Bayrakdar2021 at al. \cite{Bayrakdar2021} and Bayraktar2021 et al \cite{Bayraktar2021} reported better results, than we achieved througout our work. We find that surprising since both works had significantly smaller ammount of data (621 and 1000 images). We experimented with the YOLOv3 architecture used by \cite{Bayraktar2021}, but in our experiments, it achieved worse results than other architectures. We, therefore, found their results to be irreproducible.
 

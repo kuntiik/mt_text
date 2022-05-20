@@ -5,6 +5,23 @@
 \chapter{Aditional results}
 
 \begin{table}[H]
+    \begin{tabular}{|c||c|c|c|c|}
+        \hline
+        Model           & Precision & Recall & F-score & $\gamma$ \\ \hline
+        FRCNN-R101      & 0.69      & 0.64   & 0.664   & 0.662    \\ \hline
+        FRCNN-R50       & 0.623     & 0.68   & 0.65    & 0.489    \\ \hline
+        YOLOv5-m6       & 0.671     & 0.6    & 0.634   & 0.273    \\ \hline
+        YOLOv5-l6       & 0.621     & 0.64   & 0.63    & 0.219    \\ \hline
+        EfficientDet-D4 & 0.621     & 0.59   & 0.605   & 0.216    \\ \hline
+        RetinaNet-swint & 0.661     & 0.63   & 0.645   & 0.24     \\ \hline
+        RetinaNet-R50   & 0.674     & 0.6    & 0.635   & 0.41     \\ \hline
+    \end{tabular}
+    \caption{Precision, recall, and F-score based on the confidence threshold $\gamma$}
+    \label{tab:model_prf:stage_four}
+\end{table}
+
+
+\begin{table}[H]
     \begin{tabular}{|c|c|c|c|c|}
         \hline
         Model           & Precision & Recall & F-score & $\gamma$ \\ \hline
@@ -84,70 +101,76 @@
     \label{tab:ensembling_prf:grid_search}
 \end{table}
 
-\chapter{Model predictions}
+\chapter{Images}
 \label{appendix:model_predictions}
+\section{Predictions of the model}
 The following figures are X-ray images from the test part of dataset. Ground truth labels are marked by pink color and the model predictions are in green. Each bounding box prediction has corresponging confidence attached to it.
-\begin{figure}
+\begin{figure}[H]
     \includegraphics[width=0.9\linewidth]{images/no_rest1.png}
     \caption{X-ray image with ground truth boxes and model's predictions}
     \label{fig:pred_img1}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \includegraphics[width=0.9\linewidth]{images/no_rest2.png}
     \caption{X-ray image with ground truth boxes and model's predictions}
     \label{fig:pred_img2}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \includegraphics[width=0.9\linewidth]{images/rest1.png}
     \caption{X-ray image with ground truth boxes and model's predictions}
     \label{fig:pred_img3}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \includegraphics[width=0.9\linewidth]{images/rest2.png}
     \caption{X-ray image with ground truth boxes and model's predictions}
     \label{fig:pred_img4}
 \end{figure}
 
-\chapter{Model importance during ensembling}
+% \chapter{Model importance during ensembling}
+\section{Model importance during ensembling}
 
-\begin{figure}
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{images/ensemble_yolo_importance.pdf}
     \caption{Importance of different models during ensembling with the same architectures and backbones}
+    \label{fig:ensembling_hparams_imprtance_yolo_m}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{images/ensemble_yolo_mix_importance.pdf}
     \caption{Importance of different models during ensembling with the architecture and different backbones}
+    \label{fig:ensembling_hparams_imprtance_yolo_mix}
 \end{figure}
 
-\chapter{Augmented images}
+% \chapter{Augmented images}
+\section{Augmented images}
 \label{appendix:img_transformations}
 \begin{figure}
-    \includegraphics[width =0.9\linewidth]{images/no_trasnforms.jpg}
+    \includegraphics[width =0.8\linewidth]{images/no_trasnforms.jpg}
     \caption{No transformation applied}
 \end{figure}
 \begin{figure}
-    \includegraphics[width =0.9\linewidth]{images/gaussian_blur.jpg}
+    \includegraphics[width =0.8\linewidth]{images/gaussian_blur.jpg}
     \caption{Gaussian blur applied}
 \end{figure}
 \begin{figure}
-    \includegraphics[width =0.9\linewidth]{images/roate_10.jpg}
+    \includegraphics[width =0.8\linewidth]{images/roate_10.jpg}
     \caption{Rotation applied}
 \end{figure}
 \begin{figure}
-    \includegraphics[width =0.9\linewidth]{images/random_gamma.jpg}
+    \includegraphics[width =0.8\linewidth]{images/random_gamma.jpg}
     \caption{Gamma correction applied}
 \end{figure}
 \begin{figure}
-    \includegraphics[width =0.9\linewidth]{images/translate.jpg}
+    \includegraphics[width =0.8\linewidth]{images/translate.jpg}
     \caption{Translation applied}
 \end{figure}
 \begin{figure}
-    \includegraphics[width =0.9\linewidth]{images/all_transf.jpg}
+    \includegraphics[width =0.8\linewidth]{images/all_transf.jpg}
     \caption{The whole augmentation pipeline applied}
 \end{figure}
