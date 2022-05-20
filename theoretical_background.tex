@@ -7,7 +7,7 @@
     \caption{From the left: semantic segmentation, object localization, object detection, instance segmentation}.
     \label{fig:computer_vision_tasks}
 \end{figure}
-This section provides a quick overview of standard computer vision tasks.
+This section provides a brief overview of standard computer vision tasks.
 \subsection{Classification}
 Let's say we have an image $\mathbf{x}$. In a classification task, our goal is to assign one of $n$ possible classes to the image:
 \begin{align}
@@ -17,43 +17,43 @@ where $f$ is a mapping, sometimes called a model, and $\theta$  represents model
 It is possible to output $\mathbf{p} \in \mathbb{R}^n$ instead of $\hat{y}$, where $p_i \in \mathbf{p}$ is probability of $i = y$, modeled by $f_\theta$.
 
 \subsection{Semantic segmentation}
-For an input image $x \in \mathbb{R}^{n \times m}$, the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $\hat{y_{i,j}}$ is predicted class of pixel $i,j$ in the image $\mathbf{x}$. Similarly to the classification problem, we can output matrix $\mathbf{P} \in \mathbb{R}^{n \times m \times c}$, where $p_{i,j,c}$ is the probability of $pixel_{i,j}$ belonging to class $c$. A sample of semantic segmentation output can be seen in figure \ref{fig:computer_vision_tasks}.
+For an input image $x \in \mathbb{R}^{n \times m}$, the goal is to output $\mathbf{\hat{Y}} \in \mathbb{R}^{n \times m}$, where $\hat{y_{i,j}}$ is the predicted class of pixel $i,j$ in image $\mathbf{x}$. Similarly to the classification problem, we can output matrix $\mathbf{P} \in \mathbb{R}^{n \times m \times c}$, where $p_{i,j,c}$ is the probability of $pixel_{i,j}$ belonging to class $c$. A sample of semantic segmentation output can be seen in Figure \ref{fig:computer_vision_tasks}.
 
 \subsection{Object detection}
 \label{subsec:object_detection}
-In object detection, the goal is to locate and recognize objects of interest in the image $\mathbf{x}$. A rectangle and a category represent a ground truth object. Model predicts $\mathbf{Y} \in \mathbb{R}^{n \times 6}$ values for each image. Each row of $\mathbf{Y}$ consists of four numbers, which describe a rectangle, the category of the object inside the rectangle, and a number in the range from 0 to 1 called the confidence. In literature, we can see the term score instead of confidence. Still, the meaning remains the same: Certainty of the network regarding the particular prediction described by the bounding box and category. Please note that the confidence of predictions does not sum to one. In other words, we are not talking about probabilities since multiple detections per image can correspond to the ground truth.
+In object detection, the goal is to locate and recognize objects of interest in image $\mathbf{x}$. A rectangle and a category represent a ground truth object. Model predicts $\mathbf{Y} \in \mathbb{R}^{n \times 6}$ values for each image. Each row of $\mathbf{Y}$ consists of four numbers, which describe a rectangle, the category of the object inside the rectangle, and a number in the range from 0 to 1 called the confidence. In literature, we can see the term score instead of confidence. Nevertheless, the meaning remains the same: Certainty of the network regarding the particular prediction described by the bounding box and category. Please note that the confidence of predictions does not sum to one. In other words, we are not talking about probabilities since multiple detections per image can correspond to the ground truth.
 
 \subsection{Instance segmentation}
 Instance segmentation is similar to semantic segmentation, with the alteration saying that two objects of the same category would have different ground truth values. If we have $\mathcal{O}_1, \mathcal{O}_2$, where $\mathcal{O}_i \subset \mathbf{x}$ are pixels of object $i$ in image $\mathbf{x}$. Then
 \begin{align}
-    o_{1_i} \neq o_{2_i} \quad \text{for} \quad o_{1_i} \in \mathcal{O}_1, o_{2_i} \in \mathcal{O}_2;\forall i
+    o_{1_i} \neq o_{2_i} \quad \text{for} \quad o_{1_i} \in \mathcal{O}_1, o_{2_i} \in \mathcal{O}_2;\forall i.
 \end{align}
 
 \section{Data format in object detection}
-As described in section \ref{subsec:object_detection}, the position of an object is denoted by a bounding box.  The four parameters used to describe a bounding box can be selected in multiple ways. This ambiguity led to a disjoint notation. The most widespread are as follows.
+As described in Section \ref{subsec:object_detection}, the position of an object is denoted by a bounding box.  The four parameters used to describe a bounding box can be selected in multiple ways. This ambiguity led to a disjoint notation. The most widespread are as follows.
 \subsection{PASCAL VOC}
 The format was introduced together with the PASCAL VOC dataset, the most popular dataset for object detection algorithm benchmarking in 2010. The bounding box is described by points $p_1(x,y),p_2(x,y)$ located in the top-left and bottom right corner. The coordinates range from 0 to image width/height in pixels. All the annotations are stored in a single XML file \cite{Everingham2009,Padilla2021}.
 \subsection{COCO}
 COCO data format is represented by a single JSON file containing all bounding boxes of the dataset. The boxes are described by the top-left corner point $p(x,y)$ and the width and height of the box. The coordinates and box dimensions are again in the range 0 to image dimensions. In MS COCO, the annotation can be accompanied by a piece of additional information to solve the task as an instance segmentation problem.
 \subsection{YOLO}
 This format was introduced together with the first YOLO architecture \cite{Redmon2015}, and this annotation style is still persistent whenever working with the YOLO-family neural networks.
-The annotations are divided into multiple TXT files in this format. Each of them contains annotations for a single image.
-The bounding box is described similarly to the COCO dataset, but the coordinates are normalized to be in the 0 to 1 range. The advantage of this approach is that the annotations do not have to be modified when image dimensions are scaled \cite{Redmon2015, Padilla2021}.
+In this format, the annotations are divided into multiple TXT files and each of them contains annotations for a single image.
+The bounding box is described similarly as in the COCO dataset, but the coordinates are normalized to be in the 0 to 1 range. The advantage of this approach is that the annotations do not have to be modified when image dimensions are scaled \cite{Redmon2015, Padilla2021}.
 
 
 \section{Metrics}
 \subsection{Intersection over union (IOU) }
-Intersection over union, also known as Jaccard index, is defined as demonstrated: Let $B_{gt}$ and $B_p$ be a ground truth and a predicted bounding box. The Jaccard index $J$ is calculated as
+Intersection over union, also known as the Jaccard index, is defined as demonstrated: Let $B_{gt}$ and $B_p$ be a ground truth and a predicted bounding box. The Jaccard index $J$ is calculated as
 \begin{align}
     IOU = J(B_p, B_{gt}) = \frac{area(B_p \bigcap B_{gt})}{area(B_p \bigcup B_{gt})}.
     \label{eq:iou}
 \end{align}
-From the equation \ref{eq:iou}, we can observe that the lowest value of IOU is 0. This means there is no overlap, and the maximal value is 1, indicating a perfect match.
+From the Equation \ref{eq:iou}, we can observe that the lowest value of IOU is 0. This means there is no overlap and the maximal value is 1, indicating a perfect match.
 We use a predefined threshold value of IOU to decide if the predicted bounding box matches the ground truth. Usually, we choose this threshold to be 0.5 or above.
 
-IOU can be defined for the semantic segmentation task with two classes (e.g., background and target class). Let $\mathbb{\hat{Y}} \in \mathbb{R}^{m \times n}$ be a mask of predicted values, where $\hat{y}_{i,j} = 1$ if the model predicts, that pixel $i,j$ belongs to target class. The IOU is defined as:
+IOU can be defined for the semantic segmentation task with two classes (e.g. background and target class). Let $\mathbb{\hat{Y}} \in \mathbb{R}^{m \times n}$ be the mask of the predicted values, where $\hat{y}_{i,j} = 1$ if the model predicts, that pixel $i,j$ belongs to target class. The IOU is defined as:
 \begin{align}
-    IOU = \frac{\sum_{i=1}^{m} \sum_{j=1}^{n} \hat{y}_{i,j} \wedge  y_{i,j}}{\sum_{i=1}^{m} \sum_{j=1}^{n} \hat{y}_{i,j} \vee  y_{i,j}}
+    IOU = \frac{\sum_{i=1}^{m} \sum_{j=1}^{n} \hat{y}_{i,j} \wedge  y_{i,j}}{\sum_{i=1}^{m} \sum_{j=1}^{n} \hat{y}_{i,j} \vee  y_{i,j}},
 \end{align}
 where $y_{i,j} \in \mathbf{Y} \in \mathbb{R} ^ {m \ times n}$ is the ground truth value for pixel $i,j$.
 
@@ -69,7 +69,7 @@ where $y_{i,j} \in \mathbf{Y} \in \mathbb{R} ^ {m \ times n}$ is the ground trut
 \label{subsec:precision}
 When speaking about object detection, we say that a prediction is a true positive (TP) if the IOU value is greater than the predefined threshold $\tau$. If otherwise, the prediction is treated as a false positive (FP). Let's assume there are N predictions of our model, from which S are correct. Precision is defined as
 \begin{align}
-    Precision(\tau, \gamma) = \frac{TP(\tau, \gamma)}{TP(\tau, \gamma) + FP(\tau, \gamma)}
+    Precision(\tau, \gamma) = \frac{TP(\tau, \gamma)}{TP(\tau, \gamma) + FP(\tau, \gamma)},
 \end{align}
 where $\gamma$ is the confidence threshold, meaning we discard all predictions with confidence smaller than $\gamma$. Note that for fixed value of $\tau$ are $FP(\gamma)$ and $TP(\gamma)$ decreasing functions of $\gamma$ \cite{Padilla2021}.
 
@@ -87,11 +87,11 @@ Since the value of $FN(\gamma)$ increases with the growing value of $\gamma$, we
 \subsubsection{F1 score}
 The value of the F1 score is computed as the harmonic mean of precision and recall.
 \begin{align}
-    F1(\tau, \gamma) = \frac{2 \cdot Recall(\tau,\gamma) \cdot Precision(\tau, \gamma)}{Recall(\tau,\gamma) + Precision(\tau, \gamma)}
+    F1(\tau, \gamma) = \frac{2 \cdot Recall(\tau,\gamma) \cdot Precision(\tau, \gamma)}{Recall(\tau,\gamma) + Precision(\tau, \gamma)}.
 \end{align}
 
-\subsubsection{Precision-recall curve}
-From subsections \ref{subsec:precision} and \ref{subsec:recall}, we were able to see that precision mainly grows as we increase the confidence threshold $\gamma$, while at the same time recall decreases. The precision-recall curve captures the relation between precision and recall. An example of the curve is illustrated as the blue line in figure \ref{fig:pr_curve}. In other words, we can say that the precision-recall curve is a mapping
+\subsubsection{Precision-recall curve (PR curve)}
+From Subsections \ref{subsec:precision} and \ref{subsec:recall}, we were able to observe that precision mainly grows as we increase the confidence threshold $\gamma$, while at the same time recall decreases. The precision-recall curve captures the relation between precision and recall. An example of the curve is illustrated as the blue line in Figure \ref{fig:pr_curve}. In other words, we can say that the precision-recall curve is a mapping
 \begin{align}
     \gamma \rightarrow Precision(\gamma) \times  Recall(\gamma),
     \label{eq:pr_curve}
@@ -103,22 +103,22 @@ To calculate mAP we first need to get the PR-curve and then interpolate the prec
 \begin{align}
     \gamma(k),\: k = 1,2,...,K,  \; \text{such that } \gamma(i) > \gamma(j) \: for \: i > j.
 \end{align}
-The interpolated precision-recall curve is defined as
+The interpolated precision-recall curve is then defined as
 \begin{align}
     Precision_{interp}(R) = \max_{k|Recall(\gamma(k)) \geq R} \{  Precision(\gamma(k)) \},
 \end{align}
 where $R$ is a real value contained in interval [0,1] \cite{Padilla2021}.
-The interpolated precision-recall is pictured in figure \ref{fig:pr_curve} in red color. Now, we can compute the average precision (AP) as the area under the interpolated PR curve.
+The interpolated precision-recall curve is pictured in Figure \ref{fig:pr_curve} in red color. Now, we can compute the average precision (AP) as the area under the interpolated PR curve.
 In practice, there are two different ways to approach the Reimann integral. They differ in the number of samples used to compute the integral and are called N-point and all-point interpolation. The N-point, specifically 101 point interpolation, is used in the MS COCO competition. On the other hand, the all-point interpolation is nowadays used in PASCAL VOC challenges \cite{Padilla2020, Padilla2020}.
 
 Since the AP is calculated per class, the mean average precision is defined as the average in all categories.
 
-In subsections \ref{subsec:precision} and \ref{subsec:recall}, we stated that precision and recall depend on a predefined IOU threshold $\tau$ to consider prediction as true positive. This dependency makes the value of MAP vary over different values of $\tau$. The threshold value used for computation of the mAP is usually denoted in the metrics name, such as $AP@.5$ in the case of MS COCO. \footnote{Note that even though the mean average precision is computed, the $AP$ shortcut, which stands for average precision, is used.} The standalone $AP$ without any numerical values attached to it usually refers to the official COCO metric. The official COCO metric is in its explicit form written as $AP@[.5:0.05:0.95]$ and is computed as the average of MAP values for ten different $\tau$ values, ranging from 0.5 to 0.95.
+In Subsections \ref{subsec:precision} and \ref{subsec:recall}, we stated that precision and recall depend on a predefined IOU threshold $\tau$ to consider prediction as true positive. This dependency makes the value of MAP vary over different values of $\tau$. The threshold value used for computation of the mAP is usually denoted in the metrics name, such as $AP@.5$ in the case of MS COCO. \footnote{Note that even though the mean average precision is computed, the $AP$ shortcut, which stands for average precision, is used.} The standalone $AP$ without any numerical values attached to it usually refers to the official COCO metric. The official COCO metric is in its explicit form written as $AP@[.5:0.05:0.95]$ and is computed as the average of MAP values for ten different $\tau$ values, ranging from 0.5 to 0.95.
 
 The letters S, M,  and L in the subscript, such as $AP_S$ denote that the metrics are calculated for a subset of ground truth predictions only. Taking into the consideration only bounding boxes with area $\leq 32^2$ pixels, $32^2 \le $ area $ \leq 96^2$ pixels and area $> 96^2$ pixels
 
 \subsection{Mean average recall in MS-COCO (mAR)}
-PyCOCOtools - official metrics for MS-COCO benchmark \cite{pycocotools} compute the average recall (AR) by the following approach: Predictions are sorted according to their confidence in decreasing order. We take $n$ boxes with the highest confidence values and evaluate their recall by Equation \ref{eq:recall} for a predefined IOU threshold $\theta$. We use similar notation as in the case of AP, where $AR@.X_{na}$ denotes average recall computed for IOU threhsold $X$, where we consider $n$ most confident predictions and by $a \in \{ S, M, L, \text{all} \}$ we denote size of rectangles, for which AR is computed. If we omit some of those, the following default values are used $a=\text{all}, n = 100, X = [.5:0.05:0.95]$.
+PyCOCOtools, the official metrics for MS-COCO benchmark \cite{pycocotools}, compute the average recall (AR) by the following approach: Predictions are sorted according to their confidence in a decreasing order. We take $n$ boxes with the highest confidence values and evaluate their recall by Equation \ref{eq:recall} for a predefined IOU threshold $\theta$. We use a similar notation as in the case of AP, where $AR@.X_{na}$ denotes the average recall computed for IOU threhsold $X$, where we consider $n$ most confident predictions. By $a \in \{ S, M, L, \text{all} \}$ we denote size of the rectangles, for which AR is computed. If we omit some of those, the following default values are used $a=\text{all}, n = 100, X = [.5:0.05:0.95]$.
 
 \begin{figure}
     \includegraphics[width = 0.78\linewidth]{images/PR-curve.png}
@@ -144,7 +144,7 @@ Dice Loss is computed in the same way, we only threshold values of $\hat{\mathbf
 \section{Optimization}
 In deep learning, a defined loss function that should be minimized usually does not have an analytical solution, or the solution cannot be evaluated for computational reasons. Therefore, the iterative numerical optimization approach is used, where we compute the gradient of the loss function with respect to the parameters of the optimized model. Those are updated by changing their values in the negative direction of the computed gradient.
 \subsection{Optimizers}
-The most simple optimizer is Stochastic Gradient Descent (SGD), which in each step updates the weights by stepping in the opposite direction of the gradient; the learning rate gives the length of the step.
+The most simple optimizer is Stochastic Gradient Descent (SGD), which in each step updates the weights by stepping in the opposite direction of the gradient The learning rate affects the length of the step.
 
 Many advanced optimizers that increase the speed of convergence are available. Commonly used are SGD with moentum, Adam and AdamW.
 
@@ -160,7 +160,7 @@ Learning rate is considered to be one of the most, if not the most important par
     \label{fig:schedulers}
 \end{figure}
 
-\subsubsection{Reduce learning rate on plateau}
+\subsubsection{ReduceLROnPlateau}
 We couple the scheduler with a model metric, and when the improvement of the metric stalls for a predefined period, the learning rate decreases.
 The scheduler is not heavily reliant on the setting of its hyperparameters, making it a go-to starting choice for most developers.
 
@@ -170,7 +170,7 @@ Cosine annealing changes the value of learning rate according to the equation \r
     lr(t) = lr_{min} + \frac{1}{2} \left( lr_{max} - lr_{min} \right) \left( 1 + \cos \left( \frac{t}{T}\pi \right) \right)
     \label{eq:cosine_annealing}
 \end{align}
-It is commonly used with two different settings. Either we set $T$ to estimated length of the training. The learning rate than decreases throghout the training, as can be seen in figure \ref{fig:schedulers}, or we select small value of $T$ and the learning rate oscilates in predefined boundaries multiple times throughout the training. This should help the optimizer to overcome saddle points.
+It is commonly used with two different settings. Either we set $T$ to estimated length of the training. The learning rate than decreases throghout the training, as can be seen in Figure \ref{fig:schedulers}, or we select small value of $T$ and the learning rate oscilates in predefined boundaries multiple times throughout the training. This should help the optimizer to overcome saddle points.
 
 \section{Artificial neural network (ANN)}
 The mechanisms of the human brain inspire artificial neural networks. Human neuron cells are in ANN replaced by artificial neurons, which are defined as:
@@ -194,11 +194,11 @@ Nowadays, modifications of convolutional layers are proposed, such as dilated co
 \end{figure}
 
 \subsection{Activation functions}
-A non-linear activation function usually follows the output of the convolutional layer. Many activation functions are at our disposal, but the most commonly used is ReLU and its derivatives, such as SERLU, SELU, ELU, Swish, and Leaky ReLU. Values of those functions are depicted in figure \ref{fig:activation_functions}.
+A non-linear activation function usually follows the output of the convolutional layer. Many activation functions are at our disposal, but the most commonly used is ReLU and its derivatives, such as SERLU, SELU, ELU, Swish, and Leaky ReLU. Values of those functions are depicted in Figure \ref{fig:activation_functions}.
 
 \subsection{Normalization layers}
 \label{sec:normalization_layers}
-Normalization layers make the training of ANNs faster and more stable. It has been shown, that normalization-layers decrease the generalization gap ,while increasing the convergence speed \cite{Ioffe2015,Wu2018}. The normalization layers differ in spatial axis, across which, the normalization statistics is computed, this is illustrated in figure
+Normalization layers make the training of ANNs faster and more stable. It has been shown, that normalization-layers decrease the generalization gap ,while increasing the convergence speed \cite{Ioffe2015,Wu2018}. The normalization layers differ in spatial axis, across which, the normalization statistics is computed, this is illustrated in Figure
 \subsubsection{Batch-normalization}
 The most normalization layer is batch normalization, which computes the output of the layer $y_i$ as:
 \begin{align}
@@ -234,7 +234,7 @@ Transformer architecture was introduced in the paper Attention is all you need \
 \begin{align}
     Attention \left(Q,K,V \right) = \text{softmax} \left( \frac{QK^T}{\sqrt{d_k}} \right)V,
 \end{align}
-where $d_k$ is dimension of keys. More details can be seen in figure \ref{fig:nlp_transformer} or in \cite{Vaswani2017}.
+where $d_k$ is dimension of keys. More details can be seen in Figure \ref{fig:nlp_transformer} or in \cite{Vaswani2017}.
 
 \begin{figure}
     \centering
@@ -244,7 +244,7 @@ where $d_k$ is dimension of keys. More details can be seen in figure \ref{fig:nl
 \end{figure}
 
 \subsection{Transformers in computer vision}
-The first transformer-based model was the Vision Transformer (ViT) which is capable of image classification only. It is composed of multiple encoder blocks stacked on top of each other; those blocks are the same as those used by the transformer for the NLP task. On the top encoder block is attached a multi-layer perceptron (MLP) head, which outputs values for each class. Those can be converted into corresponding probabilities by a softmax layer. The input into ViT are $16 \times 16$ image patches linearly projected into vectors; the whole architecture is shown in figure
+The first transformer-based model was the Vision Transformer (ViT) which is capable of image classification only. It is composed of multiple encoder blocks stacked on top of each other; those blocks are the same as those used by the transformer for the NLP task. On the top encoder block is attached a multi-layer perceptron (MLP) head, which outputs values for each class. Those can be converted into corresponding probabilities by a softmax layer. The input into ViT are $16 \times 16$ image patches linearly projected into vectors; the whole architecture is shown in Figure
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/vision_transformer.png}
@@ -254,7 +254,7 @@ The first transformer-based model was the Vision Transformer (ViT) which is capa
 
 
 \section{General architecture for object detection}
-Even though there is a wide variety of architectures for object detection, the core principles remain the same. The model is composed of three main parts: backbone, neck, and head, as depicted in figure \ref{fig:object_detection_architecture}. Each of those blocks can usually be swapped for a different one, fulfilling the same purpose. This gives us great flexibility and allows us to try different combinations of those blocks.
+Even though there is a wide variety of architectures for object detection, the core principles remain the same. The model is composed of three main parts: backbone, neck, and head, as depicted in Figure \ref{fig:object_detection_architecture}. Each of those blocks can usually be swapped for a different one, fulfilling the same purpose. This gives us great flexibility and allows us to try different combinations of those blocks.
 
 
 
@@ -271,7 +271,7 @@ The neck is responsible for the merging of features from the backbone. This is n
 \end{figure}
 
 \subsubsection{Head}
-The Head is responsible for predicting the position of boxes and classifying them. It uses the features extracted by the backbone and merged by the neck. Based on the approach to box prediction, we differ them into Dense prediction heads (YOLO, RetinaNet) or Sparse prediction heads(Faster R-CNN) \cite{Bochkovskiy2020}.
+The head is responsible for predicting the position of boxes and their classification. It uses the features extracted by the backbone and merged by the neck. Based on the approach to box prediction, we differ them into Dense prediction heads (YOLO, RetinaNet) or Sparse prediction heads(Faster R-CNN) \cite{Bochkovskiy2020}.
 
 
 \begin{figure}
@@ -290,7 +290,7 @@ ResNet architecture was introduced by He et al. \cite{He2015} and proposed a nov
 \begin{align}
     \mathcal{H}\left(\mathbf{x}\right) = \mathcal{F} \left(\mathbf{x}\right) + \mathbf{x}.
 \end{align}
-The reasoning behind the residual block is to make it easier to learn the identity mapping if desired. This has other benefits, especially the improvement of the gradient flow during back-propagation, making it easier to optimize such blocks. This ease of optimization can be seen by inspecting the loss function landscape of a model with and without skip-connections in figure \ref{fig:resnet_loss}.
+The reasoning behind the residual block is to make it easier to learn the identity mapping if desired. This has other benefits, especially the improvement of the gradient flow during back-propagation, making it easier to optimize such blocks. This ease of optimization can be seen by inspecting the loss function landscape of a model with and without skip-connections in Figure \ref{fig:resnet_loss}.
 Final ResNet architecture is composed of multiple residual blocks stacked one after another; the models vary in the number of layers used; this is denoted in the name with a number such as ResNet50 or ResNet101.
 
 \begin{figure}
@@ -308,7 +308,7 @@ When scaling the model's size, we can increase: Number of layers (depth), the nu
 where $ACC(m)$ and $FLOPS(m)$ are accuracy and floating-point operations (FLOPS) of model $m$, $T$ is the target number of FLOPS, and $w$ is a hyper-parameter controlling the trade-off between accuracy and number of FLOPS of the final model. This search resulted in the EfficientNet-B0 baseline model, which can be scaled to obtain a more extensive network called B1-B7.
 
 \subsection{Swin transformer}
-Swin transformer architecture overcomes the limitations of ViT, which is working with $16 \times 16$ image patches only. This is insufficient for segmentation and object detection tasks, where dense predictions are needed. Swin transformers are in the first layer working with $4 \times 4$ patches. Since the computation complexity of the self-attention layer grows quadratically with the number of input tokens, the authors overcome this by using neighbor patches only. Attention is thus computed with respect to tokens in the non-overlapping local window. As depicted in figure\ref{fig:swin_pathces}, this local window for computing self-attention is shifted after every encoder layer. This shift introduces cross-window connections, which increase the modeling capacity of the model. After a particular number of encoder layers, neighbor patches are merged, which reduces the number of patches while increasing their size by a predefined factor. This mimics the behavior of CNNs, where we start with big, semantically weak feature maps and gradually decrease their dimensions while increasing their number. Having this kind of feature map allows using swin transformer as a general backbone for any task. \cite{Liu2021}
+Swin transformer architecture overcomes the limitations of ViT, which is working with $16 \times 16$ image patches only. This is insufficient for segmentation and object detection tasks, where dense predictions are needed. Swin transformers are in the first layer working with $4 \times 4$ patches. Since the computation complexity of the self-attention layer grows quadratically with the number of input tokens, the authors overcome this by using neighbor patches only. Attention is thus computed with respect to tokens in the non-overlapping local window. As depicted in Figure\ref{fig:swin_pathces}, this local window for computing self-attention is shifted after every encoder layer. This shift introduces cross-window connections, which increase the modeling capacity of the model. After a particular number of encoder layers, neighbor patches are merged, which reduces the number of patches while increasing their size by a predefined factor. This mimics the behavior of CNNs, where we start with big, semantically weak feature maps and gradually decrease their dimensions while increasing their number. Having this kind of feature map allows using swin transformer as a general backbone for any task. \cite{Liu2021}
 
 \begin{figure}
     \begin{floatrow}[2]
@@ -323,7 +323,7 @@ Swin transformer architecture overcomes the limitations of ViT, which is working
 \label{sec:deteciton_models}
 
 \subsection{Faster R-CNN}
-Faster RCNN (Region-Based Neural Network) architecture is a two-stage detector. In the first stage, Region Proposal Network (RPN) finds regions of interest (ROI)and proposes bounding boxes corresponding to those regions. This is done by sliding a small neural network over the output of the backbone. In the second stage, features corresponding to positions of ROIs are extracted from the backbone and processed by a classification network, which decides if the region corresponds to a background or is one of the target classes. The schema of the architecture is in the figure \ref{fig:faster_rcnn}
+Faster RCNN (Region-Based Neural Network) architecture is a two-stage detector. In the first stage, Region Proposal Network (RPN) finds regions of interest (ROI)and proposes bounding boxes corresponding to those regions. This is done by sliding a small neural network over the output of the backbone. In the second stage, features corresponding to positions of ROIs are extracted from the backbone and processed by a classification network, which decides if the region corresponds to a background or is one of the target classes. The schema of the architecture is in Figure \ref{fig:faster_rcnn}
 
 \subsection{RetinaNet}
 
@@ -347,7 +347,7 @@ EfficientDet tries to achieve a similar goal as EfficientNet: Propose a computat
     \caption{Architecture of U-Net model, source \cite{Ronneberger2015}}
     \label{fig:unet_architecture}
 \end{figure}
-U-Net is an architecture for semantic segmentation, with an encoder-decoder structure as shown in figure \ref{fig:unet_architecture}. The decoder extracts feature maps from the input image with an increasing semantical strength throughout the layers. In the middle of the network is a so-called bottle-neck layer with the strongest semantical information about the image but lacks information about high-resolution details of the input image. Hence when the decoder decodes the information from the bottle neck, it is combined with information from the shallower layer, which contains information about image details required to obtain a precise dense prediction.
+U-Net is an architecture for semantic segmentation, with an encoder-decoder structure as shown in Figure \ref{fig:unet_architecture}. The decoder extracts feature maps from the input image with an increasing semantical strength throughout the layers. In the middle of the network is a so-called bottle-neck layer with the strongest semantical information about the image but lacks information about high-resolution details of the input image. Hence when the decoder decodes the information from the bottle neck, it is combined with information from the shallower layer, which contains information about image details required to obtain a precise dense prediction.
 \newline
 The decoder proposed by Rennenberger et al. \cite{Ronneberger2015} can be replaced by a general-purpose backbone, as demonstrated by Baheti et al. \cite{Baheti2020}, who used EfficientNet as the backbone.
 
@@ -362,7 +362,7 @@ Let say we have $M$ different models, each of them predicting $\mathcal{B}_i = \
 where F is an optional normalization constant. It's only purpose is to ensure that confidence score will be less than 1 after the ensembling. Commonly used value for F is $\frac{1}{M} \sum_{i=1}^M w_i$. After obtaining sets $\mathcal{B}$ and $\mathcal{S}$ we post-process them by one of the following algorithms: Non-maximal suppression, soft non-maximal suppression, non-maximum weighted suppression or weighted boxes fusion.
 
 \subsubsection{Non-maximal supression (NMS)}
-In non-maximal suppression, we first sort all boxes $\mathcal{B}$ by their confidence $\mathcal{S}$ in descending order. We go thru the sorted set $\mathcal{B}$ and check if any other box b in $\mathcal{B}$ has an overlap greater than the predefined threshold $N_t$.  In that case, we remove box $b$ from $\mathcal{B}$. More details regarding the NMS algorithm are in the pseudocode, which is in figure \ref{alg:nms}.
+In non-maximal suppression, we first sort all boxes $\mathcal{B}$ by their confidence $\mathcal{S}$ in descending order. We go thru the sorted set $\mathcal{B}$ and check if any other box b in $\mathcal{B}$ has an overlap greater than the predefined threshold $N_t$.  In that case, we remove box $b$ from $\mathcal{B}$. More details regarding the NMS algorithm are in the pseudocode, which is in Figure \ref{alg:nms}.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\linewidth]{images/nms_algo.png}
