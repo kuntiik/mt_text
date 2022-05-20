@@ -35,12 +35,18 @@
 \ctuprocess
 
 \begin{abstract-english}
-This work deals with object detection from the depth part of RGB-D data, which are produced by stereocamera Intel\textregistered{} Realsense$^{TM}$. Firstly, research of available methods for plane normal estimation from point clouds, picture segmentation and object detection is conducted. Based on this knowledge a program for detection of the surface normal and then precise location of on surface laying objects is proposed. This program is mainly based on RANSAC algorithm and PCA, which are combined with our aprior knowledge of the shapes of objects. Proposed programs are then evaluated on manualy labeled dataset, thereby it is validated, that they are capable of high accuracy object detection in real time.
+Dental caries is the most prevalent disease in the world with more than 3.5 billion people affected. The treatment of dental caries imposes a burden on health care in every country financially and timewise. Detection of the disease in its early stages can mitigate the impact on the cost of treatment and improve the patient's prognosis.
+
+Bitewing X-ray imaging is after the visual-tactile method the second most method used for dental caries detection. An-early stage carious lesson can be easily overlooked by the visuale-tactile exam, making the bitewing X-ray imaging very beneficial for an early detection and a chance for a recovery without the need for a further dental treatment.
+
+This Master's thesis addresses the problem of dental caries detection from bitewing images using convolutional neural networks. First, a dataset of 3889 bitewing images with 7257 annotated dental caries was created for the purpose of this thesis. Using it, we trained multiple architectures for object detection and compared their performance. In the end, we used an ensemble of models to obtain the best-performing model
+
+
+We have created a solution that can detect dental caries with a precision of 0.751 and a recall of 0.7. Furthermore, second model for segmentation of dental restoration was created, achieving an IOU score of 0.676.
 \end{abstract-english}
 
 \begin{abstract-czech}
-Tato práce se zabývá detekcí objektů z hloubkové složky RGB-D dat, jejichž zdrojem je stereokamera Intel\textregistered{} Realsense$^{TM}$. Nejprve je provedena rešerše dostupných metod pro hledání normálového vektoru plochy v mračnech bodů, segmentaci obrazu a detekci objektů. Posléze je těchto znalostí využito k navržení vlastního programu na detekci normálového vektoru plochy a následnému přesnému určení polohy na ploše ležících objektů. Tyto programy vycházejí zejména z RANSAC algoritmu a PCA, které jsou kombinovány s naši apriorní znalostí tvaru objektů. Navržené programy jsou následně vyhodnoceny na manuálně označených datech, čímž je ověřeno, že jsou schopny přesné detekce v reálném čase.
-\end{abstract-czech}
+Zubní kaz je nejrozšířenější onemocnění na světě postihující více než 3.5 miliard lidí. Léčba výrazně zatěžuje
 
 \begin{declaration}
     I hereby declare that the presented work
@@ -56,9 +62,14 @@ Tato práce se zabývá detekcí objektů z hloubkové složky RGB-D dat, jejich
 \end{declaration}
 
 \begin{thanks}
-    Firstly, I would like to epress gratitude to the prof. Jan Kybic
+    Firstly, I would like to express gratitude to prof. Jan Kybic for supervision of this thesis and his willingness to help at any time.
+    \medskip
 
-    Secondly, I would like to
+    Secondly, I would like to thank MDDr. Tichý was always eager to help, and without his dedication to creating the dataset, we would not have achieved the results we did.
+    \medskip
 
-    Last but not least, I would like to thank to my family for the support during the sutdies and creation of this thesis. I would like
+    Last but not least, I would like to thank my family for their support during my studies.
+    \medskip
+
+    I would like to further emphasize my gratitude to my girlfriend Anna for her undying moral and encouragement throughout the creation of this thesis.
 \end{thanks}
