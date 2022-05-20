@@ -4,7 +4,7 @@
 \section{Coments on model comparison and their improvements}
 We observed that updating the dataset by either increasing the number of data or correcting annotations mistakes showed significant improvement in monitored metrics.
 
-The results differ only in units of percents if we use models with smaller backbones as can be seen in Table \ref{tab:backbone_comparison}, furthermore parameter-heavy models such as EfficientDet-D4 performed worse than others, see Table \ref{tab:model_results:stage_four}. This was a surprising fact, since EfficentDet-D4 was out-performing all other tested models on the MS COCO benchmark \cite{paperwithcode,Tan2019}.
+The results differ only in units of percents if we use models with smaller backbones as can be seen in Table \ref{tab:backbone_comparison}; furthermore, parameter-heavy models such as EfficientDet-D4 performed worse than others, see Table \ref{tab:model_results:stage_four}. This was a surprising fact since EfficentDet-D4 was out-performing all other tested models on the MS COCO benchmark \cite{paperwithcode,Tan2019}.
 
 
 The weight decay did not affect the behavior of YOLOv5 and Faster R-CNN. This was surprising since we would expect an increase in performance on the validation and test dataset.
@@ -13,13 +13,7 @@ The use of group normalization significantly decreased the performance gap betwe
 
 
 \section{Ensembling}
-In tables \ref{tab:precision:grid_search} and \ref{tab:recall:grid_search} we observe, that the best performing method was WBF. The other methods showed smaller but still significant improvement. This corresponds to findings by Solovyev et al. \cite{Solovyev2019}. We were surprised that extending the functionality of WBF by reweighting predictions according to their area did not improve the performance of the ensembled model.
-
-From tables \ref{tab:model_results:stage_four} and \ref{tab:model_ensembling:handpicked} we see, that $AP@.5$ obtained by ensembled models improved over the best performing model by $2.3\%$ when we manually selected hyper-parameters and used WBF method. On the contrary, models ensembled by parameters found by grid search improved by $6.7\%$ in terms of $AP@.5$. This emphasizes the importance of the hyper-parameter search for ensembling methods.
-
-Tables \ref{tab:precision:ensemble_compare} and \ref{tab:recall:ensemble_compare} show the importance of using different architectures and backbones in ensembling. We found that the usage of varying backbones increases the gain in average precision by circa $1.5\%$. Furthermore, using different architectures increased the performance by an additional $3.2\%$. Please note that models included in ensembling with different architectures had a better average $AP@.5$ by $2\%$ higher than models included in the former two ensembling approaches. If we adjust the results, we expect a $1.2\%$ gain solely from using models with varying architecture.
-
-In figure \ref{fig:ensembling_parameters_importance} we see that the second worst-performing model included in the enabling had the most significant importance for the ensemble. This is a surprising fact, but it underlines the previous findings that varying models contribute more to performance gains of ensembling.
+Model ensembling improved the results more than we anticipated. We assess that this was caused by the wide variety of object detection models used for the ensemble. The results in Section strengthen this introduction \ref{sec:sec:results:improtance_of_models}. We were surprised that our proposed aware ensembling solution (see section \ref{sec:methods_area_aware_ens}) did not improve the results.
 
 \section{Dental restorations segmentation}
 \subsection{Non-deep learning approach}
